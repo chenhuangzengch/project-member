@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.CtExtraBookMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.CtExtraBook" >
+    <id column="extra_book_id" property="extraBookId" jdbcType="VARCHAR" />
+    <result column="extra_book_name" property="extraBookName" jdbcType="VARCHAR" />
+    <result column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="getByPrimaryKey" resultMap="BaseResultMap" >
+    select extra_book_id, extra_book_name, book_id, status, create_time, create_user,
+           update_time, update_user
+      from ct_extra_book
+     where extra_book_id = #{extraBookId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="queryByBookId" resultMap="BaseResultMap" >
+    select extra_book_id, extra_book_name, book_id, status, create_time, create_user,
+           update_time, update_user
+      from ct_extra_book
+     where book_id = #{bookId,jdbcType=VARCHAR}
+  </select>
+
+  <!--<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_extra_book
+    where extra_book_id = #{extraBookId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.member.domain.CtExtraBook" >
+    insert into ct_extra_book (extra_book_id, extra_book_name, book_id,
+      status, create_time, create_user,
+      update_time, update_user)
+    values (#{extraBookId,jdbcType=VARCHAR}, #{extraBookName,jdbcType=VARCHAR}, #{bookId,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR},
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.CtExtraBook" >
+    update ct_extra_book
+    set extra_book_name = #{extraBookName,jdbcType=VARCHAR},
+      book_id = #{bookId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where extra_book_id = #{extraBookId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select extra_book_id, extra_book_name, book_id, status, create_time, create_user,
+    update_time, update_user
+    from ct_extra_book
+  </select>-->
+
+</mapper>

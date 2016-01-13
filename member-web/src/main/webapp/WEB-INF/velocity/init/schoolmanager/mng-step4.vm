@@ -1,0 +1,80 @@
+#set($layout="layout/init.vm")
+#set($page_title="STEP4-管理员数据初始化")
+#set($user=${request.session.getAttribute("SPRING_SECURITY_CONTEXT").authentication.principal})
+#define($script)
+<script>
+    var schoolGrades = [
+        { 'name': '一年级', 'year': 2013 }
+    ];
+</script>
+<script>seajs.use('page/member/pmnginit');</script>
+#end
+<div class="header header-init">
+    <div class="inner">
+        <div class="logo">
+            <h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+        </div>
+        <div class="ctls">
+            <a href="${ctx}/schoolManagerInit/backToSetPassword" class="prev">上一步</a>
+			#if($gradeNameDTOList.get(0).level==1)
+                <a href="${ctx}/schoolManagerInit/goSetSyncClass" class="next">下一步</a>
+			#else
+                <a href="${ctx}/schoolManagerInit/anotherImport" class="next">下一步</a>
+			#end
+        </div>
+    </div>
+</div>
+<div class="container">
+
+    <div class="page-init-gradeselect">
+        <div class="book-select">
+            <div class="list">
+                <div class="panel">
+                    <div class="line"></div>
+                    <div class="ex"></div>
+					#foreach($each in $gradeNameDTOList)
+                        <p class="gradecode-$each.level"><a href="#g$each.level"></a>$!{each.level}年级</p>
+					#end
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="inner page-init">
+
+        <div class="grade-list">
+			#foreach($each in $gradeNameDTOList)
+                <div class="grade-item grade-item-$each.level" data-gradecode="$each.level">
+                    <h3 class="title">
+                        <a class="addsubject" href="javascript:;" id="g$each.level"><i class="icon-add"></i>添加科目</a>
+						$!{each.level}年级
+                    </h3>
+                    <ul>
+						#foreach($book in ${schoolBookList})
+							#if($each.level==${book.grade})
+                                <li class="subject-item subject-item-${book.subjectId}" data-id="${book.subjectId}" data-bookid="${book.bookId}">
+                                    <p class="p1">$!{book.subjectName}</p>
+                                    <p class="p2">
+										$!{book.bookName}
+                                        <a href="javascript:;" class="edit">编辑</a>
+                                    </p>
+									#if(${book.extraCount}>0)
+                                        <p class="p3">
+                                            教辅：#if(${book.extraBookId})$!{book.extraBookName}
+										#else <a class="setextrabook" href="javascript:;">未设置</a>
+										#end
+											#if(${book.extraBookId})
+                                                <a href="javascript:;" class="edit-extrabook">编辑</a>
+											#end
+                                        </p>
+									#end
+                                    <a href="javascript:;" class="del">删除</a>
+                                </li>
+							#end
+						#end
+                    </ul>
+                </div>
+			#end
+        </div>
+
+    </div>
+</div>

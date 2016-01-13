@@ -1,0 +1,28 @@
+#set($layout="layout/security.vm")
+#set($page_title="邮件找回流程-Step2-发送邮箱，去查收")
+	<div class="head">
+		<div class="inner">
+			<div class="logo"></div>
+			<div class="return"><a href="${ctx}/j_spring_cas_security_logout">返回登录</a></div>
+		</div>
+	</div>
+	<div class="main">
+		<div class="main_bg">
+			<div class="mail_ico"></div>
+			<div class="mail_text">邮件已发送到您的邮箱<a>$!{email}<a></div>
+			<div class="mail_tect">请按邮箱中的提示操作，重置密码</div>
+			<div class="button_five">
+				<a target="_blank" class="go" href="$!{emailUrl}">立即查收邮件</a>
+				<input type="hidden" name="email" value=$!{email} />
+			</div>
+			<div class="hr"></div>
+			<div class="mail_tis">
+				<h2>一直没有收到邮件？</h2>
+				<ul>
+					<li>1、请先检查是否在垃圾邮件中</li>
+					<li>2、如果还未收到,<a class="time_tis">60</a>秒后，可以点击重新发送邮件</li>
+					<li>3、还是收不到？请选择其他验证方式</li>
+				</ul>
+			</div>
+		</div>
+	</div>

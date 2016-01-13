@@ -1,0 +1,184 @@
+#set($page_title="班级列表_学校管理")
+#define($script)
+<script>
+    var pageinfo = {};
+    pageinfo.grade = "$!{selectedGrade.id}";
+</script>
+<script>
+    var ctlmenu = [
+//        { cls: 'action-home', icon: 'icon-home', name: '班级空间' },
+        {cls: 'action-addset', icon: 'icon-addset', name: '添加班主任'},
+        {cls: 'action-changeset', icon: 'icon-refresh', name: '更换班主任'},
+        {cls: 'action-renm', icon: 'icon-edit', name: '重命名'},
+        {cls: 'action-del', icon: 'icon-remove', name: '删除班级'}
+    ];
+    var positionList = [
+        #foreach($position in $positionsList)
+            {'name': "${position.name}", 'positionId': "${position.positionId}"}#if($foreach.hasNext),#end
+        #end
+    ];
+</script>
+<script>seajs.use('page/member/pgrade');</script>
+#end
+
+<div id="as_memberclassindex"></div>
+<div class="container">
+    <div class="inner-title">
+    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+        <p class="ctl">
+            <a href="${ctx}/schoolSet/setPeriod">学制学段设置</a>
+        </p>
+    #end
+        <h2>学校管理</h2>
+    </div>
+    <div class="inner page-leftright">
+        <div class="sider">
+            <div class="search-sider">
+                <div class="search-nml">
+                    <form action="index" method="get">
+                        #if($!{name})
+                            <input class="ipt" type="text" id="" value="$!{name}"
+                                   placeholder="输入班级名称搜索" />
+                            <a class="close" href="index"></a>
+                        #else
+                            <input class="ipt" type="text" name="name" id="" value="$!{name}"
+                                   placeholder="输入班级名称搜索" />
+                            <input class="btn" type="submit" value="搜索" />
+                        #end
+                    </form>
+                </div>
+            </div>
+            <ul class="class-list">
+                #set($total=0)
+                #foreach($grade in $gradeDTOs)
+                    #set($total=$total+${grade.classNumber})
+                    <li #if($grade.id == $selectedGrade.id)
+                            class="grade-item-${grade.id} on"
+                        #else
+                            class="grade-item-${grade.id}"
+                        #end >
+                        <a href="index?grade=$grade.id#if($name)&name=$name#end">
+                            <i class="icon-nml"></i>$!{grade.levelName}（<span>$!{grade.classNumber}</span>）
+                        </a>
+                    </li>
+                #end
+                <li #*class="on"*#><a href="${ctx}/manager/index"><i class="icon-mgr"></i>管理层</a></li>
+                #*<li class="on"><a href="../"><i class="icon-dpt"></i>学校社团</a></li>*#
+                <li #*class="on"*#><a href="${ctx}/graduatingClass/index"><i class="icon-gc"></i>毕业班级</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            #if($name&&$name!="")    ##搜索功能
+                <div class="title">
+                    <h2 class="nm">搜索结果（$total）</h2>
+                ##如果有年级,那可以新增班级
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        #if($selectedGrade)
+                            <p class="extra">
+                                <a class="J_classadd" href="javascript:;"><i class="icon-add"></i>添加班级</a>
+                            </p>
+                        #end
+                    #end
+                </div>
+                <div class="main">
+                    <div class="tb-spec tb-class-list">
+                        <div class="tb-spec-head">
+                            <div class="row nick">班级</div>
+                            <div class="row name">别名</div>
+                            <div class="row num">学生人数</div>
+                            <div class="row chair">班主任</div>
+                        </div>
+                        #foreach($each in $classes)
+                            <div class="list-item tb-spec-item tb-spec-item-${each.classId}" data-id="${each.classId}"
+                                #if($each.chargeId && $each.chargeId!="")
+                                    data-menuhide="addset"
+                                #else
+                                    data-menuhide="changeset"
+                                #end>
+                                <div class="row icon"><img class="av-class" src="http://asset.xueleyun.com/imgs/member/defschoolicon.gif" alt="" /></div>
+                                <div class="row nick"><a href="selectClassStuAndTea?classId=${each.classId}">$!{each.name}</a></div>
+                                <div class="row name">#if(${each.aliasName}&&${each.aliasName}!='')$!{each.aliasName}#else&nbsp;#end</div>
+                                <div class="row num">$!{each.studentNumber}</div>
+                                <div class="row chair" chargeId="$!{each.chargeId}">
+                                    #if($each.chargeId && $each.chargeId!="")
+                                        <img class="av-user" src="${bigSrc}${each.icon}.jpg" alt="" /> $!{each.chargeName}
+                                    #else
+                                        #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                                            <a class="J_chairadd" href="javascript:;"> <i class="icon-addcross"></i>添加班主任</a>
+                                        #else
+                                            <a>无</a>
+                                        #end
+                                    #end
+                                </div>
+                                #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                                    <div class="row ctl"><img class="ctlmenu" src="http://asset.xueleyun.com/imgs/member/tb-ctls.gif" alt="更多操作" /></div>
+                                #end
+                            </div>
+                        #end
+                    </div>
+                </div>
+            #elseif($classes.size()==0)        ##没有班级数据
+                <div class="title">
+                    <h2 class="nm">$!{selectedGrade.levelName}</h2>
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        <p class="extra"><a class="J_classadd" href="javascript:;"><i class="icon-add"></i>添加班级</a></p>
+                    #end
+                </div>
+                <div class="main">
+                    <div class="empty">
+                        <p class="empty-msg">没有任何班级</p>
+                        <p class="empty-who">需要学校管理员创建班级</p>
+                        #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                            <p class="empty-ctls"><a class="J_classadd" href="javascript:;"><i class="icon-add"></i>添加班级</a></p>
+                        #end
+                    </div>
+                </div>
+            #else
+                <div class="title">
+                    <h2 class="nm">$!{selectedGrade.levelName}</h2>
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        <p class="extra"><a class="J_classadd" href="javascript:;"><i class="icon-add"></i>添加班级</a></p>
+                    #end
+                </div>
+                <div class="main">
+                    <div class="tb-spec tb-class-list">
+                        <div class="tb-spec-head">
+                            <div class="row nick">班级</div>
+                            <div class="row name">别名</div>
+                            <div class="row num">学生人数</div>
+                            <div class="row chair">班主任</div>
+                        </div>
+                        #foreach($each in $classes)
+                            <div class="list-item tb-spec-item tb-spec-item-${each.classId}" data-id="${each.classId}"
+                                #if($each.chargeId && $each.chargeId!="")
+                                    data-menuhide="addset"
+                                #else
+                                    data-menuhide="changeset"
+                                #end>
+                                <div class="row icon"><img class="av-class" src="http://asset.xueleyun.com/imgs/member/defschoolicon.gif" alt="" /></div>
+                                <div class="row nick"><a href="selectClassStuAndTea?classId=${each.classId}">$!{each.name}</a></div>
+                                <div class="row name">#if(${each.aliasName}&&${each.aliasName}!='')$!{each.aliasName}#else&nbsp;#end</div>
+                                <div class="row num">$!{each.studentNumber}</div>
+                                <div class="row chair" chargeId="$!{each.chargeId}">
+                                #if($each.chargeId && $each.chargeId!="")
+                                    <img class="av-user" src="${bigSrc}${each.icon}.jpg" alt="" /> $!{each.chargeName}
+                                #else
+                                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                                        <a class="J_chairadd" href="javascript:;"> <i class="icon-addcross"></i>添加班主任</a>
+                                    #else
+                                        <a>无</a>
+                                    #end
+                                #end
+                                </div>
+                                #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                                    <div class="row ctl"><img class="ctlmenu" src="http://asset.xueleyun.com/imgs/member/tb-ctls.gif" alt="更多操作" /></div>
+                                #end
+                            </div>
+                        #end
+                    </div>
+                </div>
+            #end
+        </div>
+    </div>
+</div>
+<script src="http://as.xueleyun.com/res/as.js"></script>

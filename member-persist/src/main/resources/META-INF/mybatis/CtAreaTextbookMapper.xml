@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.CtAreaTextbookMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.member.domain.CtAreaTextbook">
+        <id column="tb_id" property="tbId" jdbcType="VARCHAR"/>
+        <result column="area_code" property="areaCode" jdbcType="VARCHAR"/>
+        <result column="area_name" property="areaName" jdbcType="VARCHAR"/>
+        <result column="book_id" property="bookId" jdbcType="VARCHAR"/>
+        <result column="book_name" property="bookName" jdbcType="VARCHAR"/>
+        <result column="subject_id" property="subjectId" jdbcType="VARCHAR"/>
+        <result column="grade" property="grade" jdbcType="INTEGER"/>
+        <result column="semester" property="semester" jdbcType="INTEGER"/>
+        <result column="edition_id" property="editionId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="edit_time" property="editTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="CtBookMap" type="net.xuele.member.domain.CtBook" >
+        <id column="book_id" property="bookId" jdbcType="VARCHAR" />
+        <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+        <result column="subject_id" property="subjectId" jdbcType="VARCHAR" />
+        <result column="subject_name" property="subjectName" jdbcType="VARCHAR" />
+        <result column="grade" property="grade" jdbcType="INTEGER" />
+        <result column="semester" property="semester" jdbcType="INTEGER" />
+        <result column="semester_describe" property="semesterDescribe" jdbcType="VARCHAR" />
+        <result column="edition_id" property="editionId" jdbcType="VARCHAR" />
+        <result column="extra_book_id" property="extraBookId" jdbcType="VARCHAR" />
+        <result column="extra_book_name" property="extraBookName" jdbcType="VARCHAR" />
+        <result column="extra_count" property="extraCount" jdbcType="INTEGER" />
+    </resultMap>
+    <select id="queryAreaBook"  resultMap="CtBookMap">
+        select cb.book_id, cb.book_name, cb.subject_id, cb.subject_name, cb.grade, cb.semester, cb.semester_describe,
+        cb.edition_id,ifnull(ceb.extra_count,0) extra_count
+        from ct_area_textbook cat
+        join ct_book cb on cat.book_id=cb.book_id
+        left join (select count(1) as extra_count,book_id from ct_extra_book group by book_id) ceb
+        on ceb.book_id=cb.book_id
+        where cat.area_code=#{areaCode,jdbcType=VARCHAR} and cb.status=1 order by cb.grade
+    </select>
+
+    <select id="queryAreaBookList" resultMap="CtBookMap">
+      select cb.book_id, cb.book_name, cb.subject_id, cb.subject_name, cb.grade, cb.semester, cb.semester_describe,
+               cb.edition_id
+        from ct_area_textbook cat
+        join ct_book cb on cat.book_id=cb.book_id and cb.status=1
+       where cat.area_code=#{area,jdbcType=VARCHAR}
+         and cat.subject_id in
+            <foreach collection="subjectId" item="subject" open="(" separator="," close=")">
+                #{subject}
+            </foreach>
+         and cat.grade in
+            <foreach collection="gradeCode" item="grade" open="(" separator="," close=")">
+                #{grade}
+            </foreach>
+         and cat.semester in
+            <foreach collection="semester" item="semester" open="(" separator="," close=")">
+                #{semester}
+            </foreach>
+    order by cat.subject_id,cat.grade,cat.semester
+    </select>
+</mapper>

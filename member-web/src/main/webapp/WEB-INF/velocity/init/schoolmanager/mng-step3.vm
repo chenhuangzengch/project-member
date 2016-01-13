@@ -1,0 +1,82 @@
+#set($layout="layout/init.vm")
+#set($page_title="STEP3-管理员数据初始化")
+#set($user=${request.session.getAttribute("SPRING_SECURITY_CONTEXT").authentication.principal})
+#define($script)
+<script>var educational = [
+	    #set($isnull=0)
+		#foreach($each in $schoolPeriodDTOList)
+			#if($each.section==0)
+				#set($isnull=$each.length)
+			#end
+		#end
+	    $isnull,
+	    #set($isnull=0)
+	    #foreach($each in $schoolPeriodDTOList)
+		    #if($each.section==1)
+                #set($isnull=$each.length)
+		    #end
+	    #end
+	    $isnull,
+	    #set($isnull=0)
+	    #foreach($each in $schoolPeriodDTOList)
+		    #if($each.section==2)
+                #set($isnull=$each.length)
+		    #end
+	    #end
+		$isnull
+];</script>
+<script>seajs.use('page/member/pmnginit');
+</script>
+#end
+<div class="header header-init">
+		<div class="inner">
+			<div class="logo">
+				<h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+			</div>
+			<div class="ctls">
+				<a href="${ctx}/schoolManagerInit/backToSetPassword" class="prev">上一步</a>
+				<a href="" class="next disabled">下一步</a>
+			</div>
+		</div>
+</div>
+<div class="container">
+		<div class="inner page-init">
+			<div class="page-init-box">
+				<h2 class="title">请选择您学校的学段与学制</h2>
+				<form name="form-educational" action="setStudySectionSchoolSystem" method="post">
+				<ul class="educational">
+					<li>
+						<div class="item">
+							<input class="chk" type="checkbox" name="" id=""  />
+							<p class="nm">小学</p>
+							<p class="other">
+								<label for="primary5"><input disabled="disabled" type="radio" name="primary" id="primary5" value="5" />5年制</label>
+								<label for="primary6"><input disabled="disabled" type="radio" name="primary" id="primary6" value="6" />6年制</label>
+							</p>
+						</div>
+					</li>
+					<li>
+						<div class="item">
+							<input class="chk" type="checkbox" name="" id="" />
+							<p class="nm">初中</p>
+							<p class="other">
+								<label for="junior3"><input disabled="disabled" type="radio" name="junior" id="junior3" value="3" />3年制</label>
+								<label for="junior4"><input disabled="disabled" type="radio" name="junior" id="junior4" value="4" />4年制</label>
+							</p>
+						</div>
+					</li>
+					<li>
+						<div class="item">
+							<input class="chk" type="checkbox" name="" id="" />
+							<p class="nm">高中</p>
+							<p class="other">
+								<label for="senior3"><input disabled="disabled" type="radio" name="senior" id="senior3" value="3" />3年制</label>
+							</p>
+						</div>
+					</li>
+				</ul>
+				<input type="submit" value="提交" style="display:none;" />
+				</form>
+			</div>
+		</div>
+</div>

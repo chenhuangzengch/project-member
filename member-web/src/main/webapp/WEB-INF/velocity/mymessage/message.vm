@@ -1,0 +1,219 @@
+#set($page_title="我的信息")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/profile.css?version=${version}" />
+<script src="http://asset.xueleyun.com/g/lib/gallery/datepicker/WdatePicker.js?version=${version}"></script>
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/circle/circle.css?version=${version}" />
+<script>seajs.use('page/member/psettings');</script>
+#end
+<div class="container">
+    <div class="inner page-noborder">
+        <div class="profile-wrap">
+            <!-- 学生 -->
+            #if($identity==$student)
+                <div class="user">
+                    <img src="http://asset.xueleyun.com/imgs/member/bn-user.jpg" alt="" class="bn" />
+                    #if($message.icon==$iconDefault)
+                        <a href="setIcon?url=${ctx}/myMessage/message"><img src="http://asset.xueleyun.com/imgs/member/avneed.png" alt="" /></a>
+                    #else
+                        <a href="setIcon?url=${ctx}/myMessage/message"><img src="$!{bigSrc}${message.icon}.jpg" alt="" /></a>
+                    #end
+                    <div class="cnt">
+                        <p class="info p1">$!{message.realName}</p>
+                        <p class="info p2">$!{message.signature}</p>
+                        <p class="info p3">$!{message.schoolName}<span>
+                        #if($message.schoolName&&$message.className)
+                            |
+                        #end
+                        </span>$!{message.className}</p>
+                    </div>
+                </div>
+            #elseif($identity==$teacher)
+                <!-- 教师 -->
+                <div class="user">
+                    <img src="http://asset.xueleyun.com/imgs/member/bn-user.jpg" alt="" class="bn" />
+                    #if($message.icon==$iconDefault)
+                        <a href="setIcon?url=${ctx}/myMessage/message"><img src="http://asset.xueleyun.com/imgs/member/avneed.png" alt="" /></a>
+                    #else
+                        <a href="setIcon?url=${ctx}/myMessage/message"><img src="${bigSrc}${message.icon}.jpg" alt="" /></a>
+                    #end
+                    <div class="cnt">
+                        <p class="info p1">$!{message.realName}</p>
+                        <p class="info p2">
+                        #foreach($sub in $message.subjectList)
+                            #if($sub.subjectId==$mainSubject)
+                                主授科目：$!{sub.subjectName}
+                            #end
+                        #end
+                        </p>
+                        <p class="info p3">
+                            $!{message.signature}
+                        </p>
+                    </div>
+                </div>
+            #elseif($identity==$parent)
+                <!-- 家长 -->
+                <div class="user">
+                    <img src="http://asset.xueleyun.com/imgs/member/bn-user.jpg" alt="" class="bn" />
+                    #if($message.icon==$iconDefault)
+                        <a href="setIcon?url=${ctx}/myMessage/message"><img src="http://asset.xueleyun.com/imgs/member/avneed.png" alt="" /></a>
+                    #else
+                        <a href="setIcon?url=${ctx}/myMessage/message"><img src="$!{bigSrc}$!{message.icon}.jpg" alt="" /></a>
+                    #end
+                    <div class="cnt">
+                        <p class="info p1">$!{message.realName}</p>
+                        <p class="info p2">$!{message.signature}</p>
+                    </div>
+                </div>
+            #end
+            #if(${sec.anyGranted("TEACHER","STUDENT")})
+                <div class="personal">
+                    <a class="personal-nav" href="http://www.xueleyun.com/circle/friendCircle/dynamic">个人动态</a>
+                    <a class="personal-nav on" href="${ctx}/myMessage/message">个人信息</a>
+                </div>
+            #end
+            <div class="profile">
+                <div class="col-left">
+                    <div class="box box-info">
+                        <form name="form-userinfo" action="updateUser" method="post">
+                            <div class="hd">
+                                <div class="ctl">
+                                    <a href="javascript:;" class="edit">编辑</a>
+                                    <p>
+                                        <a class="cancel" href="javascript:;">取消</a>
+                                        <button class="save" type="submit">保存</button>
+                                    </p>
+                                </div>
+                                <em>基本信息</em>
+                            </div>
+                            <div class="bd">
+                                <div class="ginfo">
+                                    <ul>
+                                        <li><label for="">我的姓名：</label>$!{user.realName}</li>
+                                        <li><label for="">性　　别：</label>
+                                            #if($user.sex==0)
+                                                男
+                                            #elseif($user.sex==1)
+                                                女
+                                            #end
+                                        </li>
+                                        <li><label for="">生　　日：</label>$!{birthday}</li>
+                                    </ul>
+                                </div>
+                                <div class="gedit">
+                                    <ul>
+                                        <li>
+                                            <label for="">我的姓名：</label>
+                                        #if(${sec.anyGranted("STUDENT")})
+                                            $!{user.realName}
+                                       #else
+                                                <input name="realName" type="text" class="ipt" value=$!{user.realName} />
+                                        #end
+                                        </li>
+                                        <li>
+                                            <label for="">性　　别：</label>
+                                            <select name="sex" id="">
+                                                <option value="0"
+                                                    #if($user.sex==0)
+                                                        selected="selected"
+                                                    #end
+                                                        >男
+                                                </option>
+                                                <option value="1"
+                                                    #if($user.sex==1)
+                                                        selected="selected"
+                                                    #end>女
+                                                </option>
+                                            </select>
+                                        </li>
+                                        <li>
+                                            <label for="">生　　日：</label>
+                                            <input type="text" readonly="readonly" class="ipt" name="birthday"
+                                                #if($birthday)
+                                                        value=$!{birthday}
+                                                #else
+                                                        value=""
+                                                #end
+                                                   onClick="WdatePicker({maxDate:'%y-%M-%d'})" />
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="box box-signature">
+                        <form name="form-signature" action="updateUser" method="post">
+                            <div class="hd">
+                                <div class="ctl">
+                                    <a href="javascript:;" class="edit">编辑</a>
+                                    <p>
+                                        <a class="cancel" href="javascript:;">取消</a>
+                                        <button class="save" type="submit">保存</button>
+                                    </p>
+                                </div>
+                                <em>个性签名</em>
+                            </div>
+                            <div class="bd">
+                                <div class="ginfo">
+                                    <p>$!{user.signature}</p>
+                                </div>
+                                <div class="gedit">
+                                    <textarea name="signature" class="ta">$!{user.signature}</textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-right">
+                    <div class="box box-schinfo">
+                        <div class="hd"><em>学校信息</em></div>
+                        <div class="bd">
+                            <dl>
+                                #if($message.schoolName && $message.schoolName!="")
+                                    <dd>学校：$!{message.schoolName}</dd>
+                                #else
+                                    <dd>暂无学校信息</dd>
+                                #end
+                            </dl>
+                        </div>
+                    </div>
+                    #if($identity==$teacher)
+                        <div class="box box-klsinfo">
+                            <div class="hd"><em>任课班级</em></div>
+                            <div class="bd">
+                                <dl>
+                                    #foreach($cla in $message.classList)
+                                        #if($cla.chargeId==$user.userId)
+                                            <dd>$!{cla.className}<span>（班主任）</span></dd>
+                                        #end
+                                    #end
+                                    #foreach($cla in $message.classList)
+                                        #if($cla.chargeId!=$user.userId)
+                                            <dd>$!{cla.className} </dd>
+                                        #end
+                                    #end
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="box box-kcinfo">
+                            <div class="hd"><em>所授科目</em></div>
+                            <div class="bd">
+                                <dl>
+                                    #foreach($subject in $message.subjectList)
+                                        #if($subject.subjectId==$mainSubject)
+                                        <dd>$!{subject.subjectName}<s>主授科目</s></dd>
+                                        #end
+                                    #end
+                                    #foreach($subject in $message.subjectList)
+                                        #if($subject.subjectId!=$mainSubject)
+                                            <dd>$!{subject.subjectName}</dd>
+                                        #end
+                                    #end
+                                </dl>
+                            </div>
+                        </div>
+                    #end
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

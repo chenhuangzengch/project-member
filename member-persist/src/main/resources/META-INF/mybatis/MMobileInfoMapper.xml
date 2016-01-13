@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MMobileInfoMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MMobileInfo" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="mobile_type" property="mobileType" jdbcType="INTEGER" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <!--<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >-->
+    <!--delete from m_mobile_info-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</delete>-->
+
+  <!--<update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.MMobileInfo" >-->
+    <!--update m_mobile_info-->
+    <!--set user_id = #{userId,jdbcType=VARCHAR},-->
+      <!--school_id = #{schoolId,jdbcType=VARCHAR},-->
+      <!--mobile_type = #{mobileType,jdbcType=INTEGER},-->
+      <!--description = #{description,jdbcType=VARCHAR},-->
+      <!--create_time = #{createTime,jdbcType=TIMESTAMP}-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</update>-->
+  <!--<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >-->
+    <!--select id, user_id, school_id, mobile_type, description, create_time-->
+    <!--from m_mobile_info-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</select>-->
+  <!--<select id="selectAll" resultMap="BaseResultMap" >-->
+    <!--select id, user_id, school_id, mobile_type, description, create_time-->
+    <!--from m_mobile_info-->
+  <!--</select>-->
+  <insert id="insert" parameterType="net.xuele.member.domain.MMobileInfo" >
+    insert into m_mobile_info (id, user_id, school_id, mobile_type, description, create_time)
+    values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR},
+    #{mobileType,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+</mapper>

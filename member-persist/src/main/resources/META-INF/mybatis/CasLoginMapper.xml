@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.CasLoginMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.CasLogin" >
+    <id column="login_id" property="loginId" jdbcType="VARCHAR" />
+    <id column="login_type" property="loginType" jdbcType="INTEGER" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="MparentsCasLoginMap" type="net.xuele.member.domain.MparentsCasLogin" >
+    <id column="login_id" property="loginId" jdbcType="VARCHAR" />
+    <id column="login_type" property="loginId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="identity_id" property="identityId" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="net.xuele.member.domain.CasLogin" >
+    insert into cas_login (login_id,login_type, password, user_id,status)
+    values (#{loginId,jdbcType=VARCHAR},#{loginType,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},1)
+  </insert>
+
+  <!--根据登录号获取登录信息-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select login_id, login_type,  password, user_id,status
+      from cas_login
+     where login_id=#{loginId,jdbcType=VARCHAR}
+  </select>
+  <!--APP接口、WEB平台：重置密码-->
+  <update id="updatePassword" >
+    update cas_login
+       set password = #{password,jdbcType=VARCHAR}
+     where user_id in
+    <foreach collection="userIdsList" item="resId" open="(" separator="," close=")">
+      #{resId}
+    </foreach>
+  </update>
+
+  <!--APP接口：根据用户ID获取该用户的其他相关角色-->
+  <select id="getUserIds" resultType="java.lang.String">
+    SELECT user_id FROM m_login_user WHERE bind_user_id =
+    (select bind_user_id FROM m_login_user where user_id =
+    (SELECT user_id from cas_login WHERE login_id = #{loginId,jdbcType=VARCHAR}))
+  </select>
+
+  <select id="queryUserIds" resultType="java.lang.String">
+    SELECT user_id FROM m_login_user WHERE bind_user_id in
+    (select bind_user_id FROM m_login_user where user_id in
+    (SELECT user_id from cas_login WHERE login_id in
+      <foreach collection="loginIds" item="reds" open="(" separator="," close=")">
+        #{reds,jdbcType=VARCHAR}
+      </foreach>
+    ))
+  </select>
+  <select id="queryUsersCasLogin" resultMap="BaseResultMap">
+    SELECT login_id, login_type,  password, user_id,status from cas_login WHERE login_id in
+    <foreach collection="loginIds" item="reds" open="(" separator="," close=")">
+      #{reds,jdbcType=VARCHAR}
+    </foreach>
+
+  </select>
+
+
+  <!--APP接口：检查用户名是否存在-->
+  <select id="checkUserIdExist" resultType="java.lang.Integer">
+    select count(1)
+      from cas_login
+     where login_id=#{loginId,jdbcType=VARCHAR}
+  </select>
+<!--通过用户id和登录类型删除账号信息-->
+  <delete id="deleteByUserIdAndLoginType" >
+    DELETE from cas_login where user_id = #{userId,jdbcType=VARCHAR} and login_type = #{loginType,jdbcType=INTEGER}
+  </delete>
+
+  <!--根据登录id获取用户id-->
+  <select id="getUserIdByLoginId" resultType="java.lang.String">
+    SELECT user_id from cas_login WHERE login_id = #{loginId,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 更新用户的状态用于判断用户是否可登录-->
+  <update id="updateStatusByUserId">
+    UPDATE cas_login set status = #{status,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 通过登录类型和userId获得loginId-->
+  <select id="getLoginIdByUserIdAndLoginType" resultType="java.lang.String">
+    select login_id from cas_login WHERE user_id = #{userId,jdbcType=VARCHAR}
+    AND login_type = #{loginType,jdbcType=INTEGER}
+  </select>
+
+  <!-- 通过userId获得该用户的所有可用于登录的账号-->
+  <select id="getByUserId" resultMap="BaseResultMap">
+    SELECT login_id, login_type,  password, user_id,status
+    FROM cas_login where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+</mapper>

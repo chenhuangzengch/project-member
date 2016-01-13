@@ -1,0 +1,189 @@
+#set($layout="layout/init.vm")
+#set($page_title="STEP5-管理员数据初始化")
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/member.css?version=${version}"/>
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/init.css?version=${version}"/>
+#define($script)
+<script>seajs.use('page/member/pmnginit');
+</script>
+#end
+<div class="header header-init">
+    <div class="inner">
+        <div class="logo">
+            <h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt=""/></h1>
+        </div>
+        <div class="ctls">
+            <a href="${ctx}/schoolManagerInit/backToSetBook" class="prev">上一步</a>
+            <a href="" class="next">下一步</a>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="inner page-init">
+        <div class="page-init-box">
+            <h2 class="title">请帮助我们设定同步课堂所使用的教材版本</h2>
+            <h3 class="title-sub">同步课堂与课程同步，通过游戏形式让学生趣味性掌握课本知识，巩固知识</h3>
+            <form name="form-syncclass" action="import" method="post">
+                <table class="tb-syncclass-setting">
+                    <tbody>
+                    <tr>
+                        <td class="col-grade">年级</td>
+                        <td class="col-subject">科目</td>
+                        <td>教材</td>
+                    </tr>
+                        #foreach($num in $gradeNum)
+                        <tr>
+                            <td rowspan="3">$!{num}年级</td>
+                            <td>语文</td>
+                            <td class="subject">
+                                <p>上：<select name="bookIds" id="">
+                                    #set($n=0)
+                                    #foreach($book in $bookList)
+                                        #if($book.grade==$num && $book.subjectId==10 && $book.semester==1)
+                                            #set($n=1)
+                                            <option value="$book.bookId"
+                                                #foreach($schoolBook in $schoolBookList)
+                                                    #if(($schoolBook.grade==$num && $schoolBook.subjectId==10 && $schoolBook.semester==1)&&$book.bookId==$schoolBook.bookId)
+                                                        selected="selected"
+                                                        #break;
+                                                    #elseif(($schoolBook.grade==$num && $schoolBook.subjectId==10 && $schoolBook.semester==1)&&$book.isDefault==1)
+                                                        selected="selected"
+                                                        #break;
+                                                    #end
+                                                #end
+                                                    >$!{book.bookName}</option>
+                                        #end
+                                    #end
+                                    #if($n==0)
+                                        <option value="">暂无教材</option>
+                                    #end
+                                </select></p>
+                                <p>下：<select name="bookIds" id="">
+                                    #set($n=0)
+                                    #foreach($book in $bookList)
+                                        #if($book.grade==$num && $book.subjectId==10 && $book.semester==2)
+                                            #set($n=1)
+                                            <option value="$book.bookId"
+                                                #foreach($schoolBook in $schoolBookList)
+                                                    #if(($schoolBook.grade==$num && $schoolBook.subjectId==10 && $schoolBook.semester==2)&&$book.bookId==$schoolBook.bookId)
+                                                        selected="selected"
+                                                        #break;
+                                                    #elseif(($schoolBook.grade==$num && $schoolBook.subjectId==10 && $schoolBook.semester==2)&&$book.isDefault==1)
+                                                        selected="selected"
+                                                        #break;
+                                                    #end
+                                                #end
+                                                    >$!{book.bookName}</option>
+                                        #end
+                                    #end
+                                    #if($n==0)
+                                        <option value="">暂无教材</option>
+                                    #end
+                                </select></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>数学</td>
+                            <td class="subject">
+                                <p>上：<select name="bookIds" id="">
+                                    #set($n=0)
+                                    #foreach($book in $bookList)
+                                        #if($book.grade==$num && $book.subjectId==20 && $book.semester==1)
+                                            #set($n=1)
+                                            <option value="$book.bookId"
+                                                #foreach($schoolBook in $schoolBookList)
+                                                    #if(($schoolBook.grade==$num && $schoolBook.subjectId==20 && $schoolBook.semester==1)&&$book.bookId==$schoolBook.bookId)
+                                                        selected="selected"
+                                                        #break;
+                                                    #elseif(($schoolBook.grade==$num && $schoolBook.subjectId==20 && $schoolBook.semester==1)&&$book.isDefault==1)
+                                                        selected="selected"
+                                                        #break;
+                                                    #end
+                                                #end
+                                                    >$!{book.bookName}</option>
+                                        #end
+                                    #end
+                                    #if($n==0)
+                                        <option value="">暂无教材</option>
+                                    #end
+                                </select></p>
+                                <p>下：<select name="bookIds" id="">
+                                    #set($n=0)
+                                    #foreach($book in $bookList)
+                                        #if($book.grade==$num && $book.subjectId==20 && $book.semester==2)
+                                            #set($n=1)
+                                            <option value="$book.bookId"
+                                                #foreach($schoolBook in $schoolBookList)
+                                                    #if(($schoolBook.grade==$num && $schoolBook.subjectId==20 && $schoolBook.semester==2)&&$book.bookId==$schoolBook.bookId)
+                                                        selected="selected"
+                                                        #break;
+                                                    #elseif(($schoolBook.grade==$num && $schoolBook.subjectId==20 && $schoolBook.semester==2)&&$book.isDefault==1)
+                                                        selected="selected"
+                                                        #break;
+                                                    #end
+                                                #end
+                                                    >$!{book.bookName}</option>
+                                        #end
+                                    #end
+                                    #if($n==0)
+                                        <option value="">暂无教材</option>
+                                    #end
+                                </select></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>英语</td>
+                            <td class="subject">
+                                <p>上：<select name="bookIds" id="">
+                                    #set($n=0)
+                                    #foreach($book in $bookList)
+                                        #if($book.grade==$num && $book.subjectId==30 && $book.semester==1)
+                                            #set($n=1)
+                                            <option value="$book.bookId"
+                                                #foreach($schoolBook in $schoolBookList)
+                                                    #if(($schoolBook.grade==$num && $schoolBook.subjectId==30 && $schoolBook.semester==1)&&$book.bookId==$schoolBook.bookId)
+                                                        selected="selected"
+                                                        #break;
+                                                    #elseif(($schoolBook.grade==$num && $schoolBook.subjectId==30 && $schoolBook.semester==1)&&$book.isDefault==1)
+                                                        selected="selected"
+                                                        #break;
+                                                    #end
+                                                #end
+                                                    >$!{book.bookName}</option>
+                                        #end
+                                    #end
+                                    #if($n==0)
+                                        <option value="">暂无教材</option>
+                                    #end
+                                </select></p>
+                                <p>下：<select name="bookIds" id="">
+                                    #set($n=0)
+                                    #foreach($book in $bookList)
+                                        #if($book.grade==$num && $book.subjectId==30 && $book.semester==2)
+                                            #set($n=1)
+                                            <option value="$book.bookId"
+                                                #foreach($schoolBook in $schoolBookList)
+                                                    #if(($schoolBook.grade==$num && $schoolBook.subjectId==30 && $schoolBook.semester==2)&&$book.bookId==$schoolBook.bookId)
+                                                        selected="selected"
+                                                        #break;
+                                                    #elseif(($schoolBook.grade==$num && $schoolBook.subjectId==30 && $schoolBook.semester==2)&&$book.isDefault==1)
+                                                        selected="selected"
+                                                        #break;
+                                                    #end
+                                                #end
+                                                    >$!{book.bookName}</option>
+                                        #end
+                                    #end
+                                    #if($n==0)
+                                        <option value="">暂无教材</option>
+                                    #end
+                                </select></p>
+                            </td>
+                        </tr>
+                        #end
+                    </tbody>
+                </table>
+                <p class="ctl"><input class="btn" type="submit" value="提交" style="display:none;"/></p>
+            </form>
+        </div>
+    </div>
+</div>

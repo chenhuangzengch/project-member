@@ -1,0 +1,95 @@
+#set($layout="layout/init.vm")
+#set($ctx=${request.getContextPath()})
+#set($session=${request.getSession()})
+#set($user=${request.session.getAttribute("SPRING_SECURITY_CONTEXT").authentication.principal})
+#set($page_title="STEP4-教师数据初始化")
+#define($script)
+<script>seajs.use('page/member/ptchinit');</script>
+<script>
+    var PAGEUSER = {
+        userId: "$!{user.userId}",
+        realName: "$!{user.realName}",
+        icon:"$!{user.icon}",
+        identityId:"$!{user.identityId}",
+        identityDescription:"$!{user.identityDescription}",
+		#if(${user.identityId}==${studentIdentity})
+			#foreach($clas in $user.classList)
+                grade: "$!{clas.year}",
+                gradeName: "$!{clas.gradeName}",
+                classId:"$!{clas.classId}",
+                className: "$!{clas.name}",
+			#end
+		#else
+            grade: "",
+            gradeName: "",
+            classId:"",
+            className: "",
+		#end
+        positionId: "$!{user.positionId}",
+        positionName: "$!{user.positionName}",
+        schoolId: "$!{user.schoolId}",
+        schoolName: "$!{user.schoolName}",
+        area: "$!{user.area}",
+        areaName: "$!{user.areaName}",
+        roles:[
+			#foreach($role in $user.roles)
+                {
+                    userId: "$!{role.userId}",
+                    icon: "$!{role.icon}",
+                    name: "$!{role.realName}",
+                    desc: "$!{role.orgName}"
+                }#if($foreach.hasNext),#end
+			#end
+        ]
+    }
+</script>
+#end
+	<div class="header header-init">
+		<div class="inner">
+			<div class="logo">
+				<h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+			</div>
+			<div class="ctls">
+				<a href="loginSetSuccess" class="next">完成</a>
+			</div>
+		</div>
+	</div>	<div class="container">
+    <div class="inner page-init">
+
+        <div class="page-full-ctls">
+            <a class="add" href="javascript:;"><i class="icon-add"></i>添加任课班级</a>
+        </div>
+        <div class="page-full-box">
+            <div class="klasstch">
+                <div class="klasstch-sider">
+                    <ul>
+                        #foreach($gradeList in $gradeList)
+                            <li  #if($gradeList.id ==$grade) class="on" #end ><a href="tchStepClass?grade=$gradeList.id"> $gradeList.levelName</a></li>
+                        #end
+                    </ul>
+                </div>
+                <div class="klasstch-cnt">
+                    #if($classInfoDTOList.size() ==0)
+                    <div class="empty">
+                        <p class="empty-msg">暂无任课班级信息</p>
+                        <p class="empty-who">您需要添加任课班级</p>
+                    </div>
+                    #end
+                    <ul>
+                        #foreach($teacherClass in $classInfoDTOList)
+                            <li class="klasstch-grade-${teacherClass.gradeNum}" data-c="$!{teacherClass.chargeId}" data-id="${teacherClass.classId}">
+                            <div class="item">
+                                <div class="ct">
+                                    <p class="nm">${teacherClass.className}</p>
+                                    <p class="nums">${teacherClass.studentCount}名学生</p>
+                                </div>
+                            </div>
+                        </li>
+                        #end
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

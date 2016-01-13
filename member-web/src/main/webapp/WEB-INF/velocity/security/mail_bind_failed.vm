@@ -1,0 +1,21 @@
+#set($layout="layout/security.vm")
+#set($page_title="绑定失败-绑定邮箱验证身份")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/member.css?version=${version}" />
+#end
+<div class="header header-global">
+    <div class="inner">
+        <div class="logo">
+            <h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+        </div>
+    </div>
+</div>
+<div class="container container-global">
+    <div class="inner">
+        <div class="vertify-mail">
+            <div class="title"><i class="icon-warning"></i>$!{errorMsg}</div>
+            <div class="info">您输入的账号和链接不匹配，请点击下方按钮重新验证</div>
+            <p class="ctl"><a class="btn" href="../binding">重新验证</a></p>
+        </div>
+    </div>
+</div>

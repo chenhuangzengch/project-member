@@ -1,0 +1,94 @@
+#set($page_title="老师-我的家庭")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/profile.css?version=${version}" />
+<script>
+    var pageinfo = {};
+    pageinfo.uid = '${messageDTO.userId}';
+</script>
+<script>seajs.use('page/member/pfamily');</script>
+#end
+<div class="container">
+    <div class="inner page-noborder">
+
+        <div class="profile-wrap">
+
+            <!-- 这里所有的孩子列表 -->
+            <div class="mults">
+                <div class="dropdown" role="dropdown">
+                    <p class="dropdown-nm">
+                        <span>${messageDTO.realName}</span>
+                        <i class="icon-down"></i>
+                    </p>
+                    <div class="dropdown-list">
+                        <ul>
+							#foreach($each in $studentDTOList)
+                                <li><a href="${ctx}/family/index?userId=${each.userId}">$!{each.realName}</a></li>
+							#end
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="user">
+                <img src="http://asset.xueleyun.com/imgs/member/bn-family.jpg" alt="" class="bn" />
+                <a href="javascript:;"><img src="${bigSrc}${messageDTO.icon}.jpg" alt=""/></a>
+                <div class="cnt">
+                    <p class="info p1">$!{messageDTO.realName}</p>
+                    <p class="info p2">$!{messageDTO.signature}</p>
+                    <p class="info p3">$!{messageDTO.schoolName}<span>|</span>$!{messageDTO.className}</p>
+                </div>
+            </div>
+
+            <div class="invite">
+                #if($familyMembersDTOList.size()==0)
+                    <div class="empty">
+                        <p class="empty-msg">还没有邀请家长</p>
+
+                        <p class="empty-who">邀请我的家人，让他们都来关心我！</p>
+
+                        <p class="empty-ctls"><a class="J_AddInvite" href="javascript:;"><i
+                                class="icon-add"></i>邀请家长</a></p>
+                    </div>
+                #else
+                    <div class="ctl">
+                        <div class="editctl">
+                            <ul>
+                                <li><a class="J_Relieve" href="javascript:;"
+                                    #foreach($each in $familyMembersDTOList)
+                                        #if(${parentUserId}== ${each.memberUserId})
+                                       data-rid='$each.id'
+                                        #end
+                                    #end
+                                        ><i class="icon-inviteleave"></i>我要离开</a></li>
+                                <li><a class="J_AddInvite" href="javascript:;"><i class="icon-inviteparent"></i>邀请家长</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                #end
+                <ul>
+					#foreach($each in $familyMembersDTOList)
+                        <li data-id="${each.id}" data-status="${each.memberStatus}">
+                            <a href="javascript:;">
+                                <img src="${normalSrc}${each.memberIcon}.jpg" alt=""/>
+                                <div class="info">
+                                    <p class="nick">$!{each.memberName}</p>
+									#if(${each.memberStatus}==1)
+                                        <p class="nm">$!{each.memberRealName}</p>
+									#elseif(${each.memberStatus}==2)
+                                        <p class="status status-fail">已拒绝</p>
+									#elseif(${each.memberStatus}==3)
+                                        <p class="status status-inviting">邀请中</p>
+									#elseif(${each.memberStatus}==4)
+                                        <p class="status status-inviting">邀请中</p>
+									#elseif(${each.memberStatus}==5)
+                                        <p class="status status-inviting">邀请中</p>
+                                    #else
+									#end
+                                </div>
+                            </a>
+                        </li>
+					#end
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+#set($page_title="头像-我的信息")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/profile.css?version=${version}" />
+<script src="http://asset.xueleyun.com/g/lib/gallery/datepicker/WdatePicker.js?version=${version}"></script>
+<script>seajs.use('page/member/pavator');</script>
+<script>
+    var uploadinfo = {};
+    uploadinfo.encodeVar = PAGEUSER.userId;
+    window.avcallback = function (filekey) {
+        location.href = '$!{url}';
+    };
+</script>
+#end
+<div class="container">
+    <div class="inner page-noborder">
+        <div class="profile-wrap">
+            <div class="avator">
+                <div id="avatorUpload"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

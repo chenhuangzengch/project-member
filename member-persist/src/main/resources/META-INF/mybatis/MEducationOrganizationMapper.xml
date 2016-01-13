@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MEducationOrganizationMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MEducationOrganization" >
+    <id column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="p_id" property="pId" jdbcType="VARCHAR" />
+    <result column="p_name" property="pName" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="cover" property="cover" jdbcType="VARCHAR" />
+    <result column="explains" property="explains" jdbcType="VARCHAR" />
+    <result column="manager_id" property="managerId" jdbcType="VARCHAR" />
+    <result column="manager_name" property="managerName" jdbcType="VARCHAR" />
+    <result column="areas_name" property="areasName" jdbcType="VARCHAR" />
+    <result column="areas" property="areas" jdbcType="VARCHAR" />
+    <result column="o_type" property="oType" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+    <resultMap id="SchoolDescriptionMap" type="net.xuele.member.domain.MSchoolDescription" >
+        <id column="id" property="schoolId" jdbcType="VARCHAR" />
+        <result column="name" property="schoolName" jdbcType="VARCHAR" />
+        <result column="user_id" property="userId" jdbcType="VARCHAR" />
+        <result column="real_name" property="schoolMaster" jdbcType="VARCHAR" />
+        <result column="area" property="schoolArea" jdbcType="VARCHAR" />
+        <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+        <result column="student_amount" property="studentAmount" jdbcType="VARCHAR" />
+        <result column="teacher_amount" property="teacherAmount" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="SchoolDataMap" type="net.xuele.member.domain.MSchoolData" >
+        <id column="type" property="type" jdbcType="VARCHAR" />
+        <result column="amount" property="amount" jdbcType="VARCHAR" />
+        <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <insert id="insertForAddEduOrg" parameterType="net.xuele.member.domain.MEducationOrganization" >
+        insert into m_education_organization (org_id, name,
+        manager_id, areas_name,
+        areas, status
+        )
+        values (#{orgId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+        #{managerId,jdbcType=VARCHAR},#{areasName,jdbcType=VARCHAR},
+        #{areas,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+        )
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.MEducationOrganization" >
+        update m_education_organization
+        set
+        <if test="name != null"> name = #{name,jdbcType=VARCHAR},</if>
+        <if test="sort != null"> sort = #{sort,jdbcType=VARCHAR},</if>
+        <if test="level != null" > level = #{level,jdbcType=INTEGER},</if>
+        <if test="pId != null"> p_id = #{pId,jdbcType=VARCHAR},</if>
+        <if test="pName != null" >p_name = #{pName,jdbcType=VARCHAR},</if>
+        <if test="image != null" >image = #{image,jdbcType=VARCHAR},</if>
+        <if test="cover != null" >cover = #{cover,jdbcType=VARCHAR},</if>
+        <if test="explains != null" >explains = #{explains,jdbcType=VARCHAR},</if>
+        <if test="managerId != null" >manager_id = #{managerId,jdbcType=VARCHAR},</if>
+        <if test="managerName != null" >manager_name = #{managerName,jdbcType=VARCHAR},</if>
+        <if test="areasName != null" >areas_name = #{areasName,jdbcType=VARCHAR},</if>
+        <if test="areas != null" > areas = #{areas,jdbcType=VARCHAR},</if>
+        <if test="oType != null" > o_type = #{oType,jdbcType=INTEGER},</if>
+        <if test="status != null"> status = #{status,jdbcType=INTEGER},</if>
+        org_id = org_id
+        where org_id = #{orgId,jdbcType=VARCHAR}
+    </update>
+
+  <!--<delete id="deleteByPrimaryKey"  >
+    delete from m_education_organization
+    where org_id = #{orgId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.member.domain.MEducationOrganization" >
+    insert into m_education_organization (org_id, name, sort, 
+      level, p_id, p_name, 
+      image, cover, explains, 
+      manager_id, manager_name, areas_name, 
+      areas, o_type, status
+      )
+    values (#{orgId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{sort,jdbcType=VARCHAR}, 
+      #{level,jdbcType=INTEGER}, #{pId,jdbcType=VARCHAR}, #{pName,jdbcType=VARCHAR}, 
+      #{image,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR}, #{explains,jdbcType=VARCHAR}, 
+      #{managerId,jdbcType=VARCHAR}, #{managerName,jdbcType=VARCHAR}, #{areasName,jdbcType=VARCHAR}, 
+      #{areas,jdbcType=VARCHAR}, #{oType,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.MEducationOrganization" >
+    update m_education_organization
+    set name = #{name,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      p_id = #{pId,jdbcType=VARCHAR},
+      p_name = #{pName,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      cover = #{cover,jdbcType=VARCHAR},
+      explains = #{explains,jdbcType=VARCHAR},
+      manager_id = #{managerId,jdbcType=VARCHAR},
+      manager_name = #{managerName,jdbcType=VARCHAR},
+      areas_name = #{areasName,jdbcType=VARCHAR},
+      areas = #{areas,jdbcType=VARCHAR},
+      o_type = #{oType,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where org_id = #{orgId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select org_id, name, sort, level, p_id, p_name, image, cover, explains, manager_id,
+    manager_name, areas_name, areas, o_type, status
+    from m_education_organization
+  </select>-->
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select org_id, name, sort, level, p_id, p_name, image, cover, explains, manager_id, 
+    manager_name, areas_name, areas, o_type, status
+    from m_education_organization
+    where org_id = #{orgId,jdbcType=VARCHAR}
+  </select>
+
+
+  <!--APP接口：获取教育机构管理员全部下属单位-->
+  <select id="getOrgUnitByManagerId" resultMap="BaseResultMap" >
+    select eo.org_id, eo.name, eo.sort, eo.level, eo.p_id, eo.p_name, eo.image, eo.cover, eo.explains,
+           eo.manager_id, eo.manager_name, eo.areas_name, eo.areas, eo.o_type, eo.status
+      from m_education_manager em
+ left join m_education_organization eo on em.educational_id=eo.p_id
+     where em.user_id=#{userId,jdbcType=VARCHAR}
+     and em.school_id=#{schoolId,jdbcType=VARCHAR}
+       and eo.status=1
+  order by eo.org_id
+  </select>
+
+  <!--APP接口：获取教育机构人员全部下属单位-->
+  <select id="getOrgUnitByUserId" resultMap="BaseResultMap" >
+    select eo.org_id, eo.name, eo.sort, eo.level, eo.p_id, eo.p_name, eo.image, eo.cover, eo.explains,
+           eo.manager_id, eo.manager_name, eo.areas_name, eo.areas, eo.o_type, eo.status
+      from m_education e
+ left join m_education_organization eo on e.educational_id=eo.p_id
+     where e.user_id=#{userId,jdbcType=VARCHAR}
+     and e.school_id=#{schoolId,jdbcType=VARCHAR}
+       and eo.status=1
+  order by eo.org_id
+  </select>
+
+    <!--appCenter中学区单位，学区学校模块需要提供的接口   根据区划ID获取管辖机构 总记录数 -->
+    <select id="selectOrgCount" resultType="java.lang.Long">
+        SELECT count(1) from m_education_organization where areas LIKE concat(#{areas,jdbcType=VARCHAR},'%')
+    </select>
+    <!--appCenter中学区单位，学区学校模块需要提供的接口  根据区划ID获取管辖机构  （分页请求）-->
+    <select id="selectMEducationOrganizationPage"  resultMap="BaseResultMap">
+        SELECT org_id,name,sort,level,p_id,p_name,image,cover,explains,
+        manager_id,manager_name,areas_name,areas,o_type,status from m_education_organization
+        where areas LIKE concat(#{mEducationOrganization.areas,jdbcType=VARCHAR},'%')
+        limit #{page.start},#{page.pageSize}
+    </select>
+    <!--appCenter中学区单位，学区学校模块需要提供的接口  根据区划ID获取学校 总记录数 -->
+    <select id="selectSchoolCount" resultType="java.lang.Long">
+        select count(1) from m_school  where status=1 and area
+        LIKE concat(#{schoolArea,jdbcType=VARCHAR},'%')
+    </select>
+
+    <select id="getEduOrgNumByNameAndArea" resultType="java.lang.Integer">
+        select count(1) from m_education_organization WHERE status = 1
+        and name = #{name,jdbcType=VARCHAR}
+        and areas = #{areaCode,jdbcType=VARCHAR}
+    </select>
+
+    <select id="querySchoolDescription" resultMap="SchoolDescriptionMap">
+      select s.id,s.name,s.area,s.area_name
+        from  m_school s
+       where   s.status=1 and s.area LIKE concat(#{areaId,jdbcType=VARCHAR},'%')
+        order by s.area,s.id
+       limit #{page.start},#{page.pageSize}
+    </select>
+    <select id="getSchoolPrincipal" resultMap="SchoolDescriptionMap">
+           SELECT t.user_id,t.real_name, u.student_amount,u.teacher_amount FROM
+         (SELECT SUM(CASE u.identity_id WHEN 'STUDENT' THEN 1 ELSE 0 END) student_amount,
+             SUM(CASE u.identity_id WHEN 'TEACHER' THEN 1 ELSE 0 END) teacher_amount
+        FROM m_users u WHERE  u.status>0  AND u.school_id=#{schoolId,jdbcType=VARCHAR}) u LEFT JOIN
+        (SELECT u.real_name,u.user_id FROM m_users u JOIN m_teacher t ON u.user_id=t.user_id AND t.position_id='PRINCIPAL'
+        WHERE  u.status>0  AND u.school_id=#{schoolId,jdbcType=VARCHAR} LIMIT 1) t ON 1=1
+    </select>
+</mapper>

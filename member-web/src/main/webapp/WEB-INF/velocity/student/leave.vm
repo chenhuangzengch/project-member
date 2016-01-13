@@ -1,0 +1,123 @@
+#set($page_title="学生管理")
+#define($script)
+
+
+
+<meta charset="UTF-8" />
+<script>
+    var pageinfo = {};
+    pageinfo.schoolid = 10001;
+    pageinfo.grade = 2014;
+    pageinfo.classid = 1234;
+</script>	<script>
+    var schoolGrades = [${gradeDTOs}];
+</script>
+<script>seajs.use('page/member/pstudent');</script>
+#end
+	<div class="container">
+    <div class="inner page-full">
+
+        <div class="member-wrap">
+            <div class="tips">在30天内，您可以将已离校的学生或教师进行返校操作。请及时处理，以免造成影响。</div>
+            <div class="inner-search">
+                <i class="sel-chk-no sel-all"></i>
+                <div class="sel-all-novalue">
+                    <label for="sel-all">全选</label>
+                    <div class="wrap">
+                        <form action="${ctx}/student/leave" method="post">
+                            <input type="text" name="realName" id="realName" placeholder="输入学生名称搜索"  value="$!realName"/>
+                            <button><i clss="search"></i>搜索</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="sel-all-hasvalue" style="display:none;">
+                    <label for="sel-all">已选择 <em class="sel-num">0</em> 名学生</label>
+                    <ul class="ul-op">
+                        <li class="back-class"><i></i><span>学生返校</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="sub-nav">
+                <div class="g-sel J_GradeClass">
+                    <div class="gc grade" data-def="2014">
+                        <div class="g-wrap">
+                            #if ($years && $years !='')
+                                #foreach($grades in $gradeList)
+                                    #if($grades.id ==$years)
+                                        $grades.getName()
+                                    #end
+                                #end
+                            #else
+                                <span>所有年级</span>
+                            #end
+                            <i class="icon-down"></i>
+                        </div>
+                        <div class="ul-g"><ul>
+                            #foreach($grades in $gradeList)
+                                <li><a href="leave?years=$grades.id">$grades.getName()</a></li>
+                            #end
+                        </ul></div>
+                    </div>
+                    <div class="gc class" data-def="2014999901">
+                        <div class="g-wrap">
+                            #if ($classId && $classId !='')
+                                #foreach($class in $classList)
+                                    #if($class.classId ==$classId)
+                                        $class.name
+                                    #end
+                                #end
+                            #else
+                                <span>所有班级</span>
+                            #end
+                            <i class="icon-down"></i>
+                        </div>
+                        <div class="ul-c"><ul>
+                            #foreach($class in $classList)
+                                <li><a href="leave?years=$class.year&classId=$class.classId">$class.name</a></li>
+                            #end
+                        </ul></div>
+                    </div>
+                </div>
+            </div>
+            <h2 class="summary">所有学生（<span>$pageResponse.records</span>）</h2>
+            <table class="tb-userlist">
+                <thead>
+                <tr>
+                    <th class="sel-all"></th>
+                    <th>学生姓名</th>
+                    <th>原有班级</th>
+                    <th>登录账号</th>
+                    <th>离校时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+            #foreach($students in $pageResponse.getRows())
+                <tr class="list-item list-item-$students.userId" data-id="$students.userId">
+                    <td class="no-border"><i class="sel sel-chk-no"></i></td>
+                    <td><img class="av-class" src="${normalSrc}${students.icon}.jpg" alt="$students.realName"><span>$students.realName</span></td>
+
+                    <td>$students.classAliasName</td>
+                    <td>$students.userId</td>
+                    <td>$students.lastLoginDate</td>
+                    <td><a class="back J_backclass" href="javascript:;"><i></i>返校</a></td>
+                </tr>
+              #end
+                </tbody>
+            </table>
+            #if (!$classId)
+                #set($classId="")
+            #end
+            #if (!$years)
+                #set($years="")
+            #end
+            #if($pageResponse.getRows().size()>0)
+                #set($url="${ctx}/student/leave?years=$years&classId=$classId&realName=$!realName")
+                <div class="pagination">
+                    #parse("common/page.vm")
+                </div>
+            #end
+        </div>
+
+    </div>
+</div>

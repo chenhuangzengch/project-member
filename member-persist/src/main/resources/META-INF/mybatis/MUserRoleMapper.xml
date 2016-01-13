@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.xuele.member.persist.MUserRoleMapper">
+  <resultMap id="RoleMap" type="net.xuele.member.domain.MRole">
+    <id column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+
+  <!--单个对象插入-->
+  <insert id="insert" parameterType="net.xuele.member.domain.MUserRole">
+    insert into m_user_role (user_id, role_id,school_id,id)
+    values (#{userId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR},#{id,jdbcType=BIGINT})
+  </insert>
+
+  <!--单个对象删除-->
+  <delete id="deleteUserRole" >
+    delete from m_user_role
+     where role_id=#{roleId,jdbcType=VARCHAR}
+       and user_id=#{userId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="selectRoleByUserId"  resultMap="RoleMap">
+    select t2.role_id,t2.role_name,t2.status from m_user_role t1,m_role t2
+    where t1.role_id=t2.role_id and t1.user_id = #{userId,jdbcType=VARCHAR} and t1.school_id=#{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <!--多个对象插入-->
+  <insert id="saveUserRoleList" >
+    insert into m_user_role (user_id, role_id,school_id,id)
+    values
+          <foreach collection="list" item="resId" separator=",">
+            (#{resId.userId},#{resId.roleId},#{resId.schoolId},#{resId.id})
+          </foreach>
+    ON DUPLICATE KEY UPDATE user_id= #{resId.userId},role_id=#{resId.roleId}
+  </insert>
+
+  <!--多个对象删除-->
+  <delete id="deleteUserRoleList" >
+    delete from m_user_role
+     where role_id=#{roleId,jdbcType=VARCHAR}
+     and school_id=#{schoolId,jdbcType=VARCHAR}
+       and user_id in
+           <foreach collection="list" item="resId" open="(" separator="," close=")">
+             #{resId}
+           </foreach>
+  </delete>
+</mapper>

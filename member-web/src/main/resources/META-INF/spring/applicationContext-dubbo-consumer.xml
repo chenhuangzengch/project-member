@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="properties" ref="propertiesConfiguration"/>
+    </bean>
+
+    <!--配置中心-->
+    <bean id="propertiesConfiguration" class="com.github.diamond.client.PropertiesConfigurationFactoryBean" />
+
+    <dubbo:application  name="member-web" owner="member" organization="xuele"/>
+
+    <dubbo:registry  address="${dubbo.zookeeper.address}"/>
+
+    <!--开启服务监控-->
+    <dubbo:monitor protocol="registry"/>
+
+    <dubbo:consumer timeout="60000" retries="0" />
+
+
+</beans>
+
+

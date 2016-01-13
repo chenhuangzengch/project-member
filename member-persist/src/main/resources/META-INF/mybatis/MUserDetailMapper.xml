@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.xuele.member.persist.MUserDetailMapper">
+<resultMap id="BaseResultMap" type="net.xuele.member.domain.MUserLoginInfo">
+    <id column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="identity_id" jdbcType="VARCHAR" property="identityId" />
+    <result column="identity_description" jdbcType="VARCHAR" property="identityDescription" />
+    <result column="icon" property="icon" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="account_id" property="accountId" />
+    <association property="school" column="school_id" javaType="net.xuele.member.domain.MSchool">
+        <id column="schoolId" property="id" />
+        <result column="name" property="name"/>
+        <result column="web" property="web" />
+        <result column="area" property="area" />
+        <result column="area_name" property="areaName" />
+        <result column="school_status" property="status"/>
+        <result column="custom_web" property="customWeb"/>
+    </association>
+    <collection property="roles" ofType="net.xuele.member.domain.MRole">
+        <result column="role_id" property="roleId" />
+        <result column="role_name" property="roleName" />
+        <result column="mr_status" property="status" />
+    </collection>
+    <collection property="periods" ofType="net.xuele.member.domain.MSchoolPeriod">
+        <result column="section" property="section" />
+        <result column="section_display" property="sectionDisplay" />
+        <result column="length" property="length" />
+    </collection>
+</resultMap>
+
+    <resultMap id="TeacherInfoMap" type="net.xuele.member.domain.MTeacherLoginInfo">
+        <id column="user_id" property="userId" />
+        <result column="is_manager" property="isManager" />
+        <result column="position_id" property="positionId" />
+        <result column="position_name" property="positionName" />
+        <result column="extra_book_id" property="extraBookId" />
+        <association property="ctBook" column="book_id" javaType="net.xuele.member.domain.CtBook">
+            <id column="book_id" property="bookId" />
+            <result column="book_name" property="bookName" />
+            <result column="subject_id" property="subjectId" />
+            <result column="subject_name" property="subjectName" />
+            <result column="grade" property="grade" />
+        </association>
+        <collection property="classes" ofType="net.xuele.member.domain.MClass" >
+            <id column="class_id" property="classId" />
+            <result column="years" property="years" />
+            <result column="name" property="name" />
+            <result column="alias_name" property="aliasName" jdbcType="VARCHAR" />
+            <result column="code_sharing" property="codeSharing" />
+            <result column="m_image" property="mImage" jdbcType="VARCHAR" />
+            <result column="cover" property="cover" jdbcType="VARCHAR" />
+            <result column="charge_id" property="chargeId" />
+            <result column="charge_name" property="chargeName" />
+            <result column="explains" property="explains" jdbcType="VARCHAR" />
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+            <result column="creator_id" property="creatorId" jdbcType="VARCHAR" />
+            <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+            <result column="status" property="status" jdbcType="INTEGER" />
+            <result column="school_period_id" property="schoolPeriodId" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="StudentInfoMap" type="net.xuele.member.domain.MStudentLoginInfo">
+        <id column="user_id" property="userId" />
+        <result column="student_number" property="studentNumber" />
+        <result column="family_name" property="familyName" />
+        <result column="family_cover" property="familyCover" />
+        <result column="join_class" property="joinClass" jdbcType="TIMESTAMP" />
+        <association property="mClass" column="class_id" javaType="net.xuele.member.domain.MClass">
+            <id column="class_id" property="classId" />
+            <result column="years" property="years" />
+            <result column="name" property="name" />
+            <result column="code_sharing" property="codeSharing" />
+            <result column="charge_id" property="chargeId" />
+            <result column="charge_name" property="chargeName" />
+        </association>
+    </resultMap>
+    
+    
+    <resultMap id="EducationManagerInfoMap" type="net.xuele.member.domain.MEducationManagerLoginInfo" >
+        <id column="user_id" property="userId" />
+        <result column="educational_id" property="educationId" />
+        <result column="educational_name" property="educationName" />
+        <result column="areas" property="area" />
+        <result column="areas_name" property="areaName" />
+        <association property="ctBook" column="book_id" javaType="net.xuele.member.domain.CtBook">
+            <id column="book_id" property="bookId" />
+            <result column="book_name" property="bookName" />
+            <result column="subject_id" property="subjectId" />
+            <result column="subject_name" property="subjectName" />
+            <result column="grade" property="grade" />
+        </association>
+    </resultMap>
+    <select id="getLoginInfo" resultMap="BaseResultMap">
+        SELECT u.user_id,u.real_name,u.identity_id,u.identity_description,u.account_id,u.icon,u.status,mr.role_id,mr.role_name,mr.status as mr_status,s.id as schoolId,s.name,s.web,s.area,s.area_name,s.status as school_status,s.custom_web,msp.section,msp.section_display,msp.length from
+        m_users u
+        LEFT join m_user_role ur on u.user_id = ur.user_id
+        LEFT JOIN m_role mr on ur.role_id = mr.role_id
+        LEFT join m_school s on u.school_id = s.id
+        LEFT JOIN m_school_period msp on msp.school_id = s.id
+        WHERE u.user_id = #{userId,jdbcType=VARCHAR}
+        and u.school_id = #{schoolId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getTeacherInfo" resultMap="TeacherInfoMap" >
+        SELECT mt.user_id,mt.is_manager, mt.position_id,mt.position_name,ctb.book_id,
+        ctb.book_name,ctb.subject_id,ctb.subject_name,ctb.grade,
+        mc.class_id,mc.years,mc.name,mc.alias_name,mc.code_sharing,mc.charge_id,mc.charge_name,
+        mc.cover,mc.m_image,mc.explains,mc.create_time,mc.creator_id,mc.creator_name,
+        mc.status,mc.school_period_id FROM m_teacher mt
+        LEFT JOIN ct_book ctb on ctb.book_id = mt.book_id
+        LEFT JOIN m_teacher_class mtc on mtc.teacher_id = mt.user_id
+        LEFT JOIN m_class mc on mc.class_id = mtc.class_id
+        WHERE mt.user_id = #{userId,jdbcType=VARCHAR}
+        AND mt.school_id = #{schoolId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getStudentInfo" resultMap="StudentInfoMap">
+        SELECT ms.user_id,ms.student_number,ms.family_name,ms.family_cover,ms.join_class,mc.class_id,mc.years,mc.name,mc.code_sharing,mc.charge_id,mc.charge_name FROM
+        m_student ms
+        LEFT JOIN m_class mc on ms.class_id = mc.class_id
+        WHERE ms.user_id = #{userId,jdbcType=VARCHAR}
+        AND ms.school_id = #{schoolId,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getEducationManagerInfo" resultMap="EducationManagerInfoMap" >
+    SELECT mem.user_id,mem.educational_id,mem.educational_name,
+      ctb.book_id,ctb.book_name,ctb.subject_id,ctb.subject_name,ctb.grade,meo.areas,meo.areas_name
+    FROM m_education_manager mem
+      LEFT join m_education_organization meo on meo.org_id =mem.educational_id
+      LEFT JOIN m_teacher_book mtb on mem.user_id = mtb.user_id AND mtb.is_main = 1
+      LEFT JOIN ct_book ctb on ctb.book_id = mtb.book_id
+      WHERE mem.user_id = #{userId,jdbcType=VARCHAR}
+      AND mem.school_id = #{schoolId,jdbcType=VARCHAR}
+    </select>
+</mapper>

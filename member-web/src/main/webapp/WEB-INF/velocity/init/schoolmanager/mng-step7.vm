@@ -1,0 +1,79 @@
+#set($layout="layout/init.vm")
+#set($page_title="SECSTEP2-上传数据成功")
+#set($user=${request.session.getAttribute("SPRING_SECURITY_CONTEXT").authentication.principal})
+#define($script)
+<script>seajs.use('page/member/pmnginit');</script>
+#end
+<div class="header header-init">
+    <div class="inner">
+        <div class="logo">
+            <h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+        </div>
+        <div class="ctls">
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="inner page-init">
+
+        <div class="page-data">
+            <h2 class="title">
+                #if($type==$teacher)
+                    导入您学校的教师
+                #elseif($type==$student)
+                    导入您学校的学生
+                #else
+                    导入您学校的教师和学生
+                #end
+            </h2>
+            <div class="content step3">
+                #if($size==0)
+                    <div class="success">
+                        <p class="p0"></p>
+                        <p class="p1">数据导入成功</p>
+                        <p class="p2">感谢您的帮助，初始化已经完成！</p>
+                        #if($type==$teacher)
+                            <p class="p3"><a href="${ctx}/teacher/index">完成</a></p>
+                        #elseif($type==$student)
+                            <p class="p3"><a href="${ctx}/student/index">完成</a></p>
+                        #else
+                            <p class="p3"><a href="${ctx}">完成</a></p>
+                        #end
+                    </div>
+                #else
+                    <div class="failure">
+                        <div class="content step1">
+                            #if($txt==1)
+                                <p class="p0">文件格式错误，请导入Excel格式文件</p>
+                                <a href="javascript:;" class="retry upload">重新导入</a>
+                            #elseif($txt==2)
+                                <p class="p0">文件内容格式错误，请对照格式后重新上传数据</p>
+                                <a href="javascript:;" class="retry upload">重新导入</a>
+                            #else
+                                <p class="p0">数据未导入，$!{errorInfo}</p>
+                                <a href="downLoadUselessData" class="dlfail">下载未导入用户名单</a>
+                                <a href="javascript:;" class="retry upload">重新导入</a>
+                            #end
+                            <div class="success">
+                                #if($type==$teacher)
+                                    <p class="p3"><a href="${ctx}/teacher/index">完成</a></p>
+                                #elseif($type==$student)
+                                    <p class="p3"><a href="${ctx}/student/index">完成</a></p>
+                                #else
+                                    <p class="p3"><a href="${ctx}">完成</a></p>
+                                #end
+                            </div>
+                            <form action="upload" name="uploadform" method="post" enctype="multipart/form-data">
+                                <input type="file" name="datafile" id="" style="display:none;" />
+                            </form>
+                        </div>
+                        <div class="content step2">
+                            <p class="loading"></p>
+                            <p>正在上传Excel文件并导入数据，请稍后 ...</p>
+                        </div>
+                    </div>
+                #end
+            </div>
+        </div>
+    </div>
+</div>

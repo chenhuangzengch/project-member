@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.xuele.member.persist.MSchoolMapper">
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MSchool">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="english_name" jdbcType="VARCHAR" property="englishName" />
+    <result column="s_type" jdbcType="INTEGER" property="sType" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="motto" jdbcType="VARCHAR" property="motto" />
+    <result column="web" jdbcType="VARCHAR" property="web" />
+    <result column="length_of_school" jdbcType="INTEGER" property="lengthOfSchool" />
+    <result column="badge" jdbcType="VARCHAR" property="badge" />
+    <result column="cover" jdbcType="VARCHAR" property="cover" />
+    <result column="manager_name" jdbcType="VARCHAR" property="managerName" />
+    <result column="manager" jdbcType="VARCHAR" property="manager" />
+    <result column="school_time" jdbcType="TIMESTAMP" property="schoolTime" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="about" jdbcType="LONGVARCHAR" property="about" />
+    <result column="custom_web" jdbcType="VARCHAR" property="customWeb" />
+  </resultMap>
+  <resultMap id="ClassStudentResultMap" type="net.xuele.member.domain.MClassStudent" >
+    <id column="class_id" property="classId" jdbcType="VARCHAR" />
+    <result column="alias_name" property="aliasName" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="charge_id" property="chargeId" jdbcType="VARCHAR" />
+    <result column="charge_name" property="chargeName" jdbcType="VARCHAR" />
+    <result column="student_number" property="studentNumber" jdbcType="VARCHAR" />
+    <result column="years" property="year" jdbcType="INTEGER" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="m_image" property="mImage" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="delete" parameterType="java.util.List">
+    update m_school
+    set status = 0
+    where id in
+    <foreach collection="list" item="resId" open="(" separator="," close=")">
+      #{resId}
+    </foreach>
+  </delete>
+  <insert id="insert" parameterType="net.xuele.member.domain.MSchool">
+    insert into m_school (id, name, english_name, 
+      s_type, address, tel,
+      motto, web, length_of_school,
+      badge, cover, manager_name,
+      manager, school_time, add_time,
+      area, area_name, status,
+      about,street_area,street_area_name,custom_web)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{englishName,jdbcType=VARCHAR},
+      #{sType,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR},
+      #{motto,jdbcType=VARCHAR}, #{web,jdbcType=VARCHAR}, #{lengthOfSchool,jdbcType=INTEGER},
+      #{badge,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR}, #{managerName,jdbcType=VARCHAR},
+      #{manager,jdbcType=VARCHAR}, #{schoolTime,jdbcType=TIMESTAMP}, #{addTime,jdbcType=TIMESTAMP},
+      #{area,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR}, 1,
+      #{about,jdbcType=LONGVARCHAR}, #{streetArea,jdbcType=VARCHAR}, #{streetAreaName,jdbcType=VARCHAR},
+      #{customWeb,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="update" parameterType="net.xuele.member.domain.MSchool">
+    update m_school
+    <set>
+     <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+     <if test="englishName != null"> english_name = #{englishName,jdbcType=VARCHAR},</if>
+     <if test="sType != null">s_type = #{sType,jdbcType=INTEGER},</if>
+     <if test="address != null"> address = #{address,jdbcType=VARCHAR},</if>
+     <if test="tel != null"> tel = #{tel,jdbcType=VARCHAR},</if>
+     <if test="motto != null"> motto = #{motto,jdbcType=VARCHAR},</if>
+     <if test="web != null">web = #{web,jdbcType=VARCHAR},</if>
+     <if test="lengthOfSchool != null"> length_of_school = #{lengthOfSchool,jdbcType=INTEGER},</if>
+     <if test="badge != null">badge = #{badge,jdbcType=VARCHAR},</if>
+     <if test="cover != null">cover = #{cover,jdbcType=VARCHAR},</if>
+     <if test="managerName != null">manager_name = #{managerName,jdbcType=VARCHAR},</if>
+     <if test="manager != null" > manager = #{manager,jdbcType=VARCHAR},</if>
+     <if test="schoolTime != null">school_time = #{schoolTime,jdbcType=TIMESTAMP},</if>
+     <if test="addTime != null"> add_time = #{addTime,jdbcType=TIMESTAMP},</if>
+     <if test="area != null"> area = #{area,jdbcType=VARCHAR},</if>
+     <if test="areaName != null">area_name = #{areaName,jdbcType=VARCHAR},</if>
+     <if test="about != null">about = #{about,jdbcType=LONGVARCHAR},</if>
+     <if test="streetArea != null"> street_area = #{streetArea,jdbcType=VARCHAR},</if>
+     <if test="streetAreaName != null">street_area_name = #{streetAreaName,jdbcType=VARCHAR},</if>
+     <if test="status != null">status = #{status,jdbcType=INTEGER},</if>
+     <if test="customWeb != null">custom_web = #{customWeb,jdbcType=VARCHAR},</if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!--根据学校ID查询学校信息-->
+  <select id="selectByPrimaryKey"  resultMap="BaseResultMap">
+    select id, name, english_name, s_type, address, tel, motto, web, length_of_school,  badge,
+           cover, manager_name, manager, school_time, add_time, area, area_name, status, about,custom_web
+      from m_school
+     where status = 1 and id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" parameterType="net.xuele.member.domain.MSchool" resultType="java.lang.Long">
+    select count(1)
+    from m_school
+    where status = 1
+    <if test="id !=null"> AND id = #{id,jdbcType=VARCHAR} </if>
+    <if test="name !=null"> AND name like concat('%',#{name,jdbcType=VARCHAR},'%')</if>
+    <if test="sType !=null"> AND s_type = #{sType,jdbcType=INTEGER} </if>
+    <if test="areaName !=null"> AND area_name like concat('%',#{areaName,jdbcType=VARCHAR},'%')</if>
+  </select>
+  <select id="selectSchoolPage" resultMap="BaseResultMap">
+    select id, name, english_name, s_type, address, tel, motto, web, length_of_school,
+    badge, cover, manager_name, manager, school_time, add_time, area, area_name, status,
+    about,custom_web
+    from m_school
+    where status = 1
+    <if test="school.id !=null"> AND id = #{school.id,jdbcType=VARCHAR} </if>
+    <if test="school.name !=null"> AND name like concat('%',#{school.name,jdbcType=VARCHAR},'%')</if>
+    <if test="school.sType !=null"> AND s_type = #{school.sType,jdbcType=INTEGER} </if>
+    <if test="school.areaName !=null"> AND area_name like concat('%',#{school.areaName,jdbcType=VARCHAR},'%')</if>
+    order by id
+  limit #{page.start},#{pageSize}
+  </select>
+
+  <!--APP接口：不传年份，获取学校所有年级，每个年级有多少班级，每个班级有多少学生-->
+  <!--不传年份，获取学校所有年级，每个年级有多少班级，每个班级有多少学生
+      传年份，获取该年级的班级和学生数-->
+  <select id="selectAllClass" resultMap="ClassStudentResultMap" >
+    select c.class_id,  c.alias_name,  c.name, c.charge_id, c.charge_name,  count(s.user_id) as student_number,
+           c.years,  us.icon,  c.m_image
+      from m_class c
+ left join (select s.user_id,s.class_id from m_student s join m_users u on s.user_id=u.user_id and u.status!=0  and s.school_id=#{record.schoolId,jdbcType=VARCHAR}) s on  c.class_id=s.class_id
+ left join m_users us on c.charge_id = us.user_id and us.status != 0
+     where c.school_id=#{record.schoolId,jdbcType=VARCHAR}
+       and c.status=1
+           <if test="record.years != null"> AND c.years = #{record.years,jdbcType=INTEGER} </if>
+           <if test="record.years == null"> AND c.years >= #{minYears,jdbcType=INTEGER} </if>
+           <if test="record.aliasName != null"> AND c.alias_name like concat('%',#{record.aliasName,jdbcType=VARCHAR},'%')</if>
+  group by c.class_id
+  order by c.years desc,c.code_sharing
+  </select>
+
+  <!--APP接口：获取某地区的全部学校-->
+  <select id="getByAreaId"  resultMap="BaseResultMap">
+    select id, name, english_name, s_type, address, tel, motto, web, length_of_school,  badge,
+           cover, manager_name, manager, school_time, add_time, area, area_name, status, about,custom_web
+      from m_school
+     where status = 1
+       and area = #{areaId,jdbcType=VARCHAR}
+  </select>
+
+  <!--APP接口：根据学校名称搜索该用户所在地区下的学校-->
+  <select id="selectSchoolByName"  resultMap="BaseResultMap">
+    select id, name, english_name, s_type, address, tel, motto, web, length_of_school,  badge,
+           cover, manager_name, manager, school_time, add_time, area, area_name, status, about,custom_web
+      from m_school
+     where status = 1
+      <if test="schoolName != null">  and name like concat('%',#{schoolName,jdbcType=VARCHAR},'%') </if>
+       and area like concat(#{areaId,jdbcType=VARCHAR},'%')
+  </select>
+    <!--活动接口：根据街道获取该街道下的学校-->
+    <select id="querySchoolByStreetArea"  resultMap="BaseResultMap">
+        select id, name, english_name, s_type, address, tel, motto, web, length_of_school,  badge,
+        cover, manager_name, manager, school_time, add_time, area, area_name, status, about,custom_web
+        from m_school
+        where status = 1
+        and street_area like concat(#{streetArea,jdbcType=VARCHAR},'%')
+    </select>
+
+  <select id="getSchoolNumByNameAndAreaId" resultType="java.lang.Integer">
+      select count(1) from m_school where status = 1
+      and name = #{schoolName,jdbcType=VARCHAR}
+      and area = #{areaId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="getSchoolNamesByIds" resultType="java.lang.String">
+        SELECT name from m_school WHERE status = 1 AND id in
+        <foreach collection="schoolIds" open="(" separator="," item="schoolId" close=")">
+            #{schoolId,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+</mapper>

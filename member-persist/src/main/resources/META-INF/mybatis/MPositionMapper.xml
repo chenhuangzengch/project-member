@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MPositionMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MPosition" >
+    <id column="position_id" property="positionId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="position_type" property="positionType" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="PositionMemberMap" type="net.xuele.member.domain.MPositionMember" >
+    <id column="position_id" property="positionId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="total" property="total" jdbcType="INTEGER" />
+    <result column="position_type" property="positionType" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="TeacherMap" type="net.xuele.member.domain.MTeacher">
+    <id column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="school_id" jdbcType="VARCHAR" property="schoolId" />
+    <result column="school_name" jdbcType="VARCHAR" property="schoolName" />
+    <result column="book_id" jdbcType="VARCHAR" property="bookId" />
+    <result column="position_id" jdbcType="VARCHAR" property="positionId" />
+    <result column="position_name" jdbcType="VARCHAR" property="positionName" />
+    <result column="is_manager" jdbcType="INTEGER" property="isManager" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey"  >
+    delete from m_position
+    where position_id = #{positionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.member.domain.MPosition" >
+    insert into m_position (position_id, name, description, 
+      position_type, school_id
+      )
+    values (#{positionId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{positionType,jdbcType=INTEGER}, #{schoolId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.MPosition" >
+    update m_position
+       set name = #{name,jdbcType=VARCHAR},
+           description = #{description,jdbcType=VARCHAR},
+           position_type = #{positionType,jdbcType=INTEGER},
+           school_id = #{schoolId,jdbcType=VARCHAR}
+     where position_id=#{positionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateInTeacher" parameterType="net.xuele.member.domain.MTeacher" >
+    update m_teacher
+       set position_id = #{record.positionId,jdbcType=VARCHAR},
+           position_name=#{record.positionName,jdbcType=VARCHAR}
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and position_id=#{positionId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select position_id, name, description, position_type, school_id
+      from m_position
+     where position_id = #{positionId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectName"  resultMap="BaseResultMap"  >
+    select position_id, name, description, position_type, school_id
+      from m_position
+     where (school_id= #{schoolId,jdbcType=VARCHAR} or position_type=0)
+       and name= #{name,jdbcType=VARCHAR}
+  </select>
+  <select id="selectPositionList" resultMap="BaseResultMap" >
+    select position_id, name, description, position_type, school_id
+      from m_position
+     where position_id != 'PRINCIPAL' and position_id != 'HEADMASTER'
+       and (position_type=0 or (school_id=#{schoolId,jdbcType=VARCHAR}))
+  </select>
+  <select id="selectTotal" resultMap="PositionMemberMap" >
+   select p.position_id,p.name,p.description,p.position_type,ifnull(t.cnt,0) total
+   from m_position p
+   left join (select count(1) cnt,position_id from m_teacher t join m_users u on t.user_id = u.user_id
+   where t.school_id=#{schoolId,jdbcType=VARCHAR} and u.status!=0
+   group by t.position_id ) t
+   on p.position_id=t.position_id
+   where p.school_id=#{schoolId,jdbcType=VARCHAR} or p.school_id is null
+   ORDER by p.position_type ASC
+  </select>
+</mapper>

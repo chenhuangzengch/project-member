@@ -1,0 +1,16 @@
+#set($layout="layout/security.vm")
+#set($page_title = "重置成功")
+<div class="head">
+    <div class="inner">
+        <div class="logo"></div>
+        <div class="return"><a href="${ctx}/j_spring_cas_security_logout">返回登录</a></div>
+    </div>
+</div>
+<div class="main">
+    <div class="main_bg">
+        <div class="suc_ico"></div>
+        <div class="suc_text">密码重置成功</div>
+        <div class="suc_tect">请牢记您的新密码，切勿告诉他人</div>
+        <div class="button_six"><a href="${ctx}/j_spring_cas_security_logout">返回首页登录</a></div>
+    </div>
+</div>

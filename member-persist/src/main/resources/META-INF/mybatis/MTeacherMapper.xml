@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.xuele.member.persist.MTeacherMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.member.domain.MTeacher">
+        <id column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="school_id" jdbcType="VARCHAR" property="schoolId"/>
+        <result column="school_name" jdbcType="VARCHAR" property="schoolName"/>
+        <result column="book_id" jdbcType="VARCHAR" property="bookId"/>
+        <result column="position_id" jdbcType="VARCHAR" property="positionId"/>
+        <result column="position_name" jdbcType="VARCHAR" property="positionName"/>
+        <result column="is_manager" jdbcType="INTEGER" property="isManager"/>
+    </resultMap>
+    <resultMap id="UserTeacherResultMap" type="net.xuele.member.domain.MUserTeacher">
+        <id column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="subject_id" jdbcType="VARCHAR" property="subjectId"/>
+        <result column="subject_name" jdbcType="VARCHAR" property="subjectName"/>
+        <result column="position_id" jdbcType="VARCHAR" property="positionId"/>
+        <result column="position_name" jdbcType="VARCHAR" property="positionName"/>
+        <result column="book_id" jdbcType="VARCHAR" property="bookId"/>
+        <result column="book_name" jdbcType="VARCHAR" property="bookName"/>
+        <result column="is_manager" jdbcType="INTEGER" property="isManager"/>
+    </resultMap>
+    <resultMap id="TeacherLoginResultMap" type="net.xuele.member.domain.MTeacherLogin">
+        <id column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="subject_name" jdbcType="VARCHAR" property="subjectName"/>
+        <result column="position_name" jdbcType="VARCHAR" property="positionName"/>
+        <result column="date" jdbcType="TIMESTAMP" property="date"/>
+        <result column="class_id" jdbcType="VARCHAR" property="classId"/>
+    </resultMap>
+    <resultMap id="TeacherClassResultMap" type="net.xuele.member.domain.MClassInfo">
+        <id column="class_id" jdbcType="VARCHAR" property="classId"/>
+        <result column="name" jdbcType="VARCHAR" property="className"/>
+        <result column="alias_name" jdbcType="VARCHAR" property="aliasName"/>
+        <result column="years" jdbcType="INTEGER" property="year"/>
+        <result column="student_count" jdbcType="INTEGER" property="studentCount"/>
+        <result column="m_image" jdbcType="VARCHAR" property="mImage"/>
+        <result column="charge_id" jdbcType="INTEGER" property="chargeId"/>
+        <result column="charge_name" jdbcType="VARCHAR" property="chargeName"/>
+    </resultMap>
+    <resultMap id="TeacherBookCountMap" type="net.xuele.member.domain.MTeacherBookCount">
+        <id column="subject_id" jdbcType="VARCHAR" property="subjectId"/>
+        <result column="user_number" jdbcType="VARCHAR" property="userNumber"/>
+    </resultMap>
+    <insert id="insert" parameterType="net.xuele.member.domain.MTeacher">
+        insert into m_teacher (user_id, school_id, school_name,
+        book_id, position_id, position_name,
+        is_manager)
+        values (#{userId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}, #{schoolName,jdbcType=VARCHAR},
+        #{bookId,jdbcType=VARCHAR}, #{positionId,jdbcType=VARCHAR}, #{positionName,jdbcType=VARCHAR},
+        #{isManager,jdbcType=INTEGER})
+    </insert>
+
+    <!-- 查询所有管理层人员-->
+    <select id="getAllManager" resultMap="UserTeacherResultMap">
+        select u.user_id, u.real_name, u.icon, b.subject_id, b.subject_name, t.position_id, t.position_name
+        from m_teacher t
+        join m_users u on t.user_id=u.user_id
+        left join ct_book b on t.book_id=b.book_id and b.status=1
+        where t.school_id=#{schoolId,jdbcType=VARCHAR}
+        and t.is_manager=1
+        and u.status!=0
+        <if test="realName!=null">and u.real_name LIKE concat('%',#{realName,jdbcType=VARCHAR},'%')</if>
+        order by t.position_id
+    </select>
+
+    <!--根据老师ID获取老师表信息-->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select user_id, school_id, school_name, book_id, position_id, position_name, is_manager
+      from m_teacher
+     where user_id = #{userId,jdbcType=VARCHAR} AND school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>
+    <!--根据老师ID获取老师表信息-->
+    <select id="selectByUserIdSchoolId" resultMap="BaseResultMap" >
+        select user_id, school_id, school_name, book_id, position_id, position_name, is_manager
+        from m_teacher
+        where user_id = #{userId,jdbcType=VARCHAR} AND  school_id = #{schoolId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectPrincipalBySchoolId" resultMap="BaseResultMap" >
+      select t.user_id, t.school_id, t.school_name, t.book_id, t.position_id, t.position_name, t.is_manager
+        from m_teacher t
+        join m_users u on t.user_id=u.user_id and u.status!=0
+       where  t.school_id= #{schoolId,jdbcType=VARCHAR}
+         and t.position_id=#{principal,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select t.user_id, t.school_id, t.school_name, t.book_id, t.position_id, t.position_name, t.is_manager
+      from m_teacher t
+      join m_users u on t.user_id=u.user_id and u.status!=0
+  </select>
+
+    <!--APP接口：老师添加班级（班级和老师都只有一个）-->
+    <!--WEB平台：班级管理添加老师（班级一个，老师多个）-->
+    <!--replace into m_teacher_class(teacher_id, class_id,school_id) values(1,2,2),(1,2,2)-->
+    <!--<update id="addClassTeachers" >
+        INSERT into m_teacher_class(teacher_id, class_id, school_id) values
+        <foreach collection="userIdList" item="resId" open="(" separator=",(">
+            #{resId},#{classId,jdbcType=VARCHAR},#{schoolId,jdbcType=VARCHAR})
+            ON DUPLICATE KEY UPDATE teacher_id= #{resId} , class_id=#{classId,jdbcType=VARCHAR}
+        </foreach>
+    </update>-->
+
+    <!--APP接口、WEB平台：根据老师ID获取老师信息-->
+    <select id="selectChief"  resultMap="UserTeacherResultMap">
+    select u.user_id, u.real_name, u.icon,  b.subject_id, b.subject_name, t.position_id,
+           t.position_name,  t.book_id,  b.book_name
+      from m_teacher t
+      join m_users u on u.user_id=t.user_id
+ left join ct_book b on t.book_id=b.book_id and b.status=1
+     where t.user_id=#{userId,jdbcType=VARCHAR}
+       and t.school_id=#{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="queryTeacherByUserIds"  resultMap="UserTeacherResultMap">
+    select u.user_id, u.real_name, u.icon,  b.subject_id, b.subject_name, t.position_id,
+           t.position_name,  t.book_id,  b.book_name
+      from m_teacher t
+      join m_users u on u.user_id=t.user_id
+ left join ct_book b on t.book_id=b.book_id and b.status=1
+     where u.status!=0 AND  u.school_id= #{schoolId,jdbcType=VARCHAR}
+       and t.user_id in
+           <foreach collection="userIds" item="resId" open="(" separator="," close=")">
+               #{resId}
+           </foreach>
+  </select>
+
+  <!--WEB平台：、APP接口：查询全校老师、根据老师名称查询老师-->
+  <select id="selectTeacherWithoutSubjectId"  resultMap="UserTeacherResultMap">
+    select t.user_id, u.real_name, u.icon, b.subject_id, b.subject_name, t.position_id, t.position_name,is_manager
+      from m_teacher t
+      join m_users u on u.user_id=t.user_id and u.status!=0
+ left join ct_book b on t.book_id=b.book_id and b.status=1
+     where t.school_id=#{schoolId,jdbcType=VARCHAR}
+           <if test="realName!=null">and u.real_name LIKE concat('%',#{realName,jdbcType=VARCHAR},'%')</if>
+  order by t.user_id
+  </select>
+
+    <!--WEB平台、APP平台：根据科目ID和名称查询、根据科目ID查询-->
+  <select id="selectTeacherWithSubjectId"  resultMap="UserTeacherResultMap">
+    select DISTINCT u.user_id, u.real_name, u.icon, b.subject_id, b.subject_name, t.position_id, t.position_name,is_manager
+      from m_teacher t
+      join m_users u on u.user_id=t.user_id and u.status!=0
+      join m_teacher_book tb on t.user_id=tb.user_id
+      join ct_book b on b.book_id=tb.book_id
+     where t.school_id=#{schoolId,jdbcType=VARCHAR}
+       and b.subject_id=#{subjectId,jdbcType=VARCHAR}
+       and b.status=1
+       and tb.is_main=1
+           <if test="realName!=null">and u.real_name LIKE concat('%',#{realName,jdbcType=VARCHAR},'%')</if>
+  order by b.subject_id
+  </select>
+
+  <!--查询某班级所有老师-->
+  <select id="selectClassTeachers"  resultMap="UserTeacherResultMap">
+    select u.user_id, u.real_name, u.icon
+      from m_teacher_class tc
+      join m_users u on tc.teacher_id=u.user_id
+      AND u.identity_id='TEACHER'
+     where tc.class_id=#{classId,jdbcType=VARCHAR}
+       and tc.school_id=#{schoolId,jdbcType=VARCHAR}
+       and u.status!=0
+  </select>
+
+  <update id="updateTeacherMessage" >
+    update m_teacher
+       set position_id=#{positionId,jdbcType=VARCHAR},
+           position_name=#{positionName,jdbcType=VARCHAR}
+     where user_id=#{userId,jdbcType=VARCHAR} AND school_id=#{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="setPrincipalByUserId" >
+    update m_teacher
+       set position_id = #{principal,jdbcType=VARCHAR},
+           position_name= #{positionName,jdbcType=VARCHAR},
+           is_manager=1
+     where user_id=#{userId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+  </update>
+
+    <select id="selectTeacherLogin" parameterType="net.xuele.member.pojo.RequestTeacherLoginPage" resultMap="TeacherLoginResultMap">
+        select u.user_id,u.real_name,t.position_name,b.subject_name,u.icon,
+        <if test="status ==0">u.update_time date</if>
+        <if test="status !=0">l.last_login_time date</if>
+        from
+        (select user_id, school_id, school_name, book_id, position_id, position_name, is_manager from m_teacher where school_id=#{schoolId,jdbcType=INTEGER}) t
+        join m_users u on t.user_id=u.user_id
+        left join ct_book b on b.book_id=t.book_id and b.status=1
+        left join m_login_statistics l on t.user_id=l.user_id
+        where t.school_id=#{schoolId}
+        <if test="status==0">and u.status=0 and u.update_time >= date_sub(now(),interval 30 day)</if>
+        <if test="status!=0">and u.status>0</if>
+        <if test="realName!=null and realName!=''">and u.real_name like concat('%',#{realName},'%')</if>
+        <if test="subjectId!=null and subjectId!=''">and b.subject_id=#{subjectId}</if>
+        <if test="positionId!=null and positionId!=''">and t.position_id=#{positionId}</if>
+        limit #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countTeacherLogin" parameterType="net.xuele.member.pojo.RequestTeacherLoginPage" resultType="long">
+        select count(1) from
+        (select user_id, school_id, school_name, book_id, position_id, position_name, is_manager from m_teacher where school_id=#{schoolId,jdbcType=INTEGER}) t
+        join m_users u on t.user_id=u.user_id
+        left join ct_book b on b.book_id=t.book_id and b.status=1
+        left join m_login_statistics l on t.user_id=l.user_id
+        where t.school_id=#{schoolId}
+        <if test="status==0">and u.status=0 and u.update_time >= date_sub(now(),interval 30 day)</if>
+        <if test="status!=0">and u.status>0</if>
+        <if test="realName!=null and realName!=''">and u.real_name like concat('%',#{realName},'%')</if>
+        <if test="subjectId!=null and subjectId!=''">and b.subject_id=#{subjectId}</if>
+        <if test="positionId!=null and positionId!=''">and t.position_id=#{positionId}</if>
+    </select>
+
+    <select id="selectTeacherLoginNoLimit" parameterType="net.xuele.member.pojo.RequestTeacherLoginPage"
+            resultMap="TeacherLoginResultMap">
+        select u.user_id,u.real_name,t.position_name,b.subject_name,u.icon,l.last_login_time date from
+        (select user_id, school_id, school_name, book_id, position_id, position_name, is_manager from m_teacher where school_id=#{schoolId,jdbcType=INTEGER}) t
+        join m_users u on t.user_id=u.user_id
+        left join ct_book b on b.book_id=t.book_id and b.status=1
+        left join m_login_statistics l on t.user_id=l.user_id
+        where t.school_id=#{schoolId}
+        <if test="status==0">and u.status=0</if>
+        <if test="status!=0">and u.status>0</if>
+        <if test="realName!=null and realName!=''">and u.real_name like concat('%',#{realName},'%')</if>
+        <if test="subjectId!=null and subjectId!=''">and b.subject_id=#{subjectId}</if>
+        <if test="positionId!=null and positionId!=''">and t.position_id=#{positionId}</if>
+    </select>
+
+    <update id="deleteManagers" >
+        update m_teacher
+        set is_manager=0
+        where user_id in
+        <foreach collection="userIdList" item="resId" open="(" separator="," close=")">
+            #{resId}
+        </foreach>
+        AND  school_id=#{schoolId,jdbcType=VARCHAR}
+    </update>
+
+  <update id="setManagers" parameterType="java.util.List">
+    update m_teacher
+       set is_manager=1
+     where user_id in
+           <foreach collection="userIdList" item="resId" open="(" separator="," close=")">
+               #{resId}
+           </foreach>
+      AND  school_id=#{schoolId,jdbcType=VARCHAR}
+  </update>
+
+    <select id="selectByUserIds" resultMap="UserTeacherResultMap">
+        select u.user_id, u.real_name, u.icon, b.subject_id, b.subject_name, t.position_id, t.position_name
+        from m_teacher t
+        join m_users u on u.user_id=t.user_id
+        left join ct_book b on t.book_id=b.book_id and b.status=1
+        where u.status!=0
+        and t.user_id in
+        <foreach collection="userIdList" item="resId" open="(" separator="," close=")">
+            #{resId}
+        </foreach>
+        AND  t.school_id=#{schoolId,jdbcType=VARCHAR}
+        order by b.subject_id
+    </select>
+
+    <!--App接口：修改老师主授教材-->
+    <update id="updateTeacherBookId" >
+    update m_teacher
+       set book_id = #{bookId,jdbcType=VARCHAR}
+     where user_id=#{userId,jdbcType=VARCHAR} AND school_id=#{schoolId,jdbcType=VARCHAR}
+  </update>
+
+    <!--APP接口、WEB平台：获取老师授课班级-->
+  <select id="getTeacherClass" resultMap="TeacherClassResultMap">
+    select distinct c.class_id,  c.name, c.alias_name, c.years,  count(su.user_id) as student_count,
+           c.m_image, c.charge_id,  c.charge_name
+      from m_teacher_class tc
+      join m_class c on tc.class_id=c.class_id and c.status=1
+ left join (select s.class_id,s.user_id
+			  from m_student s
+			  join m_users u on s.user_id=u.user_id and u.status!=0
+			 where s.school_id=#{schoolId,jdbcType=VARCHAR}) su on c.class_id=su.class_id
+     where tc.teacher_id=#{userId,jdbcType=VARCHAR}
+       and tc.school_id=#{schoolId,jdbcType=VARCHAR}
+  group by tc.class_id
+  order by c.years desc,c.name
+ </select>
+
+    <!--APP接口：删除老师主授教材-->
+    <update id="deleteTeacherBookId" >
+   update m_teacher
+      set book_id=null
+    where user_id=#{userId,jdbcType=VARCHAR} AND school_id=#{schoolId,jdbcType=VARCHAR}
+ </update>
+
+    <!--APP接口：删除老师授课教材-->
+    <delete id="deleteBookIdByUserId" >
+   delete from m_teacher_book
+    where user_id=#{userId,jdbcType=VARCHAR}
+      and book_id=#{bookId,jdbcType=VARCHAR}  AND school_id=#{schoolId,jdbcType=VARCHAR}
+ </delete>
+
+ <!--APP接口：添加老师课本关联表信息-->
+ <insert id="saveTeacherBook">
+   insert into m_teacher_book (id,user_id, book_id, is_main,school_id)
+   values (#{id,jdbcType=INTEGER},#{userId,jdbcType=VARCHAR}, #{bookId,jdbcType=VARCHAR}, #{isMain,jdbcType=INTEGER},#{schoolId,jdbcType=VARCHAR})
+ </insert>
+
+    <!--APP接口：根据用户ID和课本ID查询老师信息-->
+    <select id="getByUserIdAndBookId" resultMap="BaseResultMap" >
+   select user_id, school_id, school_name, book_id, position_id, position_name, is_manager
+     from m_teacher
+    where user_id = #{userId,jdbcType=VARCHAR}
+      and book_id=#{bookId,jdbcType=VARCHAR} AND school_id=#{schoolId,jdbcType=VARCHAR}
+ </select>
+
+ <!--APP接口：删除某老师的主授科目（老师课本关联表）-->
+ <delete id="deleteByUserIdAndisMain">
+   delete from m_teacher_book
+    where user_id=#{userId,jdbcType=VARCHAR}
+      and is_main=#{isMain,jdbcType=INTEGER} AND school_id=#{schoolId,jdbcType=VARCHAR}
+ </delete>
+
+ <!--APP接口：修改老师课本关联表的主授状态-->
+ <update id="updateTeacherBookIsMain">
+   update m_teacher_book
+      set is_main = #{result,jdbcType=INTEGER}
+    where user_id=#{userId,jdbcType=VARCHAR}
+      and school_id=#{schoolId,jdbcType=VARCHAR}
+ </update>
+
+ <delete id="deleteByTeacherIdAndSchoolId" >
+   delete
+     from m_teacher_class
+    where teacher_id = #{teacherId,jdbcType=VARCHAR}
+      and school_id = #{schoolId,jdbcType=VARCHAR}
+ </delete>
+
+ <insert id="insertTeacherClass">
+   insert into m_teacher_class (teacher_id,class_id,school_id,id)
+   values
+        <foreach collection="classInfo" item="resId" separator=",">
+            (#{resId.teacherId},#{resId.classId},#{resId.schoolId},#{resId.id})
+        </foreach>
+ </insert>
+
+ <delete id="deleteTeacherClass" >
+   delete
+     from m_teacher_class
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+      and class_id=#{classId,jdbcType=VARCHAR}
+      and teacher_id in
+          <foreach collection="userIdList" item="resId" open="(" separator="," close=")">
+              #{resId}
+          </foreach>
+ </delete>
+
+
+    <select id="getMainBookId" resultType="java.lang.String">
+        select c.book_id
+        FROM ct_book c
+        join m_teacher_book t on t.book_id=c.book_id
+        WHERE t.user_id = #{userId,jdbcType=VARCHAR}
+        AND t.school_id = #{schoolId,jdbcType=VARCHAR} AND t.is_main = 1
+        and c.status=1
+        limit 1
+    </select>
+
+    <update id="updateManagerBookToNotMain" >
+        UPDATE m_teacher_book SET is_main = 0
+        WHERE user_id = #{userId,jdbcType=VARCHAR}
+        AND school_id = #{schoolId,jdbcType=VARCHAR}
+    </update>
+    <select id="isMain"  resultType="java.lang.Integer">
+        select is_main
+        FROM m_teacher_book  WHERE user_id = #{userId,jdbcType=VARCHAR}
+        AND school_id = #{schoolId,jdbcType=VARCHAR} AND book_id =#{bookId,jdbcType=VARCHAR}
+    </select>
+
+    <!-- App 接口，修改学校名称-->
+    <update id="updateSchoolNameBySchoolId" >
+        UPDATE m_teacher set school_name = #{schoolName,jdbcType=VARCHAR}
+                WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+    </update>
+    <!-- 通知   查询book_id为空且不是管理层的老师数据 -->
+    <select id="selectTeacherBySubjectNull" resultMap="UserTeacherResultMap">
+    select u.user_id,u.real_name,t.position_name,b.subject_name,u.icon
+    from
+    (select user_id, school_id, school_name, book_id, position_id, position_name, is_manager from m_teacher where school_id=#{schoolId,jdbcType=INTEGER} and is_manager = 0) t
+    join m_users u on t.user_id=u.user_id
+    left join ct_book b on b.book_id=t.book_id and b.status=1
+    left join m_login_statistics l on t.user_id=l.user_id
+    where t.school_id=#{schoolId} and b.book_id is NULL and u.status>0
+    </select>
+    <!-- 通讯录 接口，查询学校管理层数量-->
+    <select id="isManagerCount"   resultType="long">
+       select   count(t.user_id) nub from m_teacher t JOIN
+       m_users u on t.user_id=u.user_id where t.school_id=#{schoolId,jdbcType=VARCHAR}   and t.is_manager = 1 and u.status!=0
+    </select>
+    <!-- 通讯录 接口，查询学校不是管理层、没有科目老师的数量-->
+    <select id="nullSubjectManager"   resultType="long">
+        select count(user_id) user_number from (select u.user_id  from
+        (select user_id, school_id, school_name, book_id, position_id, position_name, is_manager from m_teacher where school_id=#{schoolId,jdbcType=VARCHAR}  and is_manager = 0) t
+        join m_users u on t.user_id=u.user_id
+        left join ct_book b on b.book_id=t.book_id and b.status=1
+        left join m_login_statistics l on t.user_id=l.user_id
+        where t.school_id=#{schoolId,jdbcType=VARCHAR}  and u.status>0 and is_manager = 0 and   b.subject_id is null
+        UNION select u.user_id from m_users u
+        JOIN m_school_manager s on s.user_id = u.user_id where s.school_id=#{schoolId,jdbcType=VARCHAR} and u.status>0) a
+    </select>
+    <!-- 通讯录 接口，分页查询学校管理层所有人员-->
+    <select id="queryAllManagerPage" resultMap="UserTeacherResultMap">
+        select u.user_id, u.real_name, u.icon, b.subject_id, b.subject_name, t.position_id, t.position_name
+        from m_teacher t
+        join m_users u on t.user_id=u.user_id
+        left join ct_book b on t.book_id=b.book_id and b.status=1
+        where t.school_id=#{schoolId,jdbcType=VARCHAR}
+        and t.is_manager=1
+        and u.status!=0
+        order by t.position_id
+         limit #{page.start},#{page.pageSize}
+    </select>
+    <!-- 通讯录 接口，查询学科目对应的老师数量-->
+    <select id="queryUserBookList"  resultMap="TeacherBookCountMap">
+        select count(u.user_id) user_number,b.subject_id from
+        (select user_id, school_id, school_name, book_id, position_id, position_name, is_manager from m_teacher where school_id=#{schoolId,jdbcType=VARCHAR}) t
+        join m_users u on t.user_id=u.user_id
+        left join ct_book b on b.book_id=t.book_id and b.status=1
+        left join m_login_statistics l on t.user_id=l.user_id
+        where t.school_id=#{schoolId,jdbcType=VARCHAR} and u.status>0
+      GROUP BY b.subject_id
+    </select>
+    <!-- 通讯录 接口，查询学生对应的老师信息 -->
+    <select id="queryContactsTeacherPage" resultMap="TeacherLoginResultMap">
+   select u.user_id,u.real_name,t.position_name,b.subject_name,u.icon
+        from
+        (select user_id, school_id, school_name, book_id, position_id, position_name, is_manager from m_teacher where school_id=#{schoolId,jdbcType=VARCHAR}) t
+        join m_users u on t.user_id=u.user_id
+        left join ct_book b on b.book_id=t.book_id and b.status=1
+        left join m_teacher_class l on t.user_id=l.teacher_id
+        where t.school_id=#{schoolId,jdbcType=VARCHAR} and u.status>0  and l.class_id=#{classId,jdbcType=VARCHAR}
+        <if test="limit == 0">limit #{page.start},#{page.pageSize}</if>
+    </select>
+    <!-- 通讯录 接口，家长查询学生对应的老师信息 -->
+    <select id="queryContactsTeacher" resultMap="TeacherLoginResultMap">
+        select u.user_id,u.real_name,t.position_name,b.subject_name,u.icon,class_id
+        from
+        (select user_id, school_id, school_name, book_id, position_id, position_name, is_manager from m_teacher) t
+        join m_users u on t.user_id=u.user_id
+        left join ct_book b on b.book_id=t.book_id and b.status=1
+        left join m_teacher_class l on t.user_id=l.teacher_id
+        where  u.status>0  and l.class_id in
+        <foreach collection="classIds" item="resId" open="(" separator="," close=")">
+            #{resId}
+        </foreach>
+    </select>
+    <!-- 通讯录   分页查询book_id为空且不是管理层的老师数据 -->
+    <select id="selectTeacherContacts" parameterType="net.xuele.member.pojo.RequestTeacherLoginPage" resultMap="TeacherLoginResultMap">
+        select u.user_id,u.real_name,t.position_name,b.subject_name,u.icon
+        from
+        (select user_id, school_id, school_name, book_id, position_id, position_name, is_manager from m_teacher where school_id=#{schoolId,jdbcType=INTEGER} and is_manager = 0) t
+        join m_users u on t.user_id=u.user_id
+        left join ct_book b on b.book_id=t.book_id and b.status=1
+        left join m_login_statistics l on t.user_id=l.user_id
+        where t.school_id=#{schoolId} and b.book_id is NULL and u.status>0
+        UNION
+        select u.user_id,u.real_name,'管理员' position_name,'' subject_name,u.icon from m_users u
+        JOIN m_school_manager s on s.user_id = u.user_id where s.school_id=#{schoolId} and u.status>0
+        limit #{start,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+    </select>
+
+    <update id="updateTeacherPosition" >
+        update m_teacher
+        set position_id=#{positionId,jdbcType=VARCHAR},
+        position_name=#{positionName,jdbcType=VARCHAR}
+        where user_id in  <foreach collection="userIds" item="resId" open="(" separator="," close=")">#{resId ,jdbcType=VARCHAR}</foreach>
+         AND  school_id=#{schoolId,jdbcType=VARCHAR}
+    </update>
+</mapper>

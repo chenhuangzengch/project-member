@@ -1,0 +1,114 @@
+#set($page_title="离校老师")
+#set($url="leave?realName=$!{pageRequest.realName}&positionId=$!{pageRequest.positionId}&subjectId=$!{pageRequest.subjectId}")
+#define($script)
+<script>
+    var pageinfo = {};
+    pageinfo.schoolid = 10001;
+    pageinfo.grade = 2014;
+    pageinfo.classid = 1234;
+</script>
+<script>
+var ctlmenu = [
+//    { cls: 'action-home', icon: 'icon-home', name: '老师空间' },
+    { cls: 'action-changeset', icon: 'icon-edit', name: '资料变更' },
+    { cls: 'action-leave', icon: 'icon-remove', name: '老师离校' }
+];
+var positionList = [
+    #foreach($position in $positions)
+        { 'name': '${position.name}', 'courseId': '${position.positionId}' }#if($foreach.hasNext),#end
+    #end
+];
+
+var courseList = [
+    #foreach($summary in $summaries)
+        { 'name': '${summary.summaryName}', 'courseId': '${summary.summaryCode}' }#if($foreach.hasNext),#end
+    #end
+];
+</script>
+<script>seajs.use('page/member/pteacher');</script>
+#end
+<div class="container">
+    <div class="inner page-full">
+        <div class="member-wrap">
+            <div class="tips">在30天内，您可以将已离校的学生或教师进行返校操作。请及时处理，以免造成影响。</div>
+            <div class="inner-search">
+                <i class="sel-chk-no sel-all"></i>
+                <div class="sel-all-novalue">
+                    <label for="sel-all">全选</label>
+                    <div class="wrap">
+                        <form action="leave?positionId=$!{pageRequest.positionId}&subjectId=$!{pageRequest.subjectId}" method="post">
+                            <input type="text" placeholder="输入老师名称搜索" name="realName" value="$!{pageRequest.realName}"/>
+                            <button><i clss="search"></i>搜索</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="sel-all-hasvalue" style="display:none;">
+                    <label for="sel-all">已选择 <em class="sel-num">0</em> 名老师</label>
+                    <ul class="ul-op">
+                        <li class="back-school"><i></i><span>老师返校</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="sub-nav">
+                <div class="g-sel J_PositionCourse">
+                    <div class="gc position" data-def="2">
+                        <div class="g-wrap">
+                            <span>所有职务</span>
+                            <i class="icon-down"></i>
+                        </div>
+                        <div class="ul-g">
+                            <ul>
+                                #foreach($position in $positions)
+                                    <li><a href="leave?positionId=${position.positionId}">${position.name}</a></li>
+                                #end
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="gc course" data-def="3">
+                        <div class="g-wrap">
+                            <span>所有科目</span>
+                            <i class="icon-down"></i>
+                        </div>
+                        <div class="ul-c">
+                            <ul>
+                                #foreach($summary in $summaries)
+                                    <li><a href="leave?subjectId=${summary.summaryCode}">${summary.summaryName}</a></li>
+                                #end
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h2 class="summary">所有老师（<span>${pageResponse.records}</span>）</h2>
+            <table class="tb-userlist">
+                <thead>
+                <tr>
+                    <th class="sel-all"></th>
+                    <th>老师姓名</th>
+                    <th>主授科目</th>
+                    <th>职务</th>
+                    <th>登录账号</th>
+                    <th>离校时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                #foreach($item in ${pageResponse.rows})
+                <tr class="list-item list-item-${item.userId}" data-id="${item.userId}">
+                    <td class="no-border"><i class="sel sel-chk-no"></i></td>
+                    <td><img class="av-class" src="$normalSrc${item.icon}.jpg" alt="${item.realName}"><span>${item.realName}</span></td>
+                    <td>$!{item.subjectName}</td>
+                    <td>$!{item.positionName}</td>
+                    <td>${item.userId}</td>
+                    <td>${item.date}</td>
+                    <td><a class="back J_backschool" href="javascript:;"><i></i>返校</a></td>
+                </tr>
+                #end
+                </tbody>
+            </table>
+            <div class="pagination">
+                #parse("common/page.vm")
+            </div>
+        </div>
+    </div>
+</div>

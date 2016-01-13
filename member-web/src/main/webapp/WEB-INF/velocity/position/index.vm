@@ -1,0 +1,36 @@
+#set($page_title="职务管理")
+#define($script)
+<script>seajs.use('page/member/pposition');
+</script>
+#end
+<div class="container">
+    <div class="inner page-full">
+        <div class="duty-wrap">
+            <div class="duty-hd">
+                #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                <a class="J_dutyadd" href="javascript:;"><i class="icon-add"></i>添加职务</a>
+                #end
+            </div>
+            <div class="duty-bd">
+                <table class="tb-duty-list">
+                    <tbody>
+                        #foreach($each in $positionMemberDTOs)
+                        <tr class="list-item list-item-${each.positionId}" data-id="${each.positionId}">
+                            <td class="nm">$each.name</td>
+                            <td class="right">$each.description</td>
+                            <td class="num">$each.total</td>
+                            <td class="ctl">
+                                #if($each.positionType==1)
+                                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                                    <img class="ctlmenu" src="http://asset.xueleyun.com/imgs/member/tb-ctls.gif" alt="" />
+                                    #end
+                                #end
+                            </td>
+                        </tr>
+                        #end
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

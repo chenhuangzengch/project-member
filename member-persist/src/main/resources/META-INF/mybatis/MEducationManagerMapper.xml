@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MEducationManagerMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MEducationManager" >
+    <id column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="educational_id" property="educationalId" jdbcType="VARCHAR" />
+    <result column="educational_name" property="educationalName" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="UserTeacherResultMap" type="net.xuele.member.domain.MUserTeacher">
+    <id column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="subject_id" jdbcType="VARCHAR" property="subjectId" />
+    <result column="subject_name" jdbcType="VARCHAR" property="subjectName" />
+    <result column="position_id" jdbcType="VARCHAR" property="positionId" />
+    <result column="position_name" jdbcType="VARCHAR" property="positionName" />
+    <result column="book_id" jdbcType="VARCHAR" property="bookId" />
+    <result column="book_name" jdbcType="VARCHAR" property="bookName" />
+  </resultMap>
+
+  <insert id="insert" parameterType="net.xuele.member.domain.MEducationManager" >
+    insert into m_education_manager (user_id, educational_id, educational_name,school_id
+      )
+    values (#{userId,jdbcType=VARCHAR}, #{educationalId,jdbcType=VARCHAR}, #{educationalName,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByEducationalId" parameterType="net.xuele.member.domain.MEducationManager" >
+    update m_education_manager
+    set educational_name = #{educationalName,jdbcType=VARCHAR}
+    where educational_id = #{educationalId,jdbcType=VARCHAR} and school_id='0'
+  </update>
+
+  <!--APP接口：根据用户ID获取该用户所在的教育机构-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select user_id, educational_id, educational_name
+      from m_education_manager
+     where user_id = #{userId,jdbcType=VARCHAR}
+     and school_id='0'
+  </select>
+
+  <!--APP接口：根据教育机构ID获取该机构管理员-->
+  <select id="getEducationManager"  resultMap="UserTeacherResultMap" >
+    select u.user_id, u.real_name,  u.icon
+      from m_education_manager em
+      join m_users u on em.user_id=u.user_id
+     where em.educational_id=#{educationId,jdbcType=VARCHAR}
+  </select>
+
+
+</mapper>

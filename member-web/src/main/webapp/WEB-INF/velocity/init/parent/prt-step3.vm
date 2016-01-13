@@ -1,0 +1,41 @@
+#set($layout="layout/init.vm")
+#set($page_title="STEP3-家长数据初始化")
+#define($script)
+<script>seajs.use('page/member/pstuinit');</script>
+#end
+	<div class="header header-init">
+		<div class="inner">
+			<div class="logo">
+				<h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+			</div>
+			<div class="ctls">
+			</div>
+		</div>
+	</div>	<div class="container">
+		<div class="inner page-init">
+
+			<div class="page-init-detail">
+				<div class="user">
+					<img src="${bigSrc}${userDTO.icon}.jpg" alt="" />
+					<p class="info">
+						$!{familyRelationDTO.targetUserName}<span>|</span>$!{familyRelationDTO.memberName}
+					</p>
+				</div>
+				<div class="init-info">
+					<p class="p1">感谢您的帮助，初始化已经完成！</p>
+					<p class="p2"><a href="${ctx}">云教学平台<i></i></a></p>
+				</div>
+				<div class="app-info">
+					<div class="qr">
+						<img src="http://asset.xueleyun.com/g/imgs/qr.png" alt="" />
+					</div>
+					<div class="cnt">
+						<p class="p1">下载手机APP</p>
+						<p class="p2">教学更方便</p>
+						<a href="$!{iosAppUrl}" class="ios">IOS下载</a>
+						<a href="$!{androidAppUrl}" class="android">Android下载</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>

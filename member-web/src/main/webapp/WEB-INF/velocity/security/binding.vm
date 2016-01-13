@@ -1,0 +1,64 @@
+#set($page_title="安全设置-我的信息")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/profile.css?version=${version}" />
+<script>seajs.use('page/member/pbinding');</script>
+#end
+<div class="container">
+    <div class="inner page-full">
+        <div class="profile-wrap">
+            <h2 class="ttl">经常更换密码，请不要把密码告诉别人</h2>
+            #if(${isManager})
+                <div class="group group-mng">
+                    <div class="password">
+                        <p class="img"><img src="http://asset.xueleyun.com/imgs/member/safe-icon-user.png" alt="" /></p>
+                        <p class="title">学乐号</p>
+                        <p class="num">$!{userId}</p>
+                        <p class="ctl"><a class="changepass" href="javascript:;">更改密码</a></p>
+                    </div>
+                </div>
+            #else
+                <div class="group">
+                    <div class="phone">
+                        <p class="img"><img src="http://asset.xueleyun.com/imgs/member/safe-icon-phone.png" alt="" /></p>
+                        <p class="title">手机号码</p>
+                        <p class="num">#if($isBindMobile) $!{mobile} #else 未绑定手机号码 #end</p>
+                        <p class="info">#if($isBindMobile)可使用此号码登录云教学平台 #end</p>
+                        <p class="ctl">
+                            #if(${isBindMobile})
+                                <a class="rebindphone" href="javascript:;">更改手机</a>
+                                #if(${sec.anyGranted("STUDENT")})
+                                    <a class="unbindphone" href="javascript:;">解除绑定</a>
+                                #end
+                            #else
+                                <a class="bindphone" href="javascript:;">马上绑定</a>
+                            #end
+                        </p>
+                    </div>
+                    <div class="password">
+                        <p class="img"><img src="http://asset.xueleyun.com/imgs/member/safe-icon-user.png" alt="" /></p>
+                        <p class="title">学乐号</p>
+                        <p class="num">$!{userId}</p>
+                        <p class="ctl"><a class="changepass" href="javascript:;">更改密码</a></p>
+                    </div>
+                    <div class="email">
+                        <p class="img"><img src="http://asset.xueleyun.com/imgs/member/safe-icon-mail.png" alt="" /></p>
+                        <p class="title">电子邮箱</p>
+                        <p class="num">$!{email}</p>
+                        <p class="info">#if($!{isNotActive})验证后可使用此号码登录云教学平台  #elseif (${isBindEmail})可使用此号码登录云教学平台 #else 未绑定邮箱#end</p>
+                        <p class="ctl">
+                            #if($!{isNotActive})
+                                <a  class="rebindmail" href="javascript:;">验证邮箱</a>
+                            #else
+                                #if(${isBindEmail})
+                                    <a class="rebindmail" href="javascript:;">更改邮箱</a>
+                                #else
+                                    <a class="bindmail" href="javascript:;">绑定邮箱</a>
+                                #end
+                            #end
+                        </p>
+                    </div>
+                </div>
+            #end
+        </div>
+    </div>
+</div>

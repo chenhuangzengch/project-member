@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.xuele.member.persist.MUsersMapper">
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MUsers">
+    <id column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="birthday" jdbcType="DATE" property="birthday" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="r_type" jdbcType="INTEGER" property="rType" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="reg_type" jdbcType="INTEGER" property="regType" />
+    <result column="reg_ip" jdbcType="VARCHAR" property="regIp" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="signature" jdbcType="VARCHAR" property="signature" />
+    <result column="cover" jdbcType="VARCHAR" property="cover" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="idcard" jdbcType="VARCHAR" property="idcard" />
+    <result column="identity_id" jdbcType="VARCHAR" property="identityId" />
+    <result column="identity_description" jdbcType="VARCHAR" property="identityDescription" />
+    <result column="account_id" jdbcType="VARCHAR" property="accountId" />
+    <result column="school_id" jdbcType="VARCHAR" property="schoolId" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+  </resultMap>
+  <resultMap id="UserTeacherResultMap" type="net.xuele.member.domain.MUserTeacher">
+    <id column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="subject_id" jdbcType="VARCHAR" property="subjectId" />
+    <result column="subject_name" jdbcType="VARCHAR" property="subjectName" />
+  </resultMap>
+
+  <insert id="insert" parameterType="net.xuele.member.domain.MUsers">
+    insert into m_users (user_id, real_name, sex, birthday, icon, qq, r_type,
+           add_time, reg_type, reg_ip, status, tel, mobile,
+           email, signature, cover, update_time, idcard, identity_id,
+           identity_description, account_id,school_id,area)
+    values
+         (#{userId,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER},
+          #{birthday,jdbcType=DATE}, #{icon,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, #{rType,jdbcType=INTEGER},
+          #{addTime,jdbcType=TIMESTAMP}, #{regType,jdbcType=INTEGER}, #{regIp,jdbcType=VARCHAR},
+          #{status,jdbcType=INTEGER}, #{tel,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR},
+          #{email,jdbcType=VARCHAR}, #{signature,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR},
+          #{updateTime,jdbcType=TIMESTAMP}, #{idcard,jdbcType=VARCHAR}, #{identityId,jdbcType=VARCHAR},
+          #{identityDescription,jdbcType=VARCHAR}, #{accountId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR},#{area,jdbcType=VARCHAR})
+  </insert>
+
+  <!--修改用户信息-->
+  <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.MUsers">
+  update m_users
+     set
+        <if test="realName!=null">real_name =#{realName,jdbcType=VARCHAR},</if>
+        <if test="sex!=null">sex =#{sex,jdbcType=INTEGER},</if>
+        <if test="birthday!=null">birthday =#{birthday,jdbcType=DATE},</if>
+        <if test="qq!=null">qq =#{qq,jdbcType=VARCHAR},</if>
+        <if test="rType!=null">r_type =#{rType,jdbcType=INTEGER},</if>
+        <if test="tel!=null">tel =#{tel,jdbcType=VARCHAR},</if>
+        <if test="mobile!=null">mobile =#{mobile,jdbcType=VARCHAR},</if>
+        <if test="email!=null">email =#{email,jdbcType=VARCHAR},</if>
+        <if test="signature!=null">signature =#{signature,jdbcType=VARCHAR},</if>
+        <if test="cover!=null">cover =#{cover,jdbcType=VARCHAR},</if>
+        <if test="idcard!=null">idcard =#{idcard,jdbcType=VARCHAR},</if>
+        <if test="accountId!=null">account_id =#{accountId,jdbcType=VARCHAR},</if>
+        <if test="area!=null">area =#{area,jdbcType=VARCHAR},</if>
+        user_id = user_id
+  where user_id = #{userId,jdbcType=VARCHAR} AND school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <!--WEB平台、APP接口：根据用户ID获取用户信息-->
+  <select id="selectByPrimaryKey"  resultMap="BaseResultMap">
+    select user_id, real_name, sex, birthday, icon, qq, r_type, add_time, reg_type, reg_ip, 
+           status, tel, mobile, email, signature, cover, update_time, idcard, identity_id,
+           identity_description, account_id,  school_id, area
+      from m_users
+     where user_id = #{userId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+  </select>
+
+<!--修改老师离线状态-->
+ <update id="updateStatus">
+   update m_users
+      set status=#{status,jdbcType=VARCHAR},update_time=NOW()
+    where user_id in
+          <foreach close=")" collection="userIds" item="resId" open="(" separator=",">
+            #{resId}
+          </foreach>
+     AND  school_id = #{schoolId,jdbcType=VARCHAR}
+ </update>
+
+
+  <!--APP接口：根据用户ID列表获取该列表用户的信息-->
+  <select id="getByUserIds" resultMap="BaseResultMap">
+    select user_id, real_name, sex, birthday, icon, qq, r_type, add_time, reg_type, reg_ip,
+           status, tel, mobile, email, signature, cover, update_time, idcard, identity_id,
+           identity_description, account_id,  school_id, area
+      from m_users
+     where user_id in
+           <foreach collection="userIds" item="resId" open="(" separator="," close=")">
+            #{resId}
+           </foreach>
+       <if test="schoolId!=null">and school_id = #{schoolId,jdbcType=VARCHAR}</if>
+  order by user_id
+  </select>
+
+  <!--<select id="getSchoolIdByUserId" resultType="java.lang.String">
+    SELECT CASE WHEN ms.user_id IS NULL THEN mt.school_id WHEN mt.user_id IS NULL THEN ms.school_id END school_id
+     FROM m_users mu LEFT JOIN m_student ms ON  mu.user_id = ms.user_id
+    LEFT JOIN m_teacher mt ON  mu.user_id = mt.user_id  WHERE mu.user_id = #{userId,jdbcType=VARCHAR}
+    AND mu.school_id = #{schoolId,jdbcType=VARCHAR}
+  </select>-->
+
+  <update id="updateUserName" >
+    update m_users
+       set real_name = #{realName,jdbcType=VARCHAR}
+     where user_id = #{userId,jdbcType=VARCHAR} AND school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <!-- APP接口:绑定手机号或重新绑定手机号，使用mobile字段-->
+  <update id="updateMobile" >
+    update m_users
+    set mobile = #{mobile,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=VARCHAR}
+    AND  school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <!-- APP接口:绑定手机号或重新绑定手机号-->
+  <update id="updateEmail" >
+    update m_users
+    set email = #{email,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=VARCHAR}
+    AND  school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+  <!--appCenter中学区单位，学区学校模块需要提供的接口   根据区划ID获取学校  学校数量 -->
+  <select id="selectSchoolAmount"  resultType="java.lang.Long">
+    select count(1)
+     FROM m_school where status=1 and area LIKE  concat(#{area,jdbcType=VARCHAR},'%')
+  </select>
+  <!--appCenter中学区单位，学区学校模块需要提供的接口   根据区划ID获取学校 学生数量 -->
+  <select id="selectStudentAmount"  resultType="java.lang.Long">
+    select count(1)
+     FROM m_users t1,m_school t2 where t1.school_id=t2.id and t2.status=1
+     and identity_id='STUDENT' AND t1.STATUS !=0 and t1.area LIKE concat(#{area,jdbcType=VARCHAR},'%')
+  </select>
+  <!--appCenter中学区单位，学区学校模块需要提供的接口   根据区划ID获取学校  老师数量  SCHOOL_MANAGER 不算老师 -->
+  <select id="selectTeacherAmount"  resultType="java.lang.Long">
+    select count(1)
+     FROM m_users t1,m_school t2 where t1.school_id=t2.id and t2.status=1
+     and identity_id='TEACHER' AND t1.STATUS !=0 and t1.area LIKE concat(#{area,jdbcType=VARCHAR},'%')
+  </select>
+    <select id="getCountOfUser"  resultType="java.lang.Integer">
+        select count(1) FROM m_users t1
+        where identity_id=#{identityId,jdbcType=VARCHAR}
+        AND STATUS !=0
+        AND school_id=#{schoolId,jdbcType=VARCHAR}
+    </select>
+    <!-- 根据userId更新用户的icon-->
+    <update id="updateIconByUserId" >
+      UPDATE m_users set icon = #{icon,jdbcType=VARCHAR}
+      WHERE user_id = #{userId,jdbcType=VARCHAR} AND school_id = #{schoolId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectSchoolIdByUserId"  resultType="java.lang.String">
+        select school_id
+        FROM m_users where user_id = #{userId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryStudentTimeOut" resultMap="BaseResultMap">
+      select u.user_id, u.real_name, u.sex, u.birthday, u.icon, u.qq, u.r_type, u.add_time, u.reg_type, u.reg_ip,
+             u.status, u.tel, u.mobile, u.email, u.signature, u.cover, u.update_time, u.idcard, u.identity_id,
+             u.identity_description, u.account_id,  u.school_id, u.area
+        from m_student s
+        join m_users u on u.user_id=s.user_id and u.status!=0
+   left join m_login_statistics mls on s.user_id=mls.user_id
+       where s.class_id=#{classId,jdbcType=VARCHAR}
+         and s.user_id !=#{userId,jdbcType=VARCHAR}
+         and s.school_id=#{schoolId,jdbcType=VARCHAR}
+         and ifnull(mls.last_login_time,0)<![CDATA[ < ]]>DATE_SUB(now(),INTERVAL #{day,jdbcType=INTEGER} DAY)
+    </select>
+    <select id="getUserIdsByIdentityId"  resultType="java.lang.String">
+        select user_id FROM m_users
+        where STATUS =1
+        AND school_id=#{schoolId,jdbcType=VARCHAR}
+        <if test="identityId != null">
+        AND identity_id=#{identityId,jdbcType=VARCHAR}
+        </if>
+        LIMIT 50000
+    </select>
+</mapper>

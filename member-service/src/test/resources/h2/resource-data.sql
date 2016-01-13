@@ -1,0 +1,1 @@
+insert into m_resources (resource_id, name, url, r_type, status, pid, sort, level) values ('11', 11,'11', 0,0, '11', '11', 11);

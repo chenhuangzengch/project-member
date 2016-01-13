@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MResourcesMapper">
+    <resultMap id="BaseResultMap" type="net.xuele.member.domain.MResources">
+        <id column="resource_id" property="resourceId" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="r_type" property="rType" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="pid" property="pid" jdbcType="VARCHAR"/>
+        <result column="sort" property="sort" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="resourceRoleMap" type="net.xuele.member.dto.ResRolesDTO">
+        <id column="resource_id" property="resourceId" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="pattern" property="pattern" jdbcType="VARCHAR"/>
+        <collection property="roles" ofType="net.xuele.member.domain.MRole">
+            <result column="role_id" property="roleId" jdbcType="VARCHAR"/>
+            <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="roleResourceResultMap" type="net.xuele.member.domain.MenuRoleResource">
+        <id column="presource_id" property="resourceId" jdbcType="VARCHAR"/>
+        <result column="pname" property="name" jdbcType="VARCHAR"/>
+        <result column="purl" property="url" jdbcType="VARCHAR"/>
+        <result column="ppattern" property="pattern" jdbcType="VARCHAR"/>
+        <collection property="nextLevel" ofType="net.xuele.member.domain.MenuRoleResource" >
+            <id column="sresource_id" property="resourceId" jdbcType="VARCHAR"/>
+            <result column="sname" property="name" jdbcType="VARCHAR"/>
+            <result column="surl" property="url" jdbcType="VARCHAR"/>
+            <result column="spattern" property="pattern" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <delete id="delete" parameterType="java.util.List">
+        update m_resources
+        set status = 0
+        where resource_id in
+        <foreach collection="list" item="resId" open="(" separator="," close=")">
+            #{resId}
+        </foreach>
+    </delete>
+    <insert id="insert" parameterType="net.xuele.member.domain.MResources">
+    insert into m_resources (resource_id, name, url, 
+      r_type, status, pid, 
+      sort, level)
+    values (#{resourceId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
+      #{rType,jdbcType=INTEGER}, 1, #{pid,jdbcType=VARCHAR},
+      #{sort,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER})
+  </insert>
+    <update id="update" parameterType="net.xuele.member.domain.MResources">
+    update m_resources
+    set name = #{name,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      r_type = #{rType,jdbcType=INTEGER},
+      pid = #{pid,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER}
+    where resource_id = #{resourceId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey"  resultMap="BaseResultMap">
+    select resource_id, name, url, r_type, status, pid, sort, level
+    from m_resources
+    where status = 1 and resource_id = #{resourceId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" parameterType="net.xuele.member.domain.MResources" resultType="java.lang.Long" >
+    select count(1)
+    from m_resources
+    where status = 1
+    <if test="resourceId!=null"> AND resource_id=#{resourceId,jdbcType=VARCHAR} </if>
+    <if test="rType!=null"> AND r_type=#{rType,jdbcType=INTEGER} </if>
+    <if test="name!=null"> AND name like concat('%',#{name,jdbcType=VARCHAR},'%')</if>
+  </select>
+  <select id="selectResourcePage" resultMap="BaseResultMap" >
+    select resource_id, name, url, r_type, status, pid, sort, level
+    from m_resources
+    where status = 1
+    <if test="mResources.resourceId!=null"> AND resource_id = #{mResources.resourceId,jdbcType=VARCHAR} </if>
+    <if test="mResources.rType!=null"> AND r_type = #{mResources.rType,jdbcType=INTEGER} </if>
+    <if test="mResources.name!=null"> AND name like concat('%',#{mResources.name,jdbcType=VARCHAR},'%')</if>
+    order by resource_id
+    limit #{page.start},#{pageSize}
+  </select>
+
+  <!--查询一级菜单-->
+  <select id="selectFirstLevel"  resultMap="BaseResultMap" >
+    select r.resource_id, r.name, r.url, r.r_type, r.status, r.pid, r.sort, r.level
+      from m_user_role ur
+ left join m_role_resource rr on ur.role_id=rr.role_id
+ left join m_resources r on rr.resource_id=r.resource_id
+     where ur.user_id=#{userId,jdbcType=VARCHAR}
+       and r.r_type=1
+       and r.status=1
+       and r.level=1
+  order by r.sort
+  </select>
+
+  <!--查询二级菜单-->
+  <select id="selectSecondLevel"  resultMap="BaseResultMap" >
+    select resource_id, name, url, r_type, status, pid, sort, level
+      from m_resources
+     where pid=#{mResources.resourceId,jdbcType=VARCHAR} and url is not null and url != '' and r_type=1
+  order by sort
+  </select>
+
+
+  <select id="selectResourcesAndRoles" resultMap="resourceRoleMap">
+    SELECT
+    r.resource_id ,
+    r.name,
+    r.url,
+    r.pattern,
+    ro.role_id ,
+    ro.role_name
+  FROM
+    m_resources r
+  left JOIN m_role_resource m
+      ON r.resource_id = m.resource_id
+  left JOIN m_role ro
+      ON m.role_id = ro.role_id
+  WHERE r.status = 1
+  </select>
+
+    <select id="selectResourcesByUserIdAndSchoolIdForAuth" resultMap="roleResourceResultMap">
+SELECT parent.resource_id AS presource_id,parent.name as pname,parent.url as purl,son.resource_id as sresource_id,son.name as sname,son.url as surl from (
+select par.resource_id as resource_id,par.name as name,par.url as url,par.sort as sort FROM m_user_role ur
+JOIN m_role_resource mr on ur.role_id = mr.role_id
+JOIN m_resources par on mr.resource_id = par.resource_id WHERE ur.user_id = #{userId,jdbcType=VARCHAR} and ur.school_id = #{schoolId,jdbcType=VARCHAR} and par.level = 1 and par.r_type = 1 AND par.status = 1) parent
+join
+(select s.resource_id as resource_id,s.name as name,s.url as url,s.sort as sort,s.pid as pid FROM m_user_role urs
+  JOIN m_role_resource mrs on urs.role_id = mrs.role_id
+  JOIN m_resources s on mrs.resource_id = s.resource_id WHERE urs.user_id = #{userId,jdbcType=VARCHAR} and urs.school_id = #{schoolId,jdbcType=VARCHAR} and s.level = 2 and s.r_type = 1 AND s.status = 1) son
+on parent.resource_id = son.pid
+WHERE son.url is not null and son.url != '' ORDER BY parent.sort,son.sort
+    </select>
+    <select id="selectResourcesByRoleIdsForAuth" resultMap="roleResourceResultMap">
+    SELECT parent.resource_id AS presource_id,parent.name as pname,parent.url as purl,son.resource_id as sresource_id,son.name as sname,son.url as surl from (
+    select par.resource_id as resource_id,par.name as name,par.url as url,par.sort as sort FROM
+    m_role_resource mr
+    JOIN m_resources par on mr.resource_id = par.resource_id WHERE mr.role_id in
+        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+        #{roleId,jdbcType=VARCHAR}
+    </foreach>
+        and par.level = 1 and par.r_type = 1 AND par.status = 1) parent
+    join
+    (select s.resource_id as resource_id,s.name as name,s.url as url,s.sort as sort,s.pid as pid FROM m_role_resource mrs
+     JOIN m_resources s on mrs.resource_id = s.resource_id WHERE mrs.role_id in
+        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+        #{roleId,jdbcType=VARCHAR}
+    </foreach>
+     and s.level = 2 and s.r_type = 1 AND s.status = 1) son
+    on parent.resource_id = son.pid
+    WHERE son.url is not null and son.url != '' ORDER BY parent.sort,son.sort
+    </select>
+</mapper>

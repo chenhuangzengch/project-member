@@ -1,0 +1,63 @@
+#set($ctx=${request.getContextPath()})
+#set($session=${request.getSession()})
+#set($user=${request.session.getAttribute("SPRING_SECURITY_CONTEXT").authentication.principal})
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>$!page_title</title>
+    <link rel="stylesheet" href="http://asset.xueleyun.com/g/css/global.min.css?version=${version}" />
+    <script src="http://asset.xueleyun.com/g/js/global.min.js?version=${version}"></script>
+    <script src="http://asset.xueleyun.com/cjs/config.js?version=${version}"></script>
+    #parse("common/common.vm")##其它模块不一样js,css
+    <script>
+        var PAGEUSER = {
+            userId: "$!{user.userId}",
+            web: "$!{user.getWeb(${user.userId})}",
+            realName: "$!{user.realName}",
+            icon:"$!{user.icon}",
+            identityId:"$!{user.identityId}",
+            identityDescription:"$!{user.identityDescription}",
+            subjectName:"$!{user.subjectName}",
+            isManager:"$!{user.paramMap.get("isManager")}",
+            teacherClass:[
+                #foreach($cla in $user.teacherClass)
+                    {
+                        classId: "$!{cla.classId}",
+                        className: "$!{cla.className}"
+                    }#if($foreach.hasNext),#end
+                #end
+            ],
+            grade: "$!{user.studentClass.gradeNum}",
+            gradeName: "$!{user.studentClass.gradeName}",
+            className: "$!{user.studentClass.className}",
+            classId:"$!{user.classId}",
+            positionId: "$!{user.positionId}",
+            positionName: "$!{user.positionName}",
+            schoolId: "$!{user.schoolId}",
+            schoolName: "$!{user.schoolName}",
+            area: "$!{user.area}",
+            areaName: "$!{user.areaName}",
+            roles:[
+                #foreach($role in $user.roles)
+                    {
+                        userId: "$!{role.userId}",
+                        icon: "$!{role.icon}",
+                        name: "$!{role.realName}",
+                        desc: "$!{role.orgName}"
+                    }#if($foreach.hasNext),#end
+                #end
+            ],
+            servertime:"$!{user.getServerTime().getTime()}"
+        }
+    </script>
+    ##实际页面的js，css
+    $!script
+</head>
+<body>
+#parse("common/head.vm")
+$screen_content
+#parse("common/footer.vm")
+</body>
+</html>

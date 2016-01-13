@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+
+    <mvc:annotation-driven validator="validator">
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8"/>
+            </bean>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>*/*</value>
+                        <value>text/html</value>
+                        <value>application/json</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    <!-- 使用classpath下的 ValidationMessages.properties -->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+    </bean>
+
+
+    <mvc:view-controller path="/" view-name="redirect:/home/index"/>
+
+    <context:component-scan base-package="net.xuele.member.web.controller"/>
+    <context:annotation-config/>
+    <!--velocityConfig -->
+    <bean id="velocityConfig"
+          class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath" value="WEB-INF/velocity/"/>
+        <property name="velocityProperties">
+            <props>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="output.encoding">UTF-8</prop>
+                <prop key="contentType">text/html;charset=UTF-8</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="velocitySecurityUtil" class="net.xuele.common.utils.VelocitySecurityUtil"/>
+    <!--velocity view reslover -->
+    <bean id="viewReslover"
+          class="org.springframework.web.servlet.view.velocity.VelocityLayoutViewResolver">
+        <property name="cache" value="false"/>
+        <property name="suffix" value=".vm"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+        <property name="exposeSessionAttributes" value="true"/>
+        <property name="requestContextAttribute" value="request"/>
+        <property name="layoutUrl" value="layout/defaultLayout.vm"/>
+        <property name="dateToolAttribute" value="dateTool"/>
+        <property name="numberToolAttribute" value="numTool"/>
+        <!--<property name="toolboxConfigLocation" value="" />-->
+        <property name="attributesMap">
+            <map>
+                <entry key="sec">
+                    <ref bean="velocitySecurityUtil"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean class="net.xuele.member.web.manager.MemberExceptionHandler"></bean>
+
+    <!--web request interceptor-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="net.xuele.member.web.manager.IllegalCharacterInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="net.xuele.member.web.manager.SessionInfoInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/home/init"/>
+            <mvc:exclude-mapping path="/*Init/**"/>
+            <bean class="net.xuele.member.web.manager.InitInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- default -1 no limit -->
+        <property name="maxUploadSize">
+            <value>100000000</value>
+        </property>
+        <!-- default:10240 -->
+        <property name="maxInMemorySize">
+            <value>1738400</value>
+        </property>
+        <property name="defaultEncoding">
+            <value>UTF-8</value>
+        </property>
+        <!-- 进入控制器拦截 -->
+        <property name="resolveLazily">
+            <value>true</value>
+        </property>
+    </bean>
+
+</beans>

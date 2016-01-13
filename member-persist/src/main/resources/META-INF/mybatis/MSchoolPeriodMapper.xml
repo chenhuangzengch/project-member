@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MSchoolPeriodMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MSchoolPeriod" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="section" property="section" jdbcType="INTEGER" />
+    <result column="section_display" property="sectionDisplay" jdbcType="VARCHAR" />
+    <result column="length" property="length" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <insert id="insert" parameterType="net.xuele.member.domain.MSchoolPeriod" >
+    insert into m_school_period (id, section, section_display,
+    length, school_id)
+    values (#{id,jdbcType=VARCHAR}, #{section,jdbcType=INTEGER}, #{sectionDisplay,jdbcType=VARCHAR},
+    #{length,jdbcType=INTEGER}, #{schoolId,jdbcType=VARCHAR})
+  </insert>
+
+  <!--APP接口、WEB平台：根据学校ID获取学制学段信息-->
+  <select id="selectBySchoolId" resultMap="BaseResultMap" >
+    select id, section, section_display, length, school_id
+      from m_school_period
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+  order by section asc
+  </select>
+
+  <delete id="deleteBySchoolId" >
+    delete from m_school_period
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+  </delete>
+
+  <!--获取指定学段的学校信息-->
+  <select id="getByschoolIdAndSection" resultMap="BaseResultMap" >
+    select id, section, section_display, length, school_id
+      from m_school_period
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and section=#{section,jdbcType=INTEGER}
+  </select>
+
+  <update id="updateLengthById" parameterType="net.xuele.member.domain.MSchoolPeriod">
+    update m_school_period set length=#{length,jdbcType=INTEGER} where id=#{id,jdbcType=VARCHAR} and school_id=#{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="deleteByPrimaryId" >
+    delete from m_school_period
+     where school_id = #{schoolId,jdbcType=VARCHAR}
+       and id=#{id,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="getByPrimaryIdAndSchoolId" resultMap="BaseResultMap" >
+    select id, section, section_display, length, school_id
+    from m_school_period
+    where school_id=#{schoolId,jdbcType=VARCHAR}
+     and id=#{schoolPeriodId,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

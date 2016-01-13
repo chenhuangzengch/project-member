@@ -1,0 +1,68 @@
+#set($layout="layout/init.vm")
+#set($page_title="STEP3-教师数据初始化")
+#define($script)
+<script>seajs.use('page/member/ptchinit');</script>
+#end
+	<div class="header header-init">
+		<div class="inner">
+			<div class="logo">
+				<h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+			</div>
+			<div class="ctls">
+				<a href="${ctx}/teacherInit/loginBack" class="prev">上一步</a>
+				<a href="${ctx}/teacherInit/tchStepClass" class="next">下一步</a>
+			</div>
+		</div>
+	</div>
+<div class="container">
+    <div class="inner page-init">
+
+        <div class="maintch">
+            <div class="maintch-hd">
+                <a class="addsubject" href="javascript:;"><i class="icon-add"></i>新增科目</a>
+                <h2>设定所教授的科目，以及当前的主授科目</h2>
+            </div>
+            <div class="maintch-bd">
+                <div class="maintch-sider">
+                    <ul>
+						#foreach($subjectList in $subjectList)
+                            <li data-subjectid="$subjectList.summaryCode" #if($subjectList.summaryCode ==$subjectId) class="on" #end ><a href="setInitBook?subjectId=$subjectList.summaryCode"> $subjectList.summaryName</a></li>
+						#end
+                    </ul>
+                </div>
+                <div class="maintch-cont">
+                    #if($ctBookDTOList.size() ==0)
+                    <div class="empty">
+                        <p class="empty-msg">没有任何科目</p>
+                        <p class="empty-ctls"><a class="addsubject" href="javascript:;"><i class="icon-add"></i>新增科目</a></p>
+                    </div>
+                    #end
+                    <ul>
+                    #foreach($teacherBook in $ctBookDTOList)
+                        <li class="subject-item subject-item-${teacherBook.subjectId} #if($teacherBook.isMain==1) subject-item-${teacherBook.subjectId}-main #end" data-id="$teacherBook.subjectId" data-bookid="$teacherBook.bookId" data-gradecode="$teacherBook.grade">
+                            <div class="bd">
+                                <div class="ttl">
+                                    <a href="javascript:;" class="del">删除</a>
+                                    <h3>$teacherBook.subjectName</h3>
+                                </div>
+                                <div class="book">
+                                    $teacherBook.bookName
+                                    <a href="javascript:;" class="edit">编辑</a>
+                                </div>
+                            </div>
+                            <div class="ft">
+                        #if($teacherBook.isMain==1)
+                                主授
+                        #else
+                                <a class="setmaintch" href="javascript:;">设置为主授科目</a>
+                        #end
+                            </div>
+                        </li>
+                    #end
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

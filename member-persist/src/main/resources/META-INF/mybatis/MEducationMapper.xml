@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MEducationMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MEducation" >
+    <id column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="educational_id" property="educationalId" jdbcType="VARCHAR" />
+    <result column="educational_name" property="educationalName" jdbcType="VARCHAR" />
+    <result column="duty_id" property="dutyId" jdbcType="VARCHAR" />
+    <result column="duty_name" property="dutyName" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey"  >
+    delete from m_education
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <!--<insert id="insert" parameterType="net.xuele.member.domain.MEducation" >
+    insert into m_education (user_id, educational_id, educational_name,
+      duty_id, duty_name,school_id)
+    values (#{userId,jdbcType=VARCHAR}, #{educationalId,jdbcType=VARCHAR}, #{educationalName,jdbcType=VARCHAR},
+      #{dutyId,jdbcType=VARCHAR}, #{dutyName,jdbcType=VARCHAR},#{schoolId,jdbcType=VARCHAR})
+  </insert>-->
+  <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.MEducation" >
+    update m_education
+    set educational_id = #{educationalId,jdbcType=VARCHAR},
+      educational_name = #{educationalName,jdbcType=VARCHAR},
+      duty_id = #{dutyId,jdbcType=VARCHAR},
+      duty_name = #{dutyName,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+
+  <!--APP接口：根据用户ID获取该用户所在的教育机构-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select user_id, educational_id, educational_name, duty_id, duty_name
+      from m_education
+     where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select user_id, educational_id, educational_name, duty_id, duty_name
+    from m_education
+  </select>
+</mapper>

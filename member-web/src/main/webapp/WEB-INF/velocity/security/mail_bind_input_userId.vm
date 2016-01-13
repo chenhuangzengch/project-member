@@ -1,0 +1,28 @@
+#set($layout="layout/security.vm")
+#set($page_title="绑定邮箱验证身份")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/member.css?version=${version}" />
+<script>seajs.use('page/member/pmailbind');</script>
+#end
+<div class="header header-global">
+    <div class="inner">
+        <div class="logo">
+            <h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+        </div>
+    </div>
+</div>
+<div class="container container-global">
+    <div class="inner">
+        <div class="vertify-mail">
+            <div class="title">验证您的身份</div>
+            <div class="info">请输入您的学乐号，以确定是您本人操作</div>
+            <form name="form-vertifyemail" action="./activeEmail">
+                <input type="hidden" name="checkCode" value="$!{checkCode}" />
+                <input type="hidden" name="email" value="$!{email}" />
+                <p><input name="userId" class="ipt" type="text" /></p>
+                <p class="ctl"><button class="btn" type="submit">提交</button></p>
+            </form>
+        </div>
+
+    </div>
+</div>

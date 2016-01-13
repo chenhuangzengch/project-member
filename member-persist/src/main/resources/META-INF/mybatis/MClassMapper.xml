@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MClassMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MClass" >
+    <id column="class_id" property="classId" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="school_name" property="schoolName" jdbcType="VARCHAR" />
+    <result column="charge_id" property="chargeId" jdbcType="VARCHAR" />
+    <result column="charge_name" property="chargeName" jdbcType="VARCHAR" />
+    <result column="years" property="years" jdbcType="INTEGER" />
+    <result column="code_sharing" property="codeSharing" jdbcType="INTEGER" />
+    <result column="m_image" property="mImage" jdbcType="VARCHAR" />
+    <result column="cover" property="cover" jdbcType="VARCHAR" />
+    <result column="alias_name" property="aliasName" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="explains" property="explains" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="creator_id" property="creatorId" jdbcType="VARCHAR" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="school_period_id" property="schoolPeriodId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="GradeResultMap" type="net.xuele.member.domain.MGrade" >
+    <result column="years" property="years" jdbcType="INTEGER" />
+    <result column="class_number" property="classNumber" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="SummaryResultMap" type="net.xuele.member.domain.DSummary" >
+    <id column="summary_code" property="summaryCode" jdbcType="VARCHAR" />
+    <result column="summary_name" property="summaryName" jdbcType="VARCHAR" />
+    <result column="summary_mark" property="summaryMark" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="GraduatingClassResultMap" type="net.xuele.member.domain.MClassInfo">
+    <id column="class_id" jdbcType="VARCHAR" property="classId" />
+    <result column="name" jdbcType="VARCHAR" property="className" />
+    <result column="alias_name" jdbcType="VARCHAR" property="aliasName" />
+    <result column="years" jdbcType="INTEGER" property="year" />
+    <result column="student_count" jdbcType="INTEGER" property="studentCount" />
+    <result column="m_image" jdbcType="VARCHAR" property="mImage" />
+    <result column="section" jdbcType="INTEGER" property="section" />
+  </resultMap>
+
+   <!--根据班级id删除班级-->
+  <update id="deleteClassByClassId"  >
+    update m_class
+       set status=0
+     where class_id = #{classId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="delByClassIdAndUserIdAndSchoolId" >
+    delete from m_teacher_class
+     where class_id = #{classId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+       and teacher_id = #{teacherId,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="delClassIdAndSchoolId" >
+    delete from m_teacher_class
+     where class_id = #{classId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+  </delete>
+
+  <!--新增班级-->
+  <insert id="insert" parameterType="net.xuele.member.domain.MClass" >
+    insert into m_class (class_id, school_id, school_name,  charge_id, charge_name, years,
+                code_sharing, m_image, cover,   alias_name, name, explains,
+                create_time, creator_id, creator_name,  status,school_period_id)
+    values (#{classId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}, #{schoolName,jdbcType=VARCHAR},
+            #{chargeId,jdbcType=VARCHAR}, #{chargeName,jdbcType=VARCHAR}, #{years,jdbcType=INTEGER},
+            #{codeSharing,jdbcType=INTEGER}, #{mImage,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR},
+            #{aliasName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{explains,jdbcType=VARCHAR},
+            #{createTime,jdbcType=TIMESTAMP}, #{creatorId,jdbcType=VARCHAR}, #{creatorName,jdbcType=VARCHAR},
+            #{status,jdbcType=INTEGER},#{schoolPeriodId,jdbcType=VARCHAR})
+  </insert>
+
+  <!--修改班级信息-->
+  <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.MClass" >
+    update m_class
+       set
+            <if test="schoolName!=null">school_name = #{schoolName,jdbcType=VARCHAR},</if>
+            <if test="chargeId!=null">charge_id = #{chargeId,jdbcType=VARCHAR},</if>
+            <if test="chargeName!=null">charge_name = #{chargeName,jdbcType=VARCHAR},</if>
+            <if test="years!=null">years = #{years,jdbcType=INTEGER},</if>
+            <if test="codeSharing!=null">code_sharing = #{codeSharing,jdbcType=INTEGER},</if>
+            <if test="mImage!=null">m_image = #{mImage,jdbcType=VARCHAR},</if>
+            <if test="cover!=null">cover = #{cover,jdbcType=VARCHAR},</if>
+            <if test="aliasName!=null">alias_name = #{aliasName,jdbcType=VARCHAR},</if>
+            <if test="name!=null">name = #{name,jdbcType=VARCHAR},</if>
+            <if test="explains!=null">explains = #{explains,jdbcType=VARCHAR},</if>
+            <if test="createTime!=null">create_time = #{createTime,jdbcType=TIMESTAMP},</if>
+            <if test="creatorId!=null">creator_id = #{creatorId,jdbcType=VARCHAR},</if>
+            <if test="creatorName!=null">creator_name = #{creatorName,jdbcType=VARCHAR},</if>
+            <if test="status!=null">status = #{status,jdbcType=INTEGER},</if>
+            class_id=class_id
+     where class_id = #{classId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select class_id, school_id, school_name, charge_id, charge_name, years, code_sharing,
+           m_image, cover, alias_name, name, explains, create_time, creator_id, creator_name,  status
+      from m_class
+     where class_id = #{classId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select class_id, school_id, school_name, charge_id, charge_name, years, code_sharing,
+    m_image, cover, alias_name, name, explains, create_time, creator_id, creator_name,
+    status
+    from m_class
+    where status=1
+  </select>
+
+  <select id="countBySchoolId" resultType="int">
+    select count(1)
+      from m_class
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and years=#{years,jdbcType=INTEGER}
+       and status=1
+  </select>
+
+  <select id="selectGrade" resultMap="GradeResultMap" parameterType="net.xuele.member.domain.MGrade" >
+    select count(1) class_number,years
+      from m_class
+     where status=1
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+       and years>=#{minYears,jdbcType=VARCHAR}
+           <if test="aliasName!=null"> and alias_name like concat('%',#{aliasName,jdbcType=VARCHAR},'%') </if>
+  group by years
+  </select>
+
+  <update id="updateClassTeacher"  >
+    update m_class
+       set charge_id=#{userId,jdbcType=VARCHAR},
+           charge_name=#{realName,jdbcType=VARCHAR}
+     where class_id=#{classId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateClassTeacherList" >
+    update m_class
+       set charge_id=#{userId,jdbcType=VARCHAR},
+           charge_name=#{realName,jdbcType=VARCHAR}
+     where class_id in
+           <foreach collection="classList" item="resId" open="(" separator="," close=")">
+            #{resId.classId}
+           </foreach>
+  </update>
+
+  <!--APP接口、WEB平台：修改班级的班主任信息-->
+  <update id="removeChief"  >
+    update m_class
+       set charge_id=null,
+           charge_name=null
+     where class_id =#{classId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <!--查看班级别名是否已经存在-->
+  <select id="selectByAliasName" parameterType="net.xuele.member.domain.MClass" resultType="java.lang.Integer">
+    select count(1)
+      from m_class
+     where school_id=#{mClass.schoolId,jdbcType=VARCHAR}
+       and years >= #{minYears,jdbcType=INTEGER}
+       and class_id!=#{mClass.classId,jdbcType=VARCHAR}
+       and alias_name=#{mClass.aliasName,jdbcType=VARCHAR}
+       and status=1
+  </select>
+
+  <!--根据学校ID查询学校未毕业班级个数-->
+  <select id="selectBySchoolId"  resultType="java.lang.Integer">
+    select count(1)
+      from m_class
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and status=1
+  </select>
+
+  <!--APP接口：获取全部班级-->
+  <select id="getAllClass"  resultMap="BaseResultMap">
+    select class_id, school_id, school_name, charge_id, charge_name, years, code_sharing,
+           m_image, cover, alias_name, name, explains, create_time, creator_id, creator_name,  status
+      from m_class
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and status=1
+  order by years desc,code_sharing asc
+  </select>
+
+  <!--APP接口：获取全部班级-->
+  <select id="getAllClassByYear" resultMap="BaseResultMap">
+    select class_id, school_id, school_name, charge_id, charge_name, years, code_sharing,
+           m_image, cover, alias_name, name, explains, create_time, creator_id, creator_name,  status
+      from m_class
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and years = #{year,jdbcType=INTEGER}
+       and status=1
+  order by code_sharing asc
+  </select>
+
+  <!--根据学校ID获取所有毕业班级信息-->
+  <select id="queryALLGraduateClass"  resultMap="GraduatingClassResultMap">
+    select c.class_id, c.alias_name, c.name, c.years, count(s.user_id) as student_count
+      from m_class c
+ left join m_school_period sp on c.school_period_id=sp.id and c.school_id=sp.school_id
+ left join (select s.user_id,s.class_id
+              from m_student s
+              join m_users u on s.user_id=u.user_id and u.status=0
+             where s.school_id=#{schoolId,jdbcType=VARCHAR}) s on c.class_id=s.class_id
+     where c.status=2
+       and c.school_id=#{schoolId,jdbcType=VARCHAR}
+  group by c.years,c.code_sharing,c.school_period_id
+  order by c.years,c.code_sharing
+  </select>
+
+  <!--根据学校ID获取毕业班级信息，有别名则根据别名搜索，没有则搜索全部-->
+  <select id="querySchoolbySection" resultMap="GraduatingClassResultMap">
+    select c.class_id, c.alias_name, c.name, c.years, count(s.user_id) as student_count,  c.m_image,  sp.section
+      from m_class c
+ left join m_school_period sp on c.school_period_id=sp.id and c.school_id=sp.school_id
+ left join (select s.user_id,s.class_id
+      from m_student s
+      join m_users u on s.user_id=u.user_id and u.status=0
+      where s.school_id=#{schoolId,jdbcType=VARCHAR}) s on c.class_id=s.class_id
+     where c.status=2
+       and c.school_id=#{schoolId,jdbcType=VARCHAR}
+           <if test="aliasName !=null"> and c.alias_name=#{aliasName,jdbcType=VARCHAR}</if>
+  group by c.years,c.code_sharing
+  order by c.years,c.code_sharing
+  </select>
+
+  <update id="chiefLeave">
+    update m_class
+       set charge_id=null,
+           charge_name=null
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and charge_id in
+           <foreach close=")" collection="userIds" item="resId" open="(" separator=",">
+            #{resId}
+           </foreach>
+  </update>
+
+  <!--根据学界，班级号，学校获取班级信息-->
+  <select id="getClassByYearAndName" resultMap="BaseResultMap">
+    select class_id, school_id, school_name, charge_id, charge_name, years, code_sharing,
+           m_image, cover, alias_name, name, explains, create_time, creator_id, creator_name,  status
+      from m_class
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and years=#{year,jdbcType=INTEGER}
+       and code_sharing=#{classNum,jdbcType=INTEGER}
+       and status=1 limit 1
+  </select>
+
+  <select id="queryChiefClass"  resultMap="BaseResultMap">
+    select class_id, school_id, school_name, charge_id, charge_name, years, code_sharing,
+           m_image, cover, alias_name, name, explains, create_time, creator_id, creator_name,  status
+      from m_class
+     where charge_id=#{userId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+       and status=1
+  </select>
+
+  <!--WEB平台、APP接口：根据老师ID获取授课班级-->
+  <select id="queryTeacherClass"  resultMap="BaseResultMap">
+    select c.class_id, c.school_id, c.school_name, c.charge_id, c.charge_name, c.years, c.code_sharing,
+           c.m_image, c.cover, c.alias_name, c.name, c.explains, c.create_time, c.creator_id, c.creator_name,  c.status
+     from m_teacher_class tc
+     join m_class c on tc.class_id=c.class_id
+    where tc.teacher_id=#{userId,jdbcType=VARCHAR}
+    and tc.school_id=#{schoolId,jdbcType=VARCHAR}
+      and c.status=1
+ order by c.years desc,tc.class_id asc
+  </select>
+
+  <!--通过用户ID和班主任ID获取班级信息-->
+  <select id="getClassByUserIdAndClassId"  resultMap="BaseResultMap">
+    select class_id, school_id, school_name, charge_id, charge_name, years, code_sharing,
+           m_image, cover, alias_name, name, explains, create_time, creator_id, creator_name,  status
+      from m_class
+     where charge_id=#{userId,jdbcType=VARCHAR}
+       and class_id=#{classId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+       and status=1
+  </select>
+
+  <select id="getClassIdsByChargeId" resultType="java.lang.String">
+    SELECT class_id
+      from m_class
+     WHERE charge_id = #{chargeId,jdbcType=VARCHAR}
+       AND status = 1
+  </select>
+
+    <select id="selectSchoolIdByClassId"  resultType="java.lang.String">
+        select school_id
+        FROM m_class where class_id = #{classId,jdbcType=VARCHAR}
+    </select>
+
+    <!-- App 接口，修改学校名称-->
+    <update id="updateSchoolNameBySchoolId">
+        UPDATE m_class set school_name = #{schoolName,jdbcType=VARCHAR}
+        WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+    </update>
+
+  <select id="selectIdsByPeriod" resultType="java.lang.String">
+    select class_id
+      from m_class
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and school_period_id=#{id,jdbcType=VARCHAR}
+       and status=1
+  </select>
+
+  <delete id="deleteByClassList" >
+    delete from m_teacher_class
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and class_id in
+           <foreach collection="classIdList" item="resId" open="(" separator="," close=")">
+               #{resId}
+           </foreach>
+  </delete>
+
+  <delete id="deleteByPeriod">
+    delete from m_class
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and school_period_id=#{id,jdbcType=VARCHAR}
+  </delete>
+
+    <select id="getClassByUserId" resultMap="BaseResultMap">
+        select c.class_id, c.school_id, c.school_name, c.charge_id, c.charge_name, c.years, c.code_sharing,
+        c.m_image, c.cover, c.alias_name, c.name, c.explains, c.create_time, c.creator_id, c.creator_name,  c.status,c.school_period_id
+        from m_student s
+        join m_class c on c.class_id=s.class_id
+        where s.school_id=#{schoolId,jdbcType=VARCHAR}
+        and s.user_id=#{userId,jdbcType=VARCHAR}
+</select>
+
+  <select id="queryClassIdBySchoolId" resultType="java.lang.String">
+    select class_id
+      from m_class
+     where status=1
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getAllClassByClassIds" resultMap="BaseResultMap">
+        SELECT class_id,years,code_sharing from m_class WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+        AND class_id in <foreach collection="classIds" item="classId" separator="," open="(" close=")">
+            #{classId,jdbcType=VARCHAR}
+        </foreach>
+        order by years desc,code_sharing
+    </select>
+</mapper>

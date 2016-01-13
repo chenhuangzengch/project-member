@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MUserIconMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MUserIcon" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+
+  <insert id="insert" parameterType="net.xuele.member.domain.MUserIcon" >
+    insert into m_user_icon (id,user_id, icon, status)
+    values (#{id,jdbcType=INTEGER},#{userId,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateStatusByUserIdAndIcon" >
+    UPDATE m_user_icon SET status = #{status,jdbcType=INTEGER}
+    WHERE user_id = #{userId,jdbcType=VARCHAR} AND icon = #{icon,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getByUserIdAndIcon" resultMap="BaseResultMap" >
+    SELECT id,user_id,icon,status FROM m_user_icon
+    WHERE user_id = #{userId,jdbcType=VARCHAR}
+    AND icon = #{icon,jdbcType=VARCHAR}
+  </select>
+</mapper>

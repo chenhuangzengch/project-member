@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:reference id="casLoginService" interface="net.xuele.member.service.CasLoginService" />
+	<dubbo:reference id="userService" interface="net.xuele.member.service.UserService" />
+	<dubbo:reference id="resourceService" interface="net.xuele.member.service.ResourceService"/>
+	<dubbo:reference id="userDetailsService" interface="org.springframework.security.core.userdetails.UserDetailsService" />
+	<dubbo:reference id="schoolService" interface="net.xuele.member.service.SchoolService"/>
+	<dubbo:reference id="classService" interface="net.xuele.member.service.ClassService"/>
+	<dubbo:reference id="studentService" interface="net.xuele.member.service.StudentService"/>
+	<dubbo:reference id="teacherService" interface="net.xuele.member.service.TeacherService"/>
+	<dubbo:reference id="summaryService" interface="net.xuele.member.service.SummaryService"/>
+	<dubbo:reference id="positionService" interface="net.xuele.member.service.PositionService"/>
+	<dubbo:reference id="schoolPeriodService" interface="net.xuele.member.service.SchoolPeriodService"/>
+	<dubbo:reference id="ctBookService" interface="net.xuele.member.service.CtBookService"/>
+	<dubbo:reference id="schoolBookService" interface="net.xuele.member.service.SchoolBookService"/>
+	<dubbo:reference id="educationOrganizationService" interface="net.xuele.member.service.EducationOrganizationService"/>
+	<dubbo:reference id="sendMessageService" interface="net.xuele.member.service.SendMessageService"/>
+	<dubbo:reference id="familyRelationService" interface="net.xuele.member.service.FamilyRelationService"/>
+	<dubbo:reference id="extraBookService" interface="net.xuele.member.service.ExtraBookService"/>
+	<dubbo:reference id="notifyService" interface="net.xuele.notify.service.NotifyService" check="false"/>
+	<dubbo:reference id="orderService" interface="net.xuele.pay.service.OrderService" check="false"/>
+</beans>

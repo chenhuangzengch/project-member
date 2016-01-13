@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.CasLoginLogMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.CasLoginLog" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="login_id" property="loginId" jdbcType="VARCHAR" />
+    <result column="login_type" property="loginType" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="login_timestamp" property="loginTimestamp" jdbcType="TIMESTAMP" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="login_ip" property="loginIp" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <insert id="insert" parameterType="net.xuele.member.domain.CasLoginLog" >
+  insert into cas_login_log (id, login_id, login_type,
+  user_id, login_timestamp, school_id,login_ip
+  )
+  values (#{id,jdbcType=INTEGER}, #{loginId,jdbcType=VARCHAR}, #{loginType,jdbcType=INTEGER},
+  #{userId,jdbcType=VARCHAR}, #{loginTimestamp,jdbcType=TIMESTAMP}, #{schoolId,jdbcType=VARCHAR},#{loginIp,jdbcType=VARCHAR}
+  )
+</insert>
+
+  <select id="getLoginTimes" resultType="java.lang.Integer">
+    select count(distinct date_format(login_timestamp,'%Y-%m-%d'))
+    from cas_login_log
+    where user_id=#{userId,jdbcType=VARCHAR}
+    and school_id=#{schoolId,jdbcType=VARCHAR}
+    and login_type in
+    <foreach close=")" collection="loginType" item="resId" open="(" separator=",">
+      #{resId}
+    </foreach>
+    and login_timestamp BETWEEN #{startTime,jdbcType=TIMESTAMP}
+    and #{endTime,jdbcType=TIMESTAMP}
+  </select>
+
+  <select id="getLoginPersonCount" resultType="java.lang.Integer">
+    select count(distinct cll.user_id)
+      from cas_login_log cll
+      join m_users u  on u.user_id=cll.user_id
+                     and u.status!=0
+                        <if test="identityId!=null">and u.identity_id=#{identityId,jdbcType=VARCHAR}</if>
+     where cll.school_id=#{schoolId,jdbcType=VARCHAR}
+       and login_timestamp BETWEEN #{begTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+  </select>
+
+  <select id="getLastSecondTimeByUserId" resultMap="BaseResultMap">
+    select id, login_id, login_type, user_id, login_timestamp, school_id
+      from cas_login_log
+     where school_id=#{schoolId,jdbcType=VARCHAR}
+       and user_id=#{userId,jdbcType=VARCHAR}
+  order by login_timestamp desc
+     limit 1,1
+  </select>
+</mapper>

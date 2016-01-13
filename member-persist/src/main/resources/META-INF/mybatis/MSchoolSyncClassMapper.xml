@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MSchoolSyncClassMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MSchoolSyncClass" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" >
+    delete from m_school_sync_class
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+      and book_id = #{bookId,jdbcType=VARCHAR}
+  </delete>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.MSchoolSyncClass" >
+    update m_school_sync_class
+    set update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+      and book_id = #{bookId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateSyncClassBook" >
+    update m_school_sync_class
+    set book_id = #{newBookId,jdbcType=TIMESTAMP}
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and book_id = #{oldBookId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select school_id, book_id, update_time
+    from m_school_sync_class
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+      and book_id = #{bookId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select school_id, book_id, update_time
+    from m_school_sync_class
+  </select>
+</mapper>

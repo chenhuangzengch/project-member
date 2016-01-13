@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.DAreasMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.DAreas" >
+    <id column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+  </resultMap>
+  <!--<delete id="deleteByPrimaryKey"  >
+    delete from d_areas
+    where code = #{code,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.member.domain.DAreas" >
+    insert into d_areas (code, name)
+    values (#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.DAreas" >
+    update d_areas
+    set name = #{name,jdbcType=VARCHAR}
+    where code = #{code,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select code, name
+    from d_areas
+  </select>-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select code, name
+      from d_areas
+     where code = #{areaId,jdbcType=VARCHAR}
+  </select>
+
+  <!--APP接口：根据当前地区编号获取下一级教育机构地区-->
+  <select id="getOrgEducation"  resultMap="BaseResultMap">
+    select code, name
+      from d_areas
+     where code like concat(#{areaId,jdbcType=VARCHAR},'__')
+  </select>
+  <!-- 活动：根据区县ID获取街道信息-->
+  <select id="getStreetArea"  resultMap="BaseResultMap">
+    select code, name
+    from d_areas
+    where code like concat(#{areaId,jdbcType=VARCHAR},'___')
+  </select>
+</mapper>

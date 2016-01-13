@@ -1,0 +1,77 @@
+#set($page_title="显示－学段与学制")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/init.css" />
+<script>
+    var educational = [
+        #set($isnull=0)
+        #foreach($each in $schoolPeriodDTOList)
+            #if($each.section==0)
+                #set($isnull=$each.length)
+            #end
+        #end
+        $isnull,
+        #set($isnull=0)
+        #foreach($each in $schoolPeriodDTOList)
+            #if($each.section==1)
+                #set($isnull=$each.length)
+            #end
+        #end
+        $isnull,
+        #set($isnull=0)
+        #foreach($each in $schoolPeriodDTOList)
+            #if($each.section==2)
+                #set($isnull=$each.length)
+            #end
+        #end
+        $isnull
+    ];
+</script>
+<script>seajs.use('page/member/pmnginit');</script>
+#end
+<div class="container">
+    <div class="inner page-init">
+
+        <div class="page-init-box">
+
+            <form name="form-educational" action="${ctx}/schoolSet/savePeriod" method="post">
+                <div class="educational-edit">
+                    <a href="${ctx}/schoolSet/setPeriod" class="cancel">取消</a>
+                    <input class="btn" type="submit" value="确认" />
+                </div>
+                <ul class="educational">
+                    <li>
+                        <div class="item">
+                            <input class="chk" type="checkbox" name="" id="" />
+                            <p class="nm">小学</p>
+                            <p class="other">
+                                <label for="primary5"><input disabled="disabled" type="radio" name="primary" id="primary5" value="5" />5年制</label>
+                                <label for="primary6"><input disabled="disabled" type="radio" name="primary" id="primary6" value="6" />6年制</label>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item">
+                            <input class="chk" type="checkbox" name="" id="" />
+                            <p class="nm">初中</p>
+                            <p class="other">
+                                <label for="junior3"><input disabled="disabled" type="radio" name="junior" id="junior3" value="3" />3年制</label>
+                                <label for="junior4"><input disabled="disabled" type="radio" name="junior" id="junior4" value="4" />4年制</label>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item">
+                            <input class="chk" type="checkbox" name="" id="" />
+                            <p class="nm">高中</p>
+                            <p class="other">
+                                <label for="senior3"><input disabled="disabled" type="radio" name="senior" id="senior3" value="3" />3年制</label>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+                <div class="educational-tips">* 学制只能由低学制变更为高学制，即可只能将小学5年制变更为6年制，或初中3年制变更为4年制。</div>
+            </form>
+        </div>
+
+    </div>
+</div>

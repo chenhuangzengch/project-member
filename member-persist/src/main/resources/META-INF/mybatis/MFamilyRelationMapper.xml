@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MFamilyRelationMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MFamilyRelation" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="target_user_id" property="targetUserId" jdbcType="VARCHAR" />
+    <result column="member_id" property="memberId" jdbcType="VARCHAR" />
+    <result column="member_name" property="memberName" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="add_time" property="addTime" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="target_user_name" property="targetUserName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="KidInfoResultMap" type="net.xuele.member.domain.MStudentManager" >
+    <id column="user_Id" property="userId" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="years" property="years" jdbcType="INTEGER" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="VARCHAR" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="class_name" property="className" jdbcType="VARCHAR" />
+    <result column="school_name" property="schoolName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="FamilyMembersResultMap" type="net.xuele.member.domain.DFamilyMembers" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="member_user_id" property="memberUserId" jdbcType="VARCHAR" />
+    <result column="member_id" property="memberId" jdbcType="VARCHAR" />
+    <result column="member_name" property="memberName" jdbcType="VARCHAR" />
+    <result column="member_real_name" property="memberRealName" jdbcType="VARCHAR" />
+    <result column="member_status" property="memberStatus" jdbcType="INTEGER" />
+    <result column="member_icon" property="memberIcon" jdbcType="VARCHAR" />
+    <result column="target_user_id" property="targetUserId" jdbcType="VARCHAR" />
+    <result column="add_time" property="addTime" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <insert id="insert" parameterType="net.xuele.member.domain.MFamilyRelation" >
+    insert into m_family_relation (id, user_id, target_user_id,
+      member_id, member_name,type,add_time,status,school_id,user_name,target_user_name,create_user_id)
+    values (#{id,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR}, #{targetUserId,jdbcType=VARCHAR},
+      #{memberId,jdbcType=VARCHAR}, #{memberName,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+      #{addTime,jdbcType=TIMESTAMP},#{status,jdbcType=INTEGER},#{schoolId,jdbcType=VARCHAR},
+      #{userName,jdbcType=VARCHAR},#{targetUserName,jdbcType=VARCHAR},#{createUserId,jdbcType=VARCHAR})
+  </insert>
+
+  <!--APP接口：根据家长ID获取该家长的孩子信息-->
+  <select id="getChildsByParentId"  resultMap="BaseResultMap">
+    select fr.id, fr.user_id, fr.target_user_id, fr.member_id, fr.member_name,  fr.target_user_name
+      from m_family_relation fr
+      join m_users u on u.user_id =fr.target_user_id and u.status>0
+     where fr.user_id=#{userId,jdbcType=VARCHAR}
+       and fr.status=1
+  </select>
+
+  <!--通知接口：根据学生ID获取家长信息-->
+  <select id="queryFamilyByStudent"  resultMap="BaseResultMap">
+    select id, user_id, target_user_id, member_id, member_name,  user_name
+      from m_family_relation
+     where target_user_id=#{userId,jdbcType=VARCHAR}
+      and school_id=#{schoolId,jdbcType=VARCHAR}
+      and status=1
+  </select>
+
+  <delete id="deleteByPrimaryKey" >
+    delete from m_familly_relation
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <select id="queryFamilyByPrimaryKey" resultMap="BaseResultMap" >
+    select u.user_id,u.status
+    from m_users u
+    join m_family_relation f on u.user_id=f.user_id
+    where f.id = #{id,jdbcType=BIGINT})
+  </select>
+
+  <select id="queryKidInfo" resultMap="KidInfoResultMap">
+    select fr.id,fr.target_user_id as user_id, u.real_name,  c.years,  fr.school_id, u.status, u.area,u.icon,c.class_id,s.class_name,s.school_name
+      from m_family_relation fr
+      join m_users u on fr.target_user_id=u.user_id and u.status>0
+      join m_student s on fr.target_user_id=s.user_id
+ left join m_class c on s.class_id=c.class_id
+     where fr.user_id=#{userId,jdbcType=VARCHAR}
+       and fr.status=#{status,jdbcType=INTEGER}
+  order by fr.id desc
+  </select>
+
+  <select id="queryFamilyMembers"  resultMap="FamilyMembersResultMap">
+    select id,member_id,member_name,status as member_status,user_id as member_user_id,add_time
+      from m_family_relation
+     where target_user_id=#{userId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+       and status!=0
+  </select>
+    <select id="queryFamilyList"  resultMap="BaseResultMap">
+        select id, user_id, target_user_id, member_id, member_name,  user_name
+        from m_family_relation
+        where
+        <if test="userIds.size() > 0"> target_user_id IN </if>
+        <foreach collection="userIds" item="resId" open="(" separator="," close=")">
+            #{resId}
+        </foreach>
+        <if test="userIds.size() == 0"> target_user_id is null </if>
+        and status=1
+    </select>
+  <select id="getByTargetUserId"  resultMap="FamilyMembersResultMap">
+    select id,member_id,member_name,status as member_status,user_id as member_user_id
+      from m_family_relation
+     where target_user_id=#{targetUserId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+       and status=1
+</select>
+
+  <select id="getMessageByParentId"  resultMap="BaseResultMap">
+    select id,member_id, member_name,  target_user_name
+      from m_family_relation
+     where user_id=#{userId,jdbcType=VARCHAR}
+       and (status=5 or status=1  or status=3 or status=4)
+     limit 1
+  </select>
+
+  <update id="updateByPrimaryKey"  >
+    update m_family_relation
+       set status=#{status,jdbcType=INTEGER},
+       user_name=#{userName,jdbcType=VARCHAR},
+       target_user_name=#{targetUserName,jdbcType=VARCHAR}
+     where id=#{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select id, user_id, target_user_id, member_id, member_name,type,add_time,status,school_id,  user_name,  target_user_name
+    from m_family_relation
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <update id="updateFamilyRelation" parameterType="net.xuele.member.domain.MFamilyRelation" >
+    update m_family_relation
+       set user_id=#{userId,jdbcType=INTEGER},
+           status=#{status,jdbcType=INTEGER},
+           TYPE =#{type,jdbcType=INTEGER},
+           target_user_id =#{targetUserId,jdbcType=INTEGER},
+           target_user_name =#{targetUserName,jdbcType=INTEGER}
+     where target_user_id=#{targetUserId,jdbcType=VARCHAR}
+       and member_name=#{memberName,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+       and status>0
+  </update>
+
+  <select id="getFamilyRelation" resultMap="BaseResultMap">
+    select id, user_id, target_user_id, member_id, member_name,type,add_time,status,school_id,  user_name,  target_user_name
+      from m_family_relation
+     where member_name = #{memberName,jdbcType=VARCHAR}
+       and target_user_id= #{targetUserId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR} and status != 0
+     limit 1
+  </select>
+  <select id="getFamilyRelationByUserId" resultMap="BaseResultMap">
+    select id, user_id, target_user_id, member_id, member_name,type,add_time,status,school_id,  user_name,  target_user_name
+      from m_family_relation
+     where user_id = #{userId,jdbcType=VARCHAR}
+       and target_user_id= #{targetUserId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+       and status!=0
+     limit 1
+    </select>
+
+  <update id="updateUserName">
+    update m_family_relation
+       set user_name=#{realName,jdbcType=VARCHAR}
+     where user_id=#{userId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateTargetUserName">
+    update m_family_relation
+       set target_user_name=#{realName,jdbcType=VARCHAR}
+     where target_user_id=#{userId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+  </update>
+    <!--通讯录：根据学生ID获取家长分页信息-->
+    <select id="queryFamilyByStudentPage"  resultMap="FamilyMembersResultMap">
+        select  f.user_id member_user_id, member_name,  user_name member_real_name,icon member_icon
+        from m_family_relation f LEFT JOIN m_users u on f.user_id = u.user_id
+        where target_user_id=#{userId,jdbcType=VARCHAR}   and f.school_id=#{schoolId,jdbcType=VARCHAR} and f.status=1
+         order by f.user_id
+        <if test="limit == 0">limit #{page.start},#{page.pageSize}</if>
+    </select>
+    <!--通讯录：家长 根据学生ID获取家长-->
+    <select id="queryContactsParent"  resultMap="FamilyMembersResultMap">
+        select  f.user_id member_user_id, member_name,  user_name member_real_name,icon member_icon,target_user_id
+        from m_family_relation f LEFT JOIN m_users u on f.user_id = u.user_id
+        where target_user_id in
+        <foreach collection="classIds" item="resId" open="(" separator="," close=")">
+            #{resId}
+        </foreach>
+        and f.status=1
+        order by f.user_id
+    </select>
+    <!-- 查询某个学生成功邀请到的家长数量-->
+    <select id="getInvitedToSucceedFamily"   resultType="long">
+        select count(1) nub  from m_family_relation where target_user_id =#{targetUserId,jdbcType=VARCHAR}
+        and school_id=#{schoolId,jdbcType=VARCHAR}  and status=1
+        and add_time BETWEEN #{startTime,jdbcType=VARCHAR} and  #{endTime,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryParentIdByClassId" resultType="java.lang.String">
+      select distinct fr.user_id
+        from m_family_relation fr
+        join m_student s on s.user_id=fr.target_user_id
+        join m_users mu on mu.user_id= s.user_id and mu.status!=0
+        join m_class c on c.class_id=s.class_id and c.status=1 and c.class_id=#{classId,jdbcType=VARCHAR}
+       where fr.status=1
+         and fr.school_id=#{schoolId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryParentOfKidList"  resultMap="BaseResultMap">
+      select fr.id, fr.user_id, fr.target_user_id, fr.member_id, fr.member_name,  fr.user_name
+        from m_family_relation fr
+       where fr.status=1
+         and fr.target_user_id IN
+            <foreach collection="userIds" item="resId" open="(" separator="," close=")">
+                #{resId}
+            </foreach>
+         and fr.school_id=#{schoolId,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,0 +1,35 @@
+#set($layout="layout/security.vm")
+#set($page_title = "选择找回方式")
+<div class="head">
+    <div class="inner">
+        <div class="logo"></div>
+        <div class="return"><a href="${ctx}/j_spring_cas_security_logout">返回登录</a></div>
+    </div>
+</div>
+<div class="main">
+    <div class="main_bg">
+        <div class="content_tl">请选择密码重置方式</div>
+        <div class="frame_tl frame_mobile">
+            <div class="button"><a href="./resetPasswordByMobile">重置密码</a></div>
+            <div class="text">通过手机短信找回密码
+                <p>接收手机短信，通过短信验证码重置密码</P>
+            </div>
+        </div>
+        <div class="frame_tl frame_email">
+            <div class="button"><a href="./resetPasswordByEmail">重置密码</a></div>
+            <div class="text">通过电子邮件找回密码
+                <p>通过发送电子邮件，以邮件方式重置密码</P>
+            </div>
+        </div>
+        <div class="frame_tl frame_class">
+            <div class="text">通过所在学校或班级找回密码
+                <p>请联络你所在学校的管理员重置密码</P>
+            </div>
+        </div>
+        <div class="frame_tl frame_service">
+            <div class="text">通过人工服务找回密码
+                <p>请拨打客服电话：400-677-8787</P>
+            </div>
+        </div>
+    </div>
+</div>

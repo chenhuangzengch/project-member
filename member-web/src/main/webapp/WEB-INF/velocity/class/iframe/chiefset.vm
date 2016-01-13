@@ -1,0 +1,58 @@
+#set($layout="layout/iframe.vm")
+#set($page_title="设置班主任")
+#define($script)
+<script>seajs.use('page/member/pichairset');</script>
+#end
+<div class="iframe-wrap">
+	<div class="iframe-wrap-bd">
+		<div class="sider">
+			<div class="summary">
+				<a class="reset" href="javascript:;">重选</a>已选择<b>0</b>人
+			</div>
+			<div class="kclist">
+                <ul>
+                    <li #if($subjectId=="")
+                            class="on"
+					    #end><a href="setChiefIframe">全校</a></li>
+					#foreach($subject in $subjectList)
+						<li #if($subject.summaryCode==$subjectId)
+                                class="on"
+							#end
+							><a href="setChiefIframe?subjectId=$subject.summaryCode#if($realName)&realName=$realName#end#if($classId)&classId=$classId#end">$!{subject.summaryName}</a></li>
+					#end
+				</ul>
+			</div>
+		</div>
+		<div class="content">
+			<div class="search-nml">
+				<form action="setChiefIframe?#if($realName)&realName=$realName#end" method="get">
+					<input class="ipt" type="text" name="realName" id="realName" value="$!{realName}" placeholder="输入姓名搜索" />
+					<input class="btn" type="submit" value="搜索" />
+                    <input type="hidden" name="classId" value=$!{classId} />
+				</form>
+			</div>
+			<div class="mlist-h">
+				<ul>
+					<ul>
+						#foreach($teacher in $teacherList)
+                            <li data-id=$teacher.userId>
+                                <img class="av-user" src="${normalSrc}${teacher.icon}.jpg" alt="" />
+                                <p class="nm">$!{teacher.realName}</p>
+                                <p class="title">$!{teacher.userId}</p>
+                                <p class="kc">$!{teacher.subjectName}</p>
+                            </li>
+						#end
+					</ul>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="iframe-wrap-ft">
+		<p class="extra"><a href="javascript:;" class="J_tchadd"><i class="icon-add"></i>创建老师</a></p>
+		<p class="ctls">
+
+			<input type="hidden" name="memberid" value="" />
+			<a class="cancel" href="javascript:;">取消</a><a class="btn" href="javascript:;">添加</a>
+		</p>
+	</div>
+</div>

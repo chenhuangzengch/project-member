@@ -1,0 +1,48 @@
+#set($page_title="家庭邀请-邀请确认页面")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/invite.css?version=${version}" />
+<script>seajs.use('page/member/pinvite');</script>
+#end
+<div class="container">
+    <div class="inner page-invite">
+
+        <div class="invite-box">
+            <div class="hd">
+                <div class="user">
+                    <img src="${bigSrc}${parentInfoDTOList[0].icon}.jpg" alt="" />
+                    <p class="nm">$!{parentInfoDTOList[0].userName}</p>
+
+                </div>
+            </div>
+            <div class="bd">
+                <ul>
+					#foreach($each in $parentInfoDTOList)
+                        #if($!{velocityCount}>1)
+                        <li>
+                            <img src="${normalSrc}${each.icon}.jpg" alt="" />
+                            <p class="nm">$!{each.userName}</p>
+                        </li>
+                        #end
+					#end
+                </ul>
+            </div>
+            <div class="ft">
+                <!-- <p><i class="icon-refuse"></i>邀请已拒绝</p> -->
+                <!-- <p><i class="icon-join"></i>邀请已通过</p> -->
+                <form name="form-invite" action="" method="post">
+                    <input name="id" type="hidden" value="${familyRelations.id}" />
+                    #if(${familyRelations.status} ==3)
+                    <button class="refuse" type="button">拒绝邀请</button><button class="join" type="button">马上加入</button>
+                    #elseif(${familyRelations.status} ==1)
+                    <p><i class="icon-join"></i>邀请已通过 </p>
+                    #elseif(${familyRelations.status} ==2)
+                    <p><i class="icon-refuse"></i>邀请已拒绝 </p>
+                    #elseif(${familyRelations.status} ==0)
+                    <p>很抱歉，已经取消对你的邀请</p>
+                    #end
+                    </form>
+            </div>
+        </div>
+
+    </div>
+</div>

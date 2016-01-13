@@ -1,0 +1,418 @@
+学校管理员   教师      学生          家长          机构管理员
+
+学校管理    云教学      云作业        云作业         教务管理
+学校设置    作业管理    云学习        云学习         学区管理
+教务管理    学校管理    家庭信息      家庭信息        学区单位
+通知        通知        通知          通知          通知
+个人信息    教务管理    个人信息      学校通知        个人信息
+           个人信息                  个人信息
+
+//排序号为20位，暂时使用8位，因为现在有14个需要排序，后续会加
+云教学 00010000        (resource_id,name,r_type,status,sort,level) values ('CLOUD_TEACHING','云教学',1,1,'00010000',1);
+作业管理 00100000       (resource_id,name,r_type,status,sort,level) values ('CLOUDTEACH_TEACHER_WORKMG','作业管理',1,1,'00100000',1);
+学校管理 00110000       (resource_id,name,r_type,status,sort,level) values ('SCHOOL_MANAGEMENT','学校管理',1,1,'00110000',1);
+学校设置 01000000       (resource_id,name,r_type,status,sort,level) values ('SCHOOL_SETTINGS','学校设置',1,1,'01000000',1);
+教务管理 01010000       (resource_id,name,r_type,status,sort,level) values ('EDUCATION_MANAGEMENT','教务管理',1,1,'01010000',1);
+学区管理 01100000       (resource_id,name,r_type,status,sort,level) values ('AREA_MANAGER','学区管理',1,1,'01100000',1);
+学区单位 01110000       (resource_id,name,r_type,status,sort,level) values ('AREA_ORGANIZATION','学区单位',1,1,'01110000',1);
+云作业 10000000         (resource_id,name,r_type,status,sort,level) values ('CLOUD_WORK_STUDENT','云作业',1,1,'10000000',1);
+云学习 10010000         (resource_id,name,r_type,status,sort,level) values ('APPLICATION','云学习',1,1,'10010000',1);
+家庭信息 10100000       (resource_id,name,r_type,status,sort,level) values ('FAMILY_INFORMATION','家庭信息',1,1,'10100000',1);
+学校通知 10110000       (resource_id,name,r_type,status,sort,level) values ('SCHOOL_MESSAGE','学校通知',1,1,'10110000',1);
+通知 11000000          (resource_id,name,r_type,status,sort,level) values ('MESSAGE','通知',1,1,'11000000',1);
+个人信息 11010000       (resource_id,name,r_type,status,sort,level) values ('MY_MESSAGE','我的信息',1,1,'11010000',1);
+
+#一级菜单插入
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('CLOUD_TEACHING','云教学',1,1,'00010000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('CLOUDTEACH_TEACHER_WORKMG','作业管理',1,1,'00100000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('SCHOOL_MANAGEMENT','学校管理',1,1,'00110000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('SCHOOL_SETTINGS','学校设置',1,1,'01000000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('EDUCATION_MANAGEMENT','教务管理',1,1,'01010000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('AREA_MANAGER','学区管理',1,1,'01100000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('AREA_ORGANIZATION','学区单位',1,1,'01110000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('CLOUD_WORK','云作业',1,1,'10000000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('APPLICATION','云学习',1,1,'10010000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('FAMILY_INFORMATION','家庭信息',1,1,'10100000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('SCHOOL_MESSAGE','学校通知',1,1,'10110000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('MESSAGE','通知',1,1,'11000000',1);
+insert into m_resources (resource_id,name,r_type,status,sort,level) values ('MY_MESSAGE','我的信息',1,1,'11010000',1);
+
+
+#二级菜单
+# 云教学 pid = 'CLOUD_TEACHING'
+云教学 0010000
+云盘   0100000
+备课   0110000  更改为“教案”
+预习   1000000
+授课   1010000
+作业   1100000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUD_TEACHING_LEVEL2', '云教学', 'http://www.xueleyun.com/cloudteach/teacher/initList', 1, 1, 'CLOUD_TEACHING', '0010000', 2, null);
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUD_TEACHING_DISK', '云盘', 'http://www.xueleyun.com/cloudteach/cloudDisk/file/index', 1, 1, 'CLOUD_TEACHING', '0100000', 2, '/cloudDisk/file/index');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('APPLICATION_PREPARELESSON', '教案', 'http://www.xueleyun.com/appcenter/lessonPlan/index', 1, 1, 'CLOUD_TEACHING', '0110000', 2, '/lessonPlan/index');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUD_TEACHING_GUIDANCE', '预习', 'http://www.xueleyun.com/cloudteach/guidance/item/index', 1, 1, 'CLOUD_TEACHING', '1000000', 2, '/guidance/item/index');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUD_TEACHING_COURSEWARES', '授课', 'http://www.xueleyun.com/cloudteach/teachCoursewares/teaching', 1, 1, 'CLOUD_TEACHING', '1010000', 2, '/teachCoursewares/teaching');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUD_TEACHING_WORK', '作业', 'http://www.xueleyun.com/cloudteach/teacher/initWorkPage', 1, 1, 'CLOUD_TEACHING', '1100000', 2, '/synclass/work/index');
+
+#作业管理 pid = 'CLOUDTEACH_TEACHER_WORKMG'
+进行中 0010000
+作业   0100000
+预习   0110000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUDTEACH_TEACHER_WORKMG_EW', '进行中', 'http://www.xueleyun.com/cloudteach/workmanage/teacher/initMyEffectiveWorkList', 1, 1, 'CLOUDTEACH_TEACHER_WORKMG', '0010000', 2, null);
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUDTEACH_TEACHER_WORKMG_AW', '作业', 'http://www.xueleyun.com/cloudteach/workmanage/teacher/initAfterclassWorkList', 1, 1, 'CLOUDTEACH_TEACHER_WORKMG', '0100000', 2, null);
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUDTEACH_TEACHER_WORKMG_GW', '预习', 'http://www.xueleyun.com/cloudteach/workmanage/teacher/initGuidanceWorkList', 1, 1, 'CLOUDTEACH_TEACHER_WORKMG', '0110000', 2, null);
+
+
+#学校管理 pid = 'SCHOOL_MANAGEMENT'
+班级管理 0010000
+学生管理 0100000
+教师管理 0110000
+职务管理 1000000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('SCHOOL_MANAGEMENT_LEVEL2', '班级管理', 'http://www.xueleyun.com/member/class/index', 1, 1, 'SCHOOL_MANAGEMENT', '0010000', 2, '/class/index');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('SCHOOL_MANAGEMENT_STUDENT', '学生管理', 'http://www.xueleyun.com/member/student/index', 1, 1, 'SCHOOL_MANAGEMENT', '0100000', 2, '/student/index');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('SCHOOL_MANAGEMENT_TEACHER', '教师管理', 'http://www.xueleyun.com/member/teacher/index', 1, 1, 'SCHOOL_MANAGEMENT', '0110000', 2, '/teacher/index');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('SCHOOL_MANAGEMENT_POST', '职务管理', 'http://www.xueleyun.com/member/position/index', 1, 1, 'SCHOOL_MANAGEMENT', '1000000', 2, '/position/index');
+
+#学校设置 pid = 'SCHOOL_SETTINGS'
+教材设置      0010000
+同步课堂设置  0100000
+学段学制设置  0110000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('SCHOOL_SETTINGS_TEACH_MATERIAL', '教材设置', 'http://www.xueleyun.com/member/schoolSet/setMaterialBook', 1, 1, 'SCHOOL_SETTINGS', '0010000', 2, '/schoolSet/setMaterialBook');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('SCHOOL_SETTINGS_SYNCHRONOUS_CLAS', '同步课堂', 'http://www.xueleyun.com/member/schoolSet/setSynClass', 1, 1, 'SCHOOL_SETTINGS', '0100000', 2, '/schoolSet/setSynClass');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('SCHOOL_SETTINGS_LENGTH_SCHOOLING', '学段学制', 'http://www.xueleyun.com/member/schoolSet/setPeriod', 1, 1, 'SCHOOL_SETTINGS', '0110000', 2, '/schoolSet/setPeriod');
+
+#教务管理 pid = 'EDUCATION_MANAGEMENT'
+教案管理 0010000
+作业管理 0100000
+板书管理 0110000
+教学反思 1000000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('TEACHING_PLAN', '教案管理', 'http://www.xueleyun.com/appcenter/lessonPlan/countLessonPlan', 1, 1, 'EDUCATION_MANAGEMENT', '0010000', 2, '/lessonPlan/countLessonPlan');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('HOMEWORK_MANAGEMENT', '作业管理', 'http://www.xueleyun.com/appcenter/educationManage/tohomework', 1, 1, 'EDUCATION_MANAGEMENT', '0100000', 2, '/educationManage/tohomework');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('BLACKBOARD_MANAGEMENT', '板书管理', 'http://www.xueleyun.com/appcenter/educationManage/toblackboard', 1, 1, 'EDUCATION_MANAGEMENT', '0110000', 2, '/educationManage/toblackboard');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('INTROSPECTION', '教学反思', 'http://www.xueleyun.com/appcenter/lessonPlan/countReThink', 1, 1, 'EDUCATION_MANAGEMENT', '1000000', 2, '/lessonPlan/countReThink');
+
+#学区管理 pid = 'AREA_MANAGER'
+官方资源 0010000
+学区资源 0100000
+学区学校 0110000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('OFFICIAL_RESOURCES', '官方资源', 'http://www.xueleyun.com/appcenter/officialResourceManage/index', 1, 1, 'AREA_MANAGER', '0010000', 2, '/officialResourceManage/index');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('AREA_RESOURCES', '学区资源', 'http://www.xueleyun.com/appcenter/areaResourceManage/index', 1, 1, 'AREA_MANAGER', '0100000', 2, '/areaResourceManage/index');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('AREA_SCHOOL', '学区学校', 'http://www.xueleyun.com/appcenter/areaSchoolManage/index', 1, 1, 'AREA_MANAGER', '0110000', 2, '/areaSchoolManage/index');
+
+#学区单位 pid = 'AREA_ORGANIZATION'
+学区单位 010000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('AREA_ORGANIZATION_LEVEL2', '学区单位', 'http://www.xueleyun.com/appcenter/areaOrganizationManage/index', 1, 1, 'AREA_ORGANIZATION', '010000', 2, '/areaOrganizationManage/index');
+
+#云作业 pid = 'CLOUD_WORK'
+待完成 00010000(学生)  10010000(家长)
+预习   00100000(学生)  10010000(家长)
+作业   00110000(学生)  10010000(家长)
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUD_WORK_STUDENT_TODO', '待完成', 'http://www.xueleyun.com/cloudteach/workmanage/student/initTodoList', 1, 1, 'CLOUD_WORK', '00010000', 2, '/workmanage/student/initTodoList');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUD_WORK_STUDENT_PREP', '预习', 'http://www.xueleyun.com/cloudteach/workmanage/student/initPrepList', 1, 1, 'CLOUD_WORK', '00100000', 2, '/workmanage/student/initPrepList');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUD_WORK_STUDENT_WORK', '作业', 'http://www.xueleyun.com/cloudteach/workmanage/student/initWorkList', 1, 1, 'CLOUD_WORK', '00110000', 2, '/workmanage/student/initWorkList');
+
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUD_WORK_PARENTS_INCOMP', '待完成', 'http://www.xueleyun.com/cloudteach/studentcloudwork/parent/viewIncompleteWorkListPage', 1, 1, 'CLOUD_WORK', '10010000', 2, '/studentcloudwork/parent/viewIncompleteWorkListPage');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUD_WORK_PARENTS_GUIDANCE', '预习', 'http://www.xueleyun.com/cloudteach/studentcloudwork/parent/viewGuidanceWorkListPage', 1, 1, 'CLOUD_WORK', '10100000', 2, '/studentcloudwork/parent/viewGuidanceWorkListPage');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('CLOUD_WORK_PARENTS_WORK', '作业', 'http://www.xueleyun.com/cloudteach/studentcloudwork/parent/viewWorkListPage', 1, 1, 'CLOUD_WORK', '10110000', 2, '/studentcloudwork/parent/viewWorkListPage');
+
+#云学习 pid = 'APPLICATION'
+学习应用 0010000
+课堂重现 0100000
+应用商店 0110000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('APPLICATION_APPLY', '学习应用', 'http://www.xueleyun.com/appcenter/applyStore/getChild', 1, 1, 'APPLICATION', '0010000', 2, '/applyStore/getChild');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('APPLICATION_REPRODUCE', '课堂重现', 'http://www.xueleyun.com/appcenter/eliteClass/getEliteReproduce', 1, 1, 'APPLICATION', '0100000', 2, '/eliteClass/getEliteReproduce');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('APPLICATION_STORE', '应用商店', 'http://www.xueleyun.com/appcenter/applyMarket/getApplyMarket', 1, 1, 'APPLICATION', '0110000', 2, '/applyMarket/getApplyMarket');
+
+#家庭信息 pid = 'FAMILY_INFORMATION'
+我的家庭 010000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('FAMILY_INFORMATION_MY', '我的家庭', 'http://www.xueleyun.com/member/family/index', 1, 1, 'FAMILY_INFORMATION', '010000', 2, '/family/index');
+
+#学校通知 pid = 'SCHOOL_MESSAGE'
+学校通知 010000
+班级通知 100000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('SCHOOL_MESSAGE_LEVEL2', '学校通知', '', 1, 1, 'SCHOOL_MESSAGE', '010000', 2, null);
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('SCHOOL_MESSAGE_CLASS', '班级通知', '', 1, 1, 'SCHOOL_MESSAGE', '100000', 2, null);
+
+#通知 pid = 'MESSAGE'
+接收的通知 010000
+发布的通知 100000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('MESSAGE_INBOX', '接收的通知', 'http://www.xueleyun.com/notify/inbox', 1, 1, 'MESSAGE', '010000', 2, '/inbox');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('MESSAGE_SENDBOX', '发布的通知', 'http://www.xueleyun.com/notify/sendbox', 1, 1, 'MESSAGE', '100000', 2, '/sendbox');
+
+#个人信息，我的信息 pid = 'MY_MESSAGE'
+
+我的信息 010000
+机构动态 sort ＝ '011000'
+学校动态 sort ＝'011100'
+安全设置 100000
+身份管理 110000
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('MY_MESSAGE_LEVEL2', '我的信息', 'http://www.xueleyun.com/member/myMessage/message', 1, 1, 'MY_MESSAGE', '010000', 2, '/myMessage/message');
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('MY_MESSAGE_SECURITY_SETTINGS', '安全设置', 'http://www.xueleyun.com/member/security/binding', 1, 1, 'MY_MESSAGE', '100000', 2, null);
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('MY_MESSAGE_IDENTITY_MANAGEMENT', '身份管理', 'http://www.xueleyun.com/member/myMessage/identity', 1, 1, 'MY_MESSAGE', '110000', 2, '/myMessage/identity');
+
+#add 20150930
+
+#表m_role_resource
+role_id 有
+         'EDUCATION_MANAGER'
+         'PARENT'
+         'SCHOOL_MANAGER'
+         'SCHOOL_MANAGER_TEACHER'
+         'STUDENT'
+         'TEACHER'
+
+#机构管理员的一级菜单
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'EDUCATION_MANAGEMENT');
+       INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'TEACHING_PLAN');
+       INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'HOMEWORK_MANAGEMENT');
+       INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'BLACKBOARD_MANAGEMENT');
+       INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'INTROSPECTION');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'AREA_MANAGER');
+      INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'OFFICIAL_RESOURCES');
+      INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'AREA_RESOURCES');
+      INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'AREA_SCHOOL');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'AREA_ORGANIZATION');
+      INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'AREA_ORGANIZATION_LEVEL2');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'MESSAGE');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'MESSAGE_INBOX');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'MESSAGE_SENDBOX');
+
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'MY_MESSAGE');
+      INSERT INTO m_role_resource(role_id, resource_id) VALUES ('EDUCATION_MANAGER', 'MY_MESSAGE_SECURITY_SETTINGS');
+
+#家长的一级菜单
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'CLOUD_WORK');
+      INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'CLOUD_WORK_PARENTS_INCOMP');
+      INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'CLOUD_WORK_PARENTS_GUIDANCE');
+      INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'CLOUD_WORK_PARENTS_WORK');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'APPLICATION');
+     INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'APPLICATION_APPLY');
+     INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'APPLICATION_REPRODUCE');
+     INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'APPLICATION_STORE');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'FAMILY_INFORMATION');
+     INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'FAMILY_INFORMATION_MY');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'SCHOOL_MESSAGE');
+     INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'SCHOOL_MESSAGE_LEVEL2');
+     INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'SCHOOL_MESSAGE_CLASS');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'MESSAGE');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'MESSAGE_INBOX');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'MY_MESSAGE');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'MY_MESSAGE_LEVEL2');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'MY_MESSAGE_SECURITY_SETTINGS');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'MY_MESSAGE_IDENTITY_MANAGEMENT');
+
+#学校管理员的一级菜单
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'SCHOOL_MANAGEMENT');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'SCHOOL_MANAGEMENT_LEVEL2');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'SCHOOL_MANAGEMENT_STUDENT');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'SCHOOL_MANAGEMENT_TEACHER');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'SCHOOL_MANAGEMENT_POST');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'SCHOOL_SETTINGS');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'SCHOOL_SETTINGS_TEACH_MATERIAL');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'SCHOOL_SETTINGS_SYNCHRONOUS_CLAS');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'SCHOOL_SETTINGS_LENGTH_SCHOOLING');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'EDUCATION_MANAGEMENT');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'TEACHING_PLAN');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'HOMEWORK_MANAGEMENT');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'BLACKBOARD_MANAGEMENT');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'INTROSPECTION');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'MESSAGE');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'MESSAGE_INBOX');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'MESSAGE_SENDBOX');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'MY_MESSAGE');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'MY_MESSAGE_SECURITY_SETTINGS');
+
+#学校管理员老师的一级菜单
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'CLOUD_TEACHING');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'CLOUD_TEACHING_LEVEL2');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'CLOUD_TEACHING_DISK');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'APPLICATION_PREPARELESSON');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'CLOUD_TEACHING_GUIDANCE');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'CLOUD_TEACHING_COURSEWARES');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'CLOUD_TEACHING_WORK');
+
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'CLOUDTEACH_TEACHER_WORKMG');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'CLOUDTEACH_TEACHER_WORKMG_EW');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'CLOUDTEACH_TEACHER_WORKMG_AW');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'CLOUDTEACH_TEACHER_WORKMG_GW');
+
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'EDUCATION_MANAGEMENT');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'TEACHING_PLAN');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'HOMEWORK_MANAGEMENT');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'BLACKBOARD_MANAGEMENT');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'INTROSPECTION');
+
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'SCHOOL_MANAGEMENT');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'SCHOOL_MANAGEMENT_LEVEL2');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'SCHOOL_MANAGEMENT_STUDENT');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'SCHOOL_MANAGEMENT_TEACHER');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'SCHOOL_MANAGEMENT_POST');
+
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'MESSAGE');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'MESSAGE_INBOX');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'MESSAGE_SENDBOX');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'MY_MESSAGE');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'MY_MESSAGE_LEVEL2');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'MY_MESSAGE_SECURITY_SETTINGS');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('SCHOOL_TEACHER_MANAGER', 'MY_MESSAGE_IDENTITY_MANAGEMENT');
+
+#教师的一级菜单
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'CLOUD_TEACHING');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'CLOUD_TEACHING_LEVEL2');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'CLOUD_TEACHING_DISK');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'APPLICATION_PREPARELESSON');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'CLOUD_TEACHING_GUIDANCE');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'CLOUD_TEACHING_COURSEWARES');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'CLOUD_TEACHING_WORK');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'CLOUDTEACH_TEACHER_WORKMG');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'CLOUDTEACH_TEACHER_WORKMG_EW');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'CLOUDTEACH_TEACHER_WORKMG_AW');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'CLOUDTEACH_TEACHER_WORKMG_GW');
+
+#INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'EDUCATION_MANAGEMENT');
+#   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'TEACHING_PLAN');
+#   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'HOMEWORK_MANAGEMENT');
+#   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'BLACKBOARD_MANAGEMENT');
+#   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'INTROSPECTION');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'SCHOOL_MANAGEMENT');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'SCHOOL_MANAGEMENT_LEVEL2');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'SCHOOL_MANAGEMENT_STUDENT');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'SCHOOL_MANAGEMENT_TEACHER');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'SCHOOL_MANAGEMENT_POST');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'MESSAGE');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'MESSAGE_INBOX');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'MESSAGE_SENDBOX');
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'MY_MESSAGE');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'MY_MESSAGE_LEVEL2');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'MY_MESSAGE_SECURITY_SETTINGS');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('TEACHER', 'MY_MESSAGE_IDENTITY_MANAGEMENT');
+
+#学生的一级菜单
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'CLOUD_WORK');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'CLOUD_WORK_STUDENT_TODO');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'CLOUD_WORK_STUDENT_PREP');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'CLOUD_WORK_STUDENT_WORK');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'APPLICATION');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'APPLICATION_APPLY');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'APPLICATION_REPRODUCE');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'APPLICATION_STORE');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'FAMILY_INFORMATION');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'FAMILY_INFORMATION_MY');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'MESSAGE');
+    INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'MESSAGE_INBOX');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'MY_MESSAGE');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'MY_MESSAGE_LEVEL2');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'MY_MESSAGE_SECURITY_SETTINGS');
+   INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'MY_MESSAGE_IDENTITY_MANAGEMENT');
+
+#后续增加 我的信息 购买记录
+INSERT INTO m_resources(resource_id, name, url, r_type, status, pid, sort, level, pattern) VALUES ('MY_MESSAGE_PURCHASE_RECORD', '购买记录', 'http://www.xueleyun.com/member/myMessage/purchaseRecord', 1, 1, 'MY_MESSAGE', '111000', 2, '/myMessage/purchaseRecord');
+
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('STUDENT', 'MY_MESSAGE_PURCHASE_RECORD');
+INSERT INTO m_role_resource(role_id, resource_id) VALUES ('PARENT', 'MY_MESSAGE_PURCHASE_RECORD');
+
+##add 201509 28 start
+# 学校圈 一级菜单 在云学习与家庭信息之间
+INSERT into m_resources (resource_id,name,url,r_type,status,pid,sort,level,pattern) VALUES ('SCHOOL_CIRCLE','学校圈',null,1,1,null,'10010000',1,null);
+
+# 二级菜单
+# 教师圈 teacher 1
+# 班级圈 class 2
+# 家长圈 parent 3
+
+INSERT into m_resources (resource_id,name,url,r_type,status,pid,sort,level,pattern) VALUES ('TEACHER_CIRCLE','教师圈','http://www.xueleyun.com/circle/friendCircle/teacherCircle',1,1,'SCHOOL_CIRCLE','1',2,'/friendCircle/teacherCircle');
+INSERT into m_resources (resource_id,name,url,r_type,status,pid,sort,level,pattern) VALUES ('CLASS_CIRCLE','班级圈','http://www.xueleyun.com/circle/friendCircle/classCircle',1,1,'SCHOOL_CIRCLE','2',2,'/friendCircle/classCircle');
+INSERT into m_resources (resource_id,name,url,r_type,status,pid,sort,level,pattern) VALUES ('PARENT_CIRCLE','家长圈','http://www.xueleyun.com/circle/friendCircle/parentCircle',1,1,'SCHOOL_CIRCLE','3',2,'/friendCircle/parentCircle');
+
+#EDUCATION_MANAGER
+#没有学校圈 一级菜单
+#SCHOOL_MANAGER
+insert into m_role_resource (role_id, resource_id) values ('SCHOOL_MANAGER','SCHOOL_CIRCLE');
+insert into m_role_resource (role_id, resource_id) values ('SCHOOL_MANAGER','TEACHER_CIRCLE');
+insert into m_role_resource (role_id, resource_id) values ('SCHOOL_MANAGER','CLASS_CIRCLE')
+#TEACHER
+insert into m_role_resource (role_id, resource_id) values ('TEACHER','SCHOOL_CIRCLE');
+insert into m_role_resource (role_id, resource_id) values ('TEACHER','TEACHER_CIRCLE');
+insert into m_role_resource (role_id, resource_id) values ('TEACHER','CLASS_CIRCLE');
+
+#STUDENT
+insert into m_role_resource (role_id, resource_id) values ('STUDENT','SCHOOL_CIRCLE');
+insert into m_role_resource (role_id, resource_id) values ('STUDENT','CLASS_CIRCLE');
+
+#PARENT
+insert into m_role_resource (role_id, resource_id) values ('PARENT','SCHOOL_CIRCLE');
+insert into m_role_resource (role_id, resource_id) values ('PARENT','PARENT_CIRCLE');
+
+##############end
+
+#add 我的信息的 二级标题，我的动态 start
+
+#EDUCATION_MANAGER 机构动态 sort ＝ '011000'
+insert into m_resources (resource_id,name,url,r_type,status,pid,sort,level,pattern) values ('ORGAN_DYNAMIC','机构动态','http://www.xueleyun.com/circle/friendCircle／dynamic/org',1,1,'MY_MESSAGE','011000',2,'/dynamic/org');
+
+insert into m_role_resource (role_id,resource_id) values ('EDUCATION_MANAGER','ORGAN_DYNAMIC');
+#SCHOOL_MANAGER 学校动态 sort ＝'011100'
+insert into m_resources (resource_id,name,url,r_type,status,pid,sort,level,pattern) values ('SCHOOL_DYNAMIC','学校动态','http://www.xueleyun.com/circle/friendCircle/dynamic/school',1,1,'MY_MESSAGE','011100',2,'/dynamic/school');
+insert into m_role_resource (role_id,resource_id) values ('SCHOOL_MANAGER','SCHOOL_DYNAMIC');
+
+#TEACHER
+#STUDENT
+#PARENT
+update m_resources set url = 'http://www.xueleyun.com/circle/friendCircle/dynamic',pattern = '/friendCircle/dynamic' where resource_id = 'MY_MESSAGE_LEVEL2';
+
+#积分商城 一级菜单
+INSERT INTO m_resources VALUES ('INTEGRATION_SHOP', '积分商城', 'http://www.xueleyun.com/integration/userintegration/shopindex', 1, 1, null, '11010001', '1', '/userintegration/shopindex');
+#二级菜单
+INSERT INTO m_resources VALUES ('INTEGRATION_ORDERLIST', '我的兑换', 'http://www.xueleyun.com/integration/userintegration/orderlist', 1, 1, 'INTEGRATION_SHOP', '0000010', 2, '/userintegration/orderlist');
+INSERT INTO m_resources VALUES ('INTEGRATION_SHOP_INDEX', '积分商城', 'http://www.xueleyun.com/integration/userintegration/shopindex', 1,1, 'INTEGRATION_SHOP', '0000001', 2, '/userintegration/shopindex');
+
+#权限限制
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('TEACHER', 'INTEGRATION_SHOP');
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('TEACHER', 'INTEGRATION_SHOP_INDEX');
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('TEACHER', 'INTEGRATION_ORDERLIST');
+
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('STUDENT', 'INTEGRATION_SHOP');
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('STUDENT', 'INTEGRATION_SHOP_INDEX');
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('STUDENT', 'INTEGRATION_ORDERLIST');
+
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('PARENT', 'INTEGRATION_SHOP');
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('PARENT', 'INTEGRATION_SHOP_INDEX');
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('PARENT', 'INTEGRATION_ORDERLIST');
+
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'INTEGRATION_SHOP');
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'INTEGRATION_SHOP_INDEX');
+INSERT INTO m_role_resource (role_id, resource_id) VALUES ('SCHOOL_MANAGER', 'INTEGRATION_ORDERLIST');
+
+
+#20151013 资源改名称
+update m_resources set name='应用中心' where resource_id='APPLICATION_STORE';
+
+2015-11-20 添加老师和管理层老师的应用中心一级目录,位置在云教学和作业管理之后,排在第三位
+INSERT INTO m_resources (resource_id,name,r_type,status,sort,level)
+    VALUES ('APPLICATION_CENTER','应用中心',1,1,'00101000',1);
+INSERT INTO m_resources (resource_id,name,url,r_type,status,pid,sort,level,pattern)
+VALUES ('APPLICATION_CENTER_SON','应用中心','http://www.xueleyun.com/appcenter/applyMarket/getTeacherApplyMarket',1,1,'APPLICATION_CENTER','00010000',2,'/applyMarket/getTeacherApplyMarket');
+
+INSERT m_role_resource (id,role_id,resource_id) VALUES (800,'TEACHER','APPLICATION_CENTER');
+INSERT m_role_resource (id,role_id,resource_id) VALUES (801,'TEACHER','APPLICATION_CENTER_SON');
+INSERT m_role_resource (id,role_id,resource_id) VALUES (802,'SCHOOL_TEACHER_MANAGER','APPLICATION_CENTER');
+INSERT m_role_resource (id,role_id,resource_id) VALUES (803,'SCHOOL_TEACHER_MANAGER','APPLICATION_CENTER_SON');

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       xmlns:context="http://www.springframework.org/schema/context">
+
+    <!--<context:property-placeholder location="classpath*:jdbc.properties" ignore-unresolvable="true"/>-->
+
+    <!--配置中心-->
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="properties" ref="propertiesConfiguration"/>
+    </bean>
+
+    <bean id="propertiesConfiguration" class="com.github.diamond.client.PropertiesConfigurationFactoryBean"/>
+
+    <!--配置中心
+    -Dsuperdiamond.projcode=member
+    -Dsuperdiamond.profile=development
+    -Dsuperdiamond.host=192.168.1.178
+    -Dsuperdiamond.port=8283
+    -Dsuperdiamond.modules=database,data-cache,dubbo,message-quene,basics
+    -->
+
+
+    <context:annotation-config/>
+
+    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource">
+        <property name="driverClassName" value="${mysql.driverClassName}"/>
+        <property name="url" value="${mysql.url}"/>
+        <property name="username" value="${mysql.username}"/>
+        <property name="password" value="${mysql.password}"/>
+        <property name="initialSize" value="${mysql.initialSize}"/>
+        <property name="maxActive" value="${mysql.maxActive}"/>
+        <property name="maxIdle" value="${mysql.maxIdle}"/>
+        <property name="minIdle" value="${mysql.minIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${mysql.timeBetweenEvictionRunsMillis}"/>
+        <property name="minEvictableIdleTimeMillis" value="${mysql.minEvictableIdleTimeMillis}"/>
+
+
+        <property name="validationQuery" value="${mysql.validationQuery}"/>
+        <property name="testOnBorrow" value="${mysql.testOnBorrow}"/>
+        <property name="testWhileIdle" value="${mysql.testWhileIdle}"/>
+        <property name="validationInterval" value="${mysql.validationInterval}"/>
+        <property name="validationQueryTimeout" value="${mysql.validationQueryTimeout}"/>
+
+        <property name="removeAbandoned" value="${mysql.removeAbandoned}"/>
+        <property name="removeAbandonedTimeout" value="${mysql.removeAbandonedTimeout}"/>
+        <property name="logAbandoned" value="${mysql.logAbandoned}"/>
+
+        <property name="defaultTransactionIsolation" value="${mysql.defaultTransactionIsolation}"/>
+
+    </bean>
+
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="net.xuele.member.persist"/>
+    </bean>
+
+</beans>

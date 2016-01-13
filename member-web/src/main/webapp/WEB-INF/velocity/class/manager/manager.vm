@@ -1,0 +1,110 @@
+#set($page_title="管理人员列表_学校管理")
+#define($script)
+<script>
+    var ctlmenu = [
+//        {cls: 'action-home', icon: 'icon-home', name: '教师空间'},
+        {cls: 'action-edit', icon: 'icon-edit', name: '变更资料'},
+        {cls: 'action-changeset', icon: 'icon-refresh', name: '更换校长'},
+        {cls: 'action-del', icon: 'icon-remove', name: '从管理层删除'}
+    ];
+    var positionList = [
+        #foreach($position in $positionsList)
+            {'name': '${position.name}', 'positionId': '${position.positionId}'}#if($foreach.hasNext),#end
+        #end
+    ];
+</script>
+<script>seajs.use('page/member/pmanager');</script>
+#end
+<div class="container">
+    <div class="inner page-leftright">
+
+        <div class="sider">
+            <div class="search-sider">
+                <div class="search-nml">
+                    <form action="index" method="get">
+                        #if(""!="$!{realName}")
+                            <input class="ipt" type="text" id="" value="$!{realName}"
+                                   placeholder="输入老师名称搜索" />
+                            <a class="close" href="index"></a>
+                        #else
+                            <input class="ipt" type="text" name="realName" id="" value="$!{realName}"
+                                   placeholder="输入老师名称搜索" />
+                            <input class="btn" type="submit" value="搜索" />
+                        #end
+                    </form>
+                </div>
+            </div>
+            <ul class="class-list">
+                #set($total=0)
+                #foreach($grade in $gradeDTOs)
+                    #set($total=$total+${grade.classNumber})
+                    <li #if($grade.id == $selectedGrade.id)
+                            class="grade-item-${grade.id} on"
+                    #else class="grade-item-${grade.id}"
+                    #end>
+                        <a href="${ctx}/class/index?grade=${grade.id}"><i class="icon-nml"></i>
+                            $!{grade.levelName}（<span>$!{grade.classNumber}</span>）
+                        </a>
+                    </li>
+                #end
+                <li class="on"><a href="${ctx}/manager/index"><i class="icon-mgr"></i>管理层</a></li>
+                #*<li class="on"><a href=""><i class="icon-dpt"></i>学校社团</a></li>*#
+                <li #*class="on"*#><a href="${ctx}/graduatingClass/index"><i class="icon-gc"></i>毕业班级</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <div class="title">
+                <h2 class="nm">管理层（<em class="nm-num">$!{managerList.size()}</em>）</h2>
+                #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                    <p class="extra">
+                        <a class="J_mngadd" href="javascript:;"><i class="icon-add"></i>添加管理层人员</a>
+                    </p>
+                #end
+            </div>
+            <ul class="user-rect">
+                #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                    <li class="list-item list-item-0 principal" data-menuhide="del"
+                        #if(($managerList.size()<1||$managerList.get(0).positionId!=$principal)&&($realName &&$realName==""))
+                            style="display:block;"
+                        #else
+                            style="display:none;"
+                        #end>
+                        <div>
+                            <img class="portrait" src="http://asset.xueleyun.com/g/imgs/av96d.png" alt="老师头像" />
+                            <span class="name"><a class="J_mngprincipal" href="javascript:;"><i class="icon-add"></i>添加校长</span></a>
+                        </div>
+                        <img class="more-act" src="http://asset.xueleyun.com/imgs/member/user-rect.png" alt="更多操作" />
+                    </li>
+                #end
+                #foreach($manager in $managerList)
+                    #if($manager.positionId==$principal)
+                        <li class="list-item list-item-$manager.userId" data-pid="${manager.positionId}"
+                            data-id="${manager.userId}" data-menuhide="del">
+                            <div>
+                                <img class="portrait" src="${bigSrc}${manager.icon}.jpg" alt="校长头像" /><br />
+                                <span class="name">$!{manager.realName}</span><br />
+                                <span class="nums">$!{manager.positionName}</span>
+                            </div>
+                            #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                                <img class="more-act" src="http://asset.xueleyun.com/imgs/member/user-rect.png" alt="更多操作" />
+                            #end
+                        </li>
+                    #else
+                        <li class="list-item list-item-$manager.userId" data-pid="${manager.positionId}"
+                            data-id="${manager.userId}"
+                            data-menuhide="changeset">
+                            <div>
+                                <img class="portrait" src="${bigSrc}${manager.icon}.jpg" alt="老师头像" /><br />
+                                <span class="name">$!{manager.realName}</span><br />
+                                <span class="nums">$!{manager.positionName}</span>
+                            </div>
+                            #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                                <img class="more-act" src="http://asset.xueleyun.com/imgs/member/user-rect.png" alt="更多操作" />
+                            #end
+                        </li>
+                    #end
+                #end
+            </ul>
+        </div>
+    </div>
+</div>

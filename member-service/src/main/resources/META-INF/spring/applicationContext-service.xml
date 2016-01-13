@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:provider timeout="60000" retries="0" />
+
+    <bean class="net.xuele.member.service.impl.SeqGeneratorServiceRedisImpl" id="seqGeneratorServiceRedis"/>
+    <bean class="net.xuele.member.service.impl.CasLoginServiceImpl" id="casLoginService"/>
+    <bean class="net.xuele.member.service.impl.UserServiceImpl" id="userService"/>
+    <bean class="net.xuele.member.service.impl.ResourceServiceImpl" id="resourceService"/>
+    <bean class="net.xuele.member.service.impl.UserDetailsServiceImpl" id="userDetailsService"/>
+    <bean class="net.xuele.member.service.impl.SchoolServiceImpl" id="schoolService"/>
+    <bean class="net.xuele.member.service.impl.ClassServiceImpl" id="classService"/>
+    <bean class="net.xuele.member.service.impl.StudentServiceImpl" id="studentService"/>
+    <bean class="net.xuele.member.service.impl.TeacherServiceImpl" id="teacherService"/>
+    <bean class="net.xuele.member.service.impl.SummaryServiceImpl" id="summaryService"/>
+    <bean class="net.xuele.member.service.impl.PositionServiceImpl" id="positionService"/>
+    <bean class="net.xuele.member.service.impl.SchoolPeriodServiceImpl" id="schoolPeriodService"/>
+    <bean class="net.xuele.member.service.impl.CtBookServiceImpl" id="ctBookService"/>
+    <bean class="net.xuele.member.service.impl.SchoolBookServiceImpl" id="schoolBookService"/>
+    <bean class="net.xuele.member.service.impl.EducationOrganizationServiceImpl" id="educationOrganizationService"/>
+    <bean class="net.xuele.member.service.impl.SendMessageServiceImpl" id="sendMessageService"/>
+    <bean class="net.xuele.member.service.impl.FamilyRelationServiceImpl" id="familyRelationService"/>
+    <bean class="net.xuele.member.service.impl.ExtraBookServiceImpl" id="extraBookService"/>
+    <bean class="net.xuele.member.service.impl.CacheServiceImpl" id="cacheService"/>
+
+    <dubbo:service ref="casLoginService" interface="net.xuele.member.service.CasLoginService" />
+    <dubbo:service ref="userService" interface="net.xuele.member.service.UserService" >
+        <dubbo:method name="saveExcelUser" timeout="360000"></dubbo:method>
+        <dubbo:method name="updateSendActiveCodeEmail" timeout="10000" />
+    </dubbo:service>
+    <dubbo:service ref="resourceService" interface="net.xuele.member.service.ResourceService" />
+    <dubbo:service ref="userDetailsService" interface="org.springframework.security.core.userdetails.UserDetailsService" timeout="40000" />
+    <dubbo:service ref="schoolService" interface="net.xuele.member.service.SchoolService" />
+    <dubbo:service ref="classService" interface="net.xuele.member.service.ClassService" />
+    <dubbo:service ref="studentService" interface="net.xuele.member.service.StudentService" />
+    <dubbo:service ref="teacherService" interface="net.xuele.member.service.TeacherService" />
+    <dubbo:service ref="summaryService" interface="net.xuele.member.service.SummaryService" />
+    <dubbo:service ref="positionService" interface="net.xuele.member.service.PositionService" />
+    <dubbo:service ref="schoolPeriodService" interface="net.xuele.member.service.SchoolPeriodService" />
+    <dubbo:service ref="ctBookService" interface="net.xuele.member.service.CtBookService" />
+    <dubbo:service ref="schoolBookService" interface="net.xuele.member.service.SchoolBookService" />
+    <dubbo:service ref="educationOrganizationService" interface="net.xuele.member.service.EducationOrganizationService" />
+    <dubbo:service ref="sendMessageService" interface="net.xuele.member.service.SendMessageService"/>
+    <dubbo:service ref="familyRelationService" interface="net.xuele.member.service.FamilyRelationService"/>
+    <dubbo:service ref="extraBookService" interface="net.xuele.member.service.ExtraBookService"/>
+    <dubbo:reference id="writeAccessLogService" interface="net.xuele.teacheval.service.WriteAccessLogService"
+                     check="false" async="true"/>
+</beans>

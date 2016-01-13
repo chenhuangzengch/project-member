@@ -1,0 +1,95 @@
+#set($page_title="毕业班级_学校管理")
+#define($script)
+<script></script>
+#end
+<div class="container">
+    <div class="inner page-leftright">
+        <div class="sider">
+            <div class="search-sider">
+                <div class="search-nml">
+                    <form action="index" method="get">
+                        #if(""!="$!{aliasName}")
+                            <input class="ipt" type="text" id="" value="$!{aliasName}"
+                                   placeholder="输入班级名称搜索" />
+                            <a class="close" href="index"></a>
+                        #else
+                            <input class="ipt" type="text" name="aliasName" id="" value="$!{aliasName}"
+                                   placeholder="输入班级名称搜索" />
+                            <input class="btn" type="submit" value="搜索" />
+                        #end
+                    </form>
+                </div>
+            </div>
+            <ul class="class-list">
+                #set($total=0)
+                #foreach($grade in $gradeDTOs)
+                    #set($total=$total+${grade.classNumber})
+                    <li #if($grade.id == $selectedGrade.id)
+                            class="grade-item-${grade.id} on"
+                        #else class="grade-item-${grade.id}"
+                        #end>
+                        <a href="${ctx}/class/index?grade=$!{grade.id}"><i class="icon-nml"></i>
+                            $!{grade.levelName}（<span>$!{grade.classNumber}</span>）
+                        </a>
+                    </li>
+                #end
+                <li #*class="on"*#><a href="${ctx}/manager/index"><i class="icon-mgr"></i>管理层</a></li>
+                #*<li class="on"><a href=""><i class="icon-dpt"></i>学校社团</a></li>*#
+                <li class="on"><a href="${ctx}/graduatingClass/index"><i class="icon-gc"></i>毕业班级</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <div class="graduating-list">
+                #if($graduatingClass.size()>0)
+                    #foreach($graduate in $graduatingClass)
+                        <div class="graduating-item">
+                            <div class="hd">$graduate.year年</div>
+                            <div class="bd">
+                                #foreach($period in $schoolPeriod)
+                                    #if($period.section==$primary && $graduate.primarySchool.size()>0)
+                                        <h3>小学（$!{period.length}年制）</h3>
+                                        <ul>
+                                            #foreach($primaryschool in $graduate.primarySchool)
+                                                <li>
+                                                    <img class="av-user" src="${smallSrc}${primaryschool.mImage}.jpg" alt="" />
+                                                    <p class="nm">$!{primaryschool.name}</p>
+                                                    <p class="nums">$!{primaryschool.studentNumber}学生</p>
+                                                </li>
+                                            #end
+                                        </ul>
+                                    #elseif($period.section==$middle&&$graduate.middleSchool.size()>0)
+                                        <h3>初中（$!{period.length}年制）</h3>
+                                        <ul>
+                                            #foreach($middleSchool in $graduate.middleSchool)
+                                                <li>
+                                                    <img class="av-user" src="${smallSrc}${middleSchool.mImage}.jpg" alt="" />
+                                                    <p class="nm">$!{middleSchool.name}</p>
+                                                    <p class="nums">$!{middleSchool.studentNumber}学生</p>
+                                                </li>
+                                            #end
+                                        </ul>
+                                    #elseif($period.section==$high&&$graduate.highSchool.size()>0)
+                                        <h3>高中（$!{period.length}年制）</h3>
+                                        <ul>
+                                            #foreach($highSchool in $graduate.highSchool)
+                                                <li>
+                                                    <img class="av-user" src="${smallSrc}${highSchool.mImage}.jpg" alt="" />
+                                                    <p class="nm">$!{highSchool.name}</p>
+                                                    <p class="nums">$!{highSchool.studentNumber}学生</p>
+                                                </li>
+                                            #end
+                                        </ul>
+                                    #end
+                                #end
+                            </div>
+                        </div>
+                    #end
+                #else
+                    <div class="empty">
+                        <p class="empty-msg">无毕业班级</p>
+                    </div>
+                #end
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,107 @@
+#set($page_title="用户列表_班级_学校管理")
+#define($script)
+<script>
+    var pageinfo = {};
+    pageinfo.schoolid = "$mClass.schoolId";
+    pageinfo.grade = $mClass.years;
+    pageinfo.classid = "$mClass.classId";
+</script>
+<script>
+    var ctlmenu_student = [
+//            {cls: 'stu-action-home', icon: 'icon-home', name: '学生空间'},
+            {cls: 'stu-action-reset', icon: 'icon-lock', name: '重置密码'},
+            {cls: 'stu-action-edit', icon: 'icon-edit', name: '变更资料'}
+    ];
+    var ctlmenu_teacher = [
+//            {cls: 'tch-action-home', icon: 'icon-home', name: '老师空间'},
+            {cls: 'tch-action-reset', icon: 'icon-lock', name: '重置密码'},
+            {cls: 'tch-action-edit', icon: 'icon-edit', name: '变更资料'}
+    ];
+    var schoolGrades = [
+        #foreach($grade in $gradeList)
+            {'name': "${grade.getLevelName()}", 'year': "${grade.id}"}#if($foreach.hasNext),#end
+        #end
+    ];
+    var positionList = [
+        #foreach($position in $positionsList)
+            { 'name': "${position.name}", 'positionId': "${position.positionId}"}#if($foreach.hasNext),#end
+        #end
+    ];
+</script>
+<script>seajs.use('page/member/pclass');</script>
+#end
+<div class="container">
+    <div class="inner page-full">
+
+        <div class="member-wrap">
+            <h2 class="class-type">$!{mClass.aliasName}<span>$!{mClass.name}</span></h2>
+            <div class="wrap wrap-tea">
+                <h3 class="sub-head">
+                    <span>任课老师（$!{teacherList.size()}）</span>
+                    <em>
+                        <span>图标为班主任</span>
+                        <img src="http://asset.xueleyun.com/imgs/member/charge-tea.png" />
+                    </em>
+                </h3>
+                #if($teacherList.size()==0)
+                    <div class="empty">
+                        <p class="empty-msg">没有任何老师</p>
+                        #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                            <p class="empty-ctls"><a class="J_chairadd" href="javascript:;"><i class="icon-add"></i>添加班主任</a></p>
+                        #end
+                    </div>
+                #else
+                    <ul class="user-rect">
+                        #foreach($teacher in $teacherList)
+                                <li class="list-item list-item-$teacher.userId" data-id="${teacher.userId}">
+                                    <div>
+                                        <img class="portrait" src="${bigSrc}${teacher.icon}.jpg" alt="老师头像"/><br />
+                                        #if($teacher.charge==1)
+                                            <span class="name charge-tea">$!{teacher.realName}</span><br />
+                                        #else
+                                            <span class="name">$!{teacher.realName}</span><br />
+                                        #end
+                                        <span class="nums">$!{teacher.userId}</span><br />
+                                    </div>
+                                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                                        <img class="more-act" src="http://asset.xueleyun.com/imgs/member/user-rect.png" alt="更多操作" />
+                                    #end
+                                </li>
+                        #end
+                    </ul>
+                #end
+            </div>
+            <div class="wrap wrap-stu">
+                <h3 class="sub-head">
+                    <span>班级学生（$!{studentList.size()}）</span>
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        <em class="add-stu"><span>添加学生</span><img src="http://asset.xueleyun.com/imgs/member/add-blue.png" alt=" 添加学生"></em>
+                    #end
+                </h3>
+                #if($studentList.size()==0)
+                    <div class="empty">
+                        <p class="empty-msg">没有任何学生</p>
+                        #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                            <p class="empty-ctls"><a class="add-stu" href="javascript:;"><i class="icon-add"></i>添加学生</a></p>
+                        #end
+                    </div>
+                #else
+                <ul class="user-rect">
+                    #foreach($student in $studentList)
+                            <li class="list-item list-item-$student.userId" data-id="${student.userId}">
+                                <div>
+                                    <img class="portrait" src="${bigSrc}${student.icon}.jpg" alt="学生头像" /><br />
+                                    <span class="name">$!{student.realName}</span><br />
+                                    <span class="nums">$!{student.userId}</span><br />
+                                </div>
+                                #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                                    <img class="more-act" src="http://asset.xueleyun.com/imgs/member/user-rect.png" alt="更多操作" />
+                                #end
+                            </li>
+                    #end
+                </ul>
+                #end
+            </div>
+        </div>
+    </div>
+</div>

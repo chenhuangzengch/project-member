@@ -1,0 +1,22 @@
+#set($layout="layout/security.vm")
+#set($page_title="绑定成功-绑定邮箱验证身份")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/member.css?version=${version}" />
+#end
+<div class="header header-global">
+    <div class="inner">
+        <div class="logo">
+            <h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+        </div>
+    </div>
+</div>
+<div class="container container-global">
+    <div class="inner">
+        <div class="vertify-mail">
+            <div class="title"><i class="icon-succ"></i>恭喜您，绑定成功！</div>
+            <div class="info">您的邮箱  <span>$!{email}</span>  已经成功绑定</div>
+            <p class="ctl"><a class="btn" href="${ctx}/j_spring_cas_security_logout">立即登录</a></p>
+        </div>
+
+    </div>
+</div>

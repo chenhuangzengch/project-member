@@ -1,0 +1,187 @@
+#set($page_title="教师管理")
+#set($param="?realName=$!{pageRequest.realName}&positionId=$!{pageRequest.positionId}&subjectId=$!{pageRequest.subjectId}")
+#set($url="index$param")
+#define($script)
+<script>
+    var pageinfo = {};
+    pageinfo.schoolid = 10001;
+    pageinfo.grade = 2014;
+    pageinfo.classid = 1234;
+</script>
+<script>
+    var ctlmenu = [
+//            {cls: 'action-home', icon: 'icon-home', name: '教师空间'},
+            {cls: 'action-changeset', icon: 'icon-edit', name: '资料变更'},
+            {cls: 'action-leave', icon: 'icon-remove', name: '教师离校'}
+    ];
+    var positionList = [
+        #foreach($position in $positions)
+            { 'name': '${position.name}', 'positionId': '${position.positionId}' }#if($foreach.hasNext),#end
+        #end
+    ];
+
+    var courseList = [
+        #foreach($summary in $summaries)
+            { 'name': '${summary.summaryName}', 'courseId': '${summary.summaryCode}' }#if($foreach.hasNext),#end
+        #end
+    ];
+</script>
+<script>seajs.use('page/member/pteacher');</script>
+#end
+<div class="container">
+    <div class="inner page-full">
+        <div class="member-wrap">
+            <div class="inner-search">
+                #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                    <i class="sel-chk-no sel-all"></i>
+                #end
+                <div class="sel-all-novalue">
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        <label for="sel-all">全选</label>
+                    #end
+                    <div class="wrap">
+                        <form action="index??positionId=$!{pageRequest.positionId}&subjectId=$!{pageRequest.subjectId}" method="post">
+                            <input type="text" placeholder="输入教师名称搜索" name="realName" value="$!{pageRequest.realName}"/>
+                            <button><i clss="search"></i>搜索</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="sel-all-hasvalue" style="display:none;">
+                    <label for="sel-all">已选择 <em class="sel-num">0</em> 名教师</label>
+                    <ul class="ul-op">
+                        <li class="off-school"><i></i><span>教师离校</span></li>
+                        <li class="change-pwd"><i></i><span>重置密码</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="sub-nav">
+                <div class="g-sel J_PositionCourse">
+                    <div class="gc position" data-def="2">
+                        <div class="g-wrap">
+                            #if(!$positionId)
+                                #set($positionId="")
+                            #end
+
+                            #if ($positionId && $positionId !='')
+                                #foreach($position in $positions)
+                                    #if($position.positionId ==$positionId)
+                                        $position.name
+                                    #end
+                                #end
+                            #else
+                                <span>所有职务</span>
+                            #end
+                            <i class="icon-down"></i>
+                        </div>
+                        <div class="ul-g">
+                            <ul>
+                                #foreach($position in $positions)
+                                    <li><a href="index?positionId=${position.positionId}">${position.name}</a></li>
+                                #end
+                                #if($positionId!="")
+                                    <li><a href="index">所有职务</a></li>
+                                #end
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="gc course" data-def="3">
+                        <div class="g-wrap">
+                            #if(!$subject)
+                                #set($subject="")
+                            #end
+
+                            #if ($subject && $subject !="")
+                                #foreach($summary in $summaries)
+                                    #if($summary.summaryCode ==$subject)
+                                        $summary.summaryName
+                                    #end
+                                #end
+                            #else
+                                <span>所有科目</span>
+                            #end
+                            <i class="icon-down"></i>
+                        </div>
+                        <div class="ul-c">
+                            <ul>
+                                #foreach($summary in $summaries)
+                                    <li><a href="index?subjectId=${summary.summaryCode}">${summary.summaryName}</a></li>
+                                #end
+                                #if($subject != "")
+                                    <li><a href="index">所有科目</a></li>
+                                #end
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                    <ul class="navs">
+                        <li class="nav-off"><i></i><a href="./leave">回收站</a></li>
+                        <li class="nav-download"><i></i><a href="download$param">下载查询数据</a></li>
+                        <li class="nav-import"><i></i><a href="${ctx}/schoolManagerInit/anotherImport?type=$!{type}">批量导入教师</a></li>
+                        <li class="nav-add"><i></i><a href="javascript:;">新增教师</a></li>
+                    </ul>
+                #end
+            </div>
+            <h2 class="summary">所有教师（<span>${pageResponse.records}</span>）</h2>
+            #if($pageResponse.total==0)
+                #if($!{pageRequest.realName})
+                    <div class="empty">
+                        <p class="empty-msg">暂无数据</p>
+                    </div>
+                #else
+                    <div class="empty">
+                        <p class="empty-msg">没有任何教师</p>
+                        #if(!${sec.anyGranted("SCHOOL_MANAGER")})
+                        <p class="empty-who">需要学校管理员创建教师</p>
+                        #end
+                        #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                            <p class="empty-ctls"><a class="J_tchadd" href="javascript:;"><i
+                                    class="icon-add"></i>添加教师</a></p>
+                        #end
+                    </div>
+                #end
+            #else
+            <table class="tb-userlist">
+                <thead>
+                <tr>
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        <th class="sel-all"></th>
+                    #end
+                    <th>教师姓名</th>
+                    <th>主授科目</th>
+                    <th>职务</th>
+                    <th>登录账号</th>
+                    <th>上线情况</th>
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        <th>操作</th>
+                    #end
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    #foreach($item in ${pageResponse.rows})
+                    <tr class="list-item list-item-${item.userId}" data-id="${item.userId}">
+                        #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                            <td class="no-border"><i class="sel sel-chk-no"></i></td>
+                        #end
+                        <td><img class="av-class" src="${normalSrc}${item.icon}.jpg" alt=""><span>$!{item.realName}</span></td>
+                        <td>$!{item.subjectName}</td>
+                        <td>$!{item.positionName}</td>
+                        <td>${item.userId}</td>
+                        <td>${item.date}</td>
+                        #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                            <td class="new-password"><a class="J_resetpass" href="javascript:;"><i></i>重置密码</a></td>
+                            <td class="ctl"><img class="ctlmenu" src="http://asset.xueleyun.com/imgs/member/tb-ctls.gif" alt=""></td>
+                        #end
+                    </tr>
+                    #end
+                </tbody>
+            </table>
+            <div class="pagination">
+                #parse("common/page.vm")
+            </div>
+            #end
+        </div>
+    </div>
+</div>

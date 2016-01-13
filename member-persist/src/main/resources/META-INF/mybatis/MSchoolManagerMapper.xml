@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MSchoolManagerMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MSchoolManager" >
+    <id column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="school_name" property="schoolName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ManPrResultMap" type="net.xuele.member.domain.MSchoolManagerPrincipal" >
+    <id column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="icon" property="schoolName" jdbcType="VARCHAR" />
+    <result column="position_id" property="positionId" jdbcType="VARCHAR" />
+    <result column="position_name" property="positionName" jdbcType="VARCHAR" />
+    <result column="school_name" property="schoolName" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="UserTeacherResultMap" type="net.xuele.member.domain.MUserTeacher">
+    <id column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="subject_id" jdbcType="VARCHAR" property="subjectId" />
+    <result column="subject_name" jdbcType="VARCHAR" property="subjectName" />
+    <result column="position_id" jdbcType="VARCHAR" property="positionId" />
+    <result column="position_name" jdbcType="VARCHAR" property="positionName" />
+    <result column="book_id" jdbcType="VARCHAR" property="bookId" />
+    <result column="book_name" jdbcType="VARCHAR" property="bookName" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey"  >
+    delete from m_school_manager
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.member.domain.MSchoolManager" >
+    insert into m_school_manager (user_id, school_id, school_name
+      )
+    values (#{userId,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}, #{schoolName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.MSchoolManager" >
+    update m_school_manager
+    set school_id = #{schoolId,jdbcType=VARCHAR},
+      school_name = #{schoolName,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+
+  <!--APP接口：根据用户ID获取该用户所在的学校-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select user_id, school_id, school_name
+      from m_school_manager
+     where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select user_id, school_id, school_name
+    from m_school_manager
+  </select>
+
+  <!--APP接口、WEB平台：根据学校ID获取学校的管理员和校长-->
+  <select id="querySchoolManagerAndPrincipal"  resultMap="ManPrResultMap">
+        SELECT u.user_id,u.real_name,u.icon,'' position_id,''  position_name,sm.school_name,sm.school_id  FROM m_users u JOIN m_school_manager  sm ON sm.user_id = u.user_id
+        WHERE   sm.school_id = #{schoolId,jdbcType=VARCHAR}
+        UNION
+        SELECT u.user_id,u.real_name,u.icon,mt.position_id,mt.position_name,mt.school_name,mt.school_id  FROM m_users u
+	 JOIN m_teacher mt  ON mt.user_id = u.user_id AND mt.position_id= 'PRINCIPAL'
+        WHERE   mt.school_id =   #{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <!-- App 接口，修改学校名称-->
+  <update id="updateSchoolNameBySchoolId" >
+    UPDATE m_school_manager set school_name = #{schoolName,jdbcType=VARCHAR}
+                WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+  </update>
+</mapper>

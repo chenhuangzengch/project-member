@@ -1,0 +1,43 @@
+#set($layout="layout/init.vm")
+#set($page_title="STEP2-家长数据初始化")
+#define($script)
+<script>seajs.use('page/member/pprtinit');</script>
+#end
+	<div class="header header-init">
+		<div class="inner">
+			<div class="logo">
+				<h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+			</div>
+			<div class="ctls">
+			</div>
+		</div>
+	</div>	<div class="container">
+		<div class="inner page-init">
+
+			<div class="prt-init">
+				<h2 class="title">亲爱的家长，欢迎您</h2>
+				<h3 class="title-sub">学乐云教学 为您优化教与学</h3>
+				<div class="prt-invite">
+					<div class="stu-detail">
+						<img src="${bigSrc}${userDTO.icon}.jpg" alt="" />
+						<p><span class="nm">$!{familyRelationDTO.targetUserName}</span>邀请您加入</p>
+					</div>
+					<div class="real-detail">
+						<form name="form-ivtprt" action="${ctx}/parentInit/fillName" method="post">
+						<ul>
+                            <li>
+                                <label for="">您的真实姓名：</label>
+                                <input type="text" class="ipt" name="nm" />
+                            </li>
+                            <li><label for="">称谓：</label>$!{familyRelationDTO.memberName}</li>
+                            <li><label for="">手机号码：</label>$!{userDTO.mobile}</li>
+							<li class="ctl">
+								<button class="btn" type="submit">下一步</button>
+							</li>
+						</ul>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>

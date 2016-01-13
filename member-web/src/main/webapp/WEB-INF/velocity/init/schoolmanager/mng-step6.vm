@@ -1,0 +1,67 @@
+#set($layout="layout/init.vm")
+#set($page_title="SECSTEP1-上传数据")
+#set($user=${request.session.getAttribute("SPRING_SECURITY_CONTEXT").authentication.principal})
+#define($script)
+<script>seajs.use('page/member/pmnginit');</script>
+#end
+<div class="header header-init">
+    <div class="inner">
+        <div class="logo">
+            <h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+        </div>
+        <div class="ctls">
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="inner page-init">
+        <div class="page-data">
+            #if($type==$teacher)
+                <h2 class="title">导入您学校的教师</h2>
+            #elseif($type==$student)
+                <h2 class="title">导入您学校的学生</h2>
+            #else
+                <h2 class="title">导入您学校的教师和学生</h2>
+            #end
+            <div class="content step1">
+                <div class="video">
+                    <img src="http://asset.xueleyun.com/imgs/member/demo510X340.jpg" alt="" />
+                </div>
+                <div class="cnts">
+                    <a href="downLoad?type=$type" class="download">下载模板数据</a>
+
+                    <p>请参照左侧示例图片，填写Excel模板文件</p>
+                    <a href="javascript:;" class="upload">点击上传文件</a>
+                    #if($type==$teacher)
+                        <p>您上传Excel文件中的教师会被全部添加到学校中</p>
+                    #elseif($type==$student)
+                        <p>您上传Excel文件中的学生会被全部添加到学校中</p>
+                    #else
+                        <p>您上传Excel文件中的教师和学生会被全部添加到学校中</p>
+                    #end
+                    <p>注：新用户默认密码为123456</p>
+                    <div class="content step3">
+                        <div class="success">
+                            #if($type==$teacher)
+                                <p class="p3"><a href="${ctx}/teacher/index">完成</a></p>
+                            #elseif($type==$student)
+                                <p class="p3"><a href="${ctx}/student/index">完成</a></p>
+                            #else
+                                <p class="p3"><a href="${ctx}">完成</a></p>
+                            #end
+                        </div>
+                    </div>
+                    <form action="upload?type=$!{type}" name="uploadform" method="post" enctype="multipart/form-data">
+                        <input type="file" name="datafile" id="" style="display:none;" />
+                    </form>
+                </div>
+
+            </div>
+            <div class="content step2">
+                <p class="loading"></p>
+
+                <p>正在上传Excel文件并导入数据，请稍后 ...</p>
+            </div>
+        </div>
+    </div>
+</div>

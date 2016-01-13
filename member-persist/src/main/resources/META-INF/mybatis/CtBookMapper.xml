@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.CtBookMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.CtBook" >
+    <id column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+    <result column="subject_id" property="subjectId" jdbcType="VARCHAR" />
+    <result column="subject_name" property="subjectName" jdbcType="VARCHAR" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="semester" property="semester" jdbcType="INTEGER" />
+    <result column="semester_describe" property="semesterDescribe" jdbcType="VARCHAR" />
+    <result column="edition_id" property="editionId" jdbcType="VARCHAR" />
+    <result column="extra_book_id" property="extraBookId" jdbcType="VARCHAR" />
+    <result column="extra_book_name" property="extraBookName" jdbcType="VARCHAR" />
+    <result column="extra_count" property="extraCount" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="BookInfoResultMap" type="net.xuele.member.domain.CtBookInfo" >
+    <id column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+    <result column="subject_id" property="subjectId" jdbcType="VARCHAR" />
+    <result column="subject_name" property="subjectName" jdbcType="VARCHAR" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="is_main" property="isMain" jdbcType="INTEGER" />
+    <result column="semester" property="semester" jdbcType="INTEGER" />
+    <result column="semester_describe" property="semesterDescribe" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="school_name" property="schoolName" jdbcType="VARCHAR" />
+    <result column="press_name" property="pressName" jdbcType="VARCHAR" />
+    <result column="edition_name" property="editionName" jdbcType="VARCHAR" />
+  </resultMap>
+
+<select id="queryByPrimaryKey" resultMap="BaseResultMap">
+    select book_id,book_name,subject_id, subject_name, grade,semester,semester_describe,edition_id
+    from ct_book
+    where book_id=#{bookId,jdbcType=VARCHAR}
+    and status=1
+</select>
+
+  <!--获取每个年级有哪些科目-->
+  <select id="queryGradeSubject" resultMap="BookInfoResultMap">
+    select subject_id, subject_name, grade
+      from ct_book
+      where status=1
+  group by grade,subject_id
+  order by grade
+  </select>
+  <select id="selectBookByGradeCode" resultMap="BaseResultMap" >
+    select book_id, book_name, subject_id, subject_name, grade, semester, semester_describe,
+    edition_id
+    from ct_book
+    where grade = #{grade,jdbcType=VARCHAR} and subject_id = #{subjectId,jdbcType=VARCHAR}
+    and status=1
+  </select>
+
+  <!--WEB平台、APP接口：根据老师ID获取老师所有的授课教材-->
+  <select id="getMaterialsByUserid"  resultMap="BookInfoResultMap">
+    select distinct b.book_id, b.book_name, b.subject_id, b.subject_name, b.grade, tb.is_main, b.semester,
+           b.semester_describe ,e.press_name,  e.edition_name
+      from m_teacher_book tb
+      join ct_book b on tb.book_id=b.book_id
+      join ct_editions e on b.edition_id=e.edition_id
+     where tb.user_id=#{userId,jdbcType=VARCHAR}
+       and tb.school_id=#{schoolId,jdbcType=VARCHAR}
+       and b.status=1
+      <if test="subjectId!=null"> and subject_id =#{subjectId,jdbcType=VARCHAR}</if>
+  order by b.book_name
+  </select>
+
+  <!--APP接口：获取某科目的教材-->
+  <select id="queryBookBySubjectId" resultMap="BaseResultMap">
+    select book_id, book_name, subject_id, subject_name, grade, semester, semester_describe, edition_id
+      from ct_book
+     where subject_id=#{subjectId,jdbcType=VARCHAR}
+     and status=1
+  order by book_name
+  </select>
+
+  <!--根据学校ID获取该学校设置的教材-->
+  <select id="querySchoolBook"  resultMap="BaseResultMap">
+    select b.book_id, b.book_name,b.grade,b.semester,b.edition_id,b.subject_id,b.subject_name,c.extra_book_id,
+    c.extra_book_name,ifnull(ceb.extra_count,0) extra_count
+      from m_school_book sb
+      join ct_book b on sb.book_id=b.book_id
+      left join ct_extra_book c on c.extra_book_id=sb.extra_book_id
+      left join (select count(1) as extra_count,book_id from ct_extra_book group by book_id) ceb on ceb.book_id=sb.book_id
+     where sb.school_id=#{schoolId,jdbcType=VARCHAR}
+     and b.status=1
+  order by b.grade,b.book_name
+  </select>
+
+  <!--APP接口：根据老师id查老师选的课本的科目和年级-->
+  <select id="queryTeacherSubject"  resultMap="BookInfoResultMap">
+    select distinct b.subject_id, b.subject_name, b.grade, tb.school_id,  s.name as school_name
+      from m_teacher_book tb
+      join m_school s on tb.school_id=s.id
+      join ct_book b on tb.book_id=b.book_id
+     where tb.user_id=#{userId,jdbcType=VARCHAR}
+       and tb.school_id=#{schoolId,jdbcType=VARCHAR}
+       and b.status=1
+  order by b.subject_name
+  </select>
+
+ <!--APP接口：根据学校ID查学校对应的课本的科目和年级-->
+ <select id="querySchoolSubject"  resultMap="BookInfoResultMap">
+   select distinct b.grade,  b.subject_id, b.subject_name,  s.id as school_id, s.name as school_name
+     from m_school s
+     join m_school_book sb on s.id=sb.school_id
+     join ct_book b on sb.book_id=b.book_id
+    where sb.school_id=#{schoolId,jdbcType=VARCHAR}
+    and b.status=1
+ order by b.grade
+ </select>
+
+ <!--APP接口：根据区域编号查这个区域下的所有学校对应的科目和年级-->
+ <select id="queryAreaSchoolSubject"  resultMap="BookInfoResultMap">
+   select distinct b.grade,  b.subject_id, b.subject_name,  s.id as school_id,  s.name as school_name
+     from m_school s
+     join m_school_book sb on s.id=sb.school_id
+     join ct_book b on sb.book_id=b.book_id
+    where s.area=#{area,jdbcType=VARCHAR}
+    and b.status=1
+ order by s.id
+ </select>
+
+  <select id="getCtBook"  resultMap="BaseResultMap">
+    select c.book_id,c.book_name,c.subject_id, c.subject_name, c.grade,c.semester,
+           c.semester_describe,c.edition_id, sb.extra_book_id
+      from ct_book c
+      join m_school_book sb on c.book_id=sb.book_id and sb.school_id=#{schoolId,jdbcType=VARCHAR}
+     where c.subject_id=#{subjectId,jdbcType=VARCHAR}
+       and c.grade=#{gradeCode,jdbcType=INTEGER}
+       and c.semester=#{semester,jdbcType=INTEGER}
+       and c.status=1
+       limit 1
+  </select>
+
+
+    <select id="queryCtBook" resultMap="BaseResultMap">
+        select book_id, book_name, subject_id, subject_name, grade, semester, semester_describe, edition_id
+        from ct_book
+        where grade=#{gradeCode,jdbcType=INTEGER}
+        and subject_id=#{subjectId,jdbcType=VARCHAR}
+        and edition_id=#{educationId,jdbcType=VARCHAR}
+        and status=1
+    </select>
+
+  <select id="queryTeacherSubjectByUserId"  resultMap="BookInfoResultMap">
+    select distinct b.subject_id, b.subject_name
+      from m_teacher_book tb
+      join ct_book b on tb.book_id=b.book_id
+     where tb.user_id=#{userId,jdbcType=VARCHAR}
+       and tb.school_id=#{schoolId,jdbcType=VARCHAR}
+       and b.status=1
+  order by b.subject_name
+  </select>
+
+    <select id="queryDefaultBook"  resultMap="BaseResultMap">
+        select cb.book_id, cb.book_name, cb.subject_id, cb.subject_name, cb.grade, cb.semester, cb.semester_describe,
+        cb.edition_id,ifnull(ceb.extra_count,0) extra_count
+        from ct_book cb
+        left join (select count(1) as extra_count,book_id from ct_extra_book group by book_id) ceb on ceb.book_id=cb.book_id
+        where is_default=1
+        and status=1
+        order by grade
+    </select>
+
+  <select id="queryCtBookByList"  resultMap="BaseResultMap">
+    select c.book_id,c.book_name,c.subject_id, c.subject_name, c.grade,c.semester,
+           c.semester_describe,c.edition_id, sb.extra_book_id
+      from ct_book c
+      join m_school_book sb on c.book_id=sb.book_id and sb.school_id=#{schoolId,jdbcType=VARCHAR}
+     where c.status=1
+       and c.subject_id in
+           <foreach collection="subjectIdList" item="subject" open="(" separator="," close=")">
+            #{subject}
+           </foreach>
+       and c.grade in
+           <foreach collection="gradeCodeList" item="grade" open="(" separator="," close=")">
+            #{grade}
+           </foreach>
+       and c.semester in
+           <foreach collection="semesterList" item="semester" open="(" separator="," close=")">
+            #{semester}
+           </foreach>
+  order by c.subject_id,c.grade,c.semester
+  </select>
+
+    <select id="queryDefaultBookList"  resultMap="BaseResultMap">
+        select c.book_id,c.book_name,c.subject_id, c.subject_name, c.grade,c.semester,
+        c.semester_describe,c.edition_id
+        from ct_book c
+        where c.status=1
+        and c.is_default=1
+        and c.subject_id in
+        <foreach collection="subjectIdList" item="subject" open="(" separator="," close=")">
+            #{subject}
+        </foreach>
+        and c.grade in
+        <foreach collection="gradeCodeList" item="grade" open="(" separator="," close=")">
+            #{grade}
+        </foreach>
+        and c.semester in
+        <foreach collection="semesterList" item="semester" open="(" separator="," close=")">
+            #{semester}
+        </foreach>
+        order by c.subject_id,c.grade,c.semester
+    </select>
+
+    <!--通讯录根据学校查询所有科目-->
+    <select id="querySubjectGroupByList"  resultMap="BaseResultMap">
+        select subject_name,cb.book_id  book_id,subject_id from m_school_book ms LEFT JOIN ct_book cb on ms.book_id = cb.book_id
+         where ms.school_id = #{schoolId,jdbcType=VARCHAR}
+        GROUP BY subject_name
+    </select>
+</mapper>

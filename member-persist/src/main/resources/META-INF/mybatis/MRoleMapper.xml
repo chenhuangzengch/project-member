@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.xuele.member.persist.MRoleMapper">
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MRole">
+    <id column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" >
+    delete from m_role
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.member.domain.MRole">
+    insert into m_role (role_id, role_name, status
+      )
+    values (#{roleId,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.MRole">
+    update m_role
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey"  resultMap="BaseResultMap">
+    select role_id, role_name, status
+    from m_role
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select role_id, role_name, status
+    from m_role
+  </select>
+  <select id="selelctCountPage" resultType="java.lang.Long">
+    select COUNT(1)
+    from m_role WHERE  1=1
+    <if test="roleId !=null"> AND role_id = #{roleId,jdbcType=VARCHAR} </if>
+    <if test="roleName !=null"> AND role_name = #{roleName,jdbcType=VARCHAR} </if>
+    <if test="status !=null"> AND status = #{status,jdbcType=INTEGER} </if>
+  </select>
+  <select id="selectRoleByPage" resultMap="BaseResultMap">
+    select role_id, role_name, status
+    from m_role WHERE  1=1
+    <if test="mRole.roleId !=null"> AND role_id = #{mRole.roleId,jdbcType=VARCHAR} </if>
+    <if test="mRole.roleName !=null"> AND role_name = #{mRole.roleName,jdbcType=VARCHAR} </if>
+    <if test="mRole.status !=null"> AND status = #{mRole.status,jdbcType=INTEGER} </if>
+    ORDER BY role_id
+    limit #{page.start} , #{page.end}
+  </select>
+</mapper>

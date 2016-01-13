@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<!-- changes from the defaults for testing -->
+		<setting name="cacheEnabled" value="true" />
+		<setting name="useGeneratedKeys" value="true" />
+		<setting name="defaultExecutorType" value="REUSE" />
+	</settings>
+
+
+	<mappers>
+		<mapper resource="META-INF/mybatis/MResourcesMapper.xml" />
+		<mapper resource="META-INF/mybatis/MUserRoleMapper.xml" />
+		<mapper resource="META-INF/mybatis/MUsersMapper.xml" />
+		<mapper resource="META-INF/mybatis/MRoleMapper.xml" />
+		<mapper resource="META-INF/mybatis/MSchoolMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MClassMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MStudentMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MTeacherMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MParentsMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MEducationMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MEducationManagerMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MSchoolManagerMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MPositionMapper.xml"/>
+		<mapper resource="META-INF/mybatis/DSummaryMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MSchoolPeriodMapper.xml"/>
+		<mapper resource="META-INF/mybatis/CasLoginMapper.xml"/>
+		<mapper resource="META-INF/mybatis/CtBookMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MEducationOrganizationMapper.xml"/>
+		<mapper resource="META-INF/mybatis/DAreasMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MSchoolBookMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MSchoolSyncClassMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MFamilyRelationMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MLoginUserMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MLoginStatisticsMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MUserIconMapper.xml"/>
+		<mapper resource="META-INF/mybatis/CasLoginLogMapper.xml"/>
+		<mapper resource="META-INF/mybatis/CtExtraBookMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MUserDetailMapper.xml"/>
+		<mapper resource="META-INF/mybatis/CtAreaTextbookMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MPasswordLogMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MTeacherClassLogMapper.xml"/>
+		<mapper resource="META-INF/mybatis/MMobileInfoMapper.xml"/>
+	</mappers>
+
+</configuration>

@@ -1,0 +1,22 @@
+#set($layout="layout/security.vm")
+#set($page_title = "手机找回流程-输入手机号发短信")
+<div class="head">
+    <div class="inner">
+        <div class="logo"></div>
+        <div class="return"><a href="${ctx}/j_spring_cas_security_logout">返回登录</a></div>
+    </div>
+</div>
+<div class="main">
+    <div class="main_bg">
+        <div class="content_tl">手机短信重置密码</div>
+        <form name="msgform" action="./validateMobileCode" method="post">
+            <input type="text" name="mobile" class="tell_number" maxlength="11" placeholder="请输入手机号" value="$!{mobile}" />
+            <div class="ver">
+                <input type="text" maxlength="6" class="ver_number" name="checkCode" placeholder="输入验证码" />
+                <div class="vertify"></div>
+            </div>
+            <div class="errormsg">$!{errorMsg}</div>
+            <button type="submit" class="button_three">下一步</button>
+        </form>
+    </div>
+</div>

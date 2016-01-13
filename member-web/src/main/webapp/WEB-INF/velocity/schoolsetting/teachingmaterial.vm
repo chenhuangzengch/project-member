@@ -1,0 +1,58 @@
+#set($page_title="教材设置-学校设置")
+#define($script)
+<script>
+    var schoolGrades = [
+        {'name': '一年级', 'year': 2013}
+    ];
+</script>
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/init.css?version=${version}" />
+<script>seajs.use('page/member/pmnginit');</script>
+#end
+<div class="container">
+        <div class="page-init-gradeselect">
+            <div class="book-select">
+                <div class="list">
+                    <div class="panel">
+                        <div class="line"></div>
+                        <div class="ex"></div>
+                        #foreach($each in $gradeNameDTOList)
+                            <p class="gradecode-$each.level"><a href="#g$each.level"></a>$!{each.level}年级</p>
+                        #end
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="inner page-init">
+        <div class="grade-list">
+            #foreach($each in $gradeNameDTOList)
+                <div class="grade-item grade-item-$each.level" data-gradecode="$each.level">
+                    <h3 class="title"><a class="addsubject" href="javascript:;" id="g$each.level"><i class="icon-add"></i>添加科目</a>$!{each.level}年级</h3>
+                    <ul>
+                        #foreach($book in ${schoolBookList})
+                            #if($each.level==${book.grade})
+                                <li class="subject-item subject-item-${book.subjectId}" data-id="${book.subjectId}" data-bookid="${book.bookId}">
+                                    <p class="p1">$!{book.subjectName}</p>
+                                    <p class="p2">
+                                        $!{book.bookName}
+                                        <a href="javascript:;" class="edit">编辑</a>
+                                    </p>
+                                    #if(${book.extraCount}>0)
+                                        <p class="p3">
+                                            教辅：#if(${book.extraBookId})$!{book.extraBookName}
+                                        #else <a class="setextrabook" href="javascript:;">未设置</a>
+                                        #end
+                                            #if(${book.extraBookId})
+                                                <a href="javascript:;" class="edit-extrabook">编辑</a>
+                                            #end
+                                        </p>
+                                    #end
+                                    <a href="javascript:;" class="del">删除</a>
+                                </li>
+                            #end
+                        #end
+                    </ul>
+                </div>
+            #end
+        </div>
+        </div>
+    </div>

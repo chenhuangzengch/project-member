@@ -1,0 +1,54 @@
+#set($page_title="购买记录-我的信息")
+#set($url="purchaseRecord")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/profile.css?version=${version}"/>
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/integration/integration.css?version=${version}"/>
+#end
+<div class="subnav">
+    <a class="on" href="javascript:;">购买记录</a>
+    <a href="http://www.xueleyun.com/pay/vouchers/tovouchers">代金券</a>
+</div>
+<div class="container">
+    <div class="inner page-full">
+        <div class="profile-wrap">
+            #if($pageResponse.rows.size()==0)
+                <div class="empty">
+                    <p class="empty-msg">没有任何购买记录</p>
+                </div>
+            #else
+                <table class="tb-orderlist">
+                    <tbody>
+                        #foreach($res in $pageResponse.rows)
+                        <tr>
+                            #if($identity==$student)
+                                <td class="a"><img src="${normalSrc}${userMap.get($res.userId).icon}.jpg" alt=""/>$!{userMap.get($res.userId).realName}</td>
+                            #else
+                                <td class="a"><img src="${normalSrc}${userMap.get($res.createId).icon}.jpg" alt=""/>$!{userMap.get($res.createId).realName}</td>
+                            #end
+                            <td class="b">$!{res.type}</td>
+                            <td class="c">
+                                #if($res.amount)
+                                    $!{res.amount}月
+                                #end
+                            </td>
+                            <td class="d">
+                                #if($res.payMoney)
+                                    ￥$numTool.format("#0.00", $!{res.payMoney})
+                                #end
+                            </td>
+                            <td class="e">$!dateTool.format('yyyy-MM-dd',$!{res.createTime})</td>
+                        </tr>
+                        #end
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    #parse("common/page.vm")
+                </div>
+            #end
+
+            #*<div class="orderlist-tips">
+                注：此处订单不包括手机包月订单
+            </div>*#
+        </div>
+    </div>
+</div>

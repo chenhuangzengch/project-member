@@ -1,0 +1,8 @@
+#set($page_title="提示页面")
+<div class="container">
+    <div class="empty-panel">
+        <div class="empty">
+            <p class="empty-msg">你已与孩子失去家长关系 请与孩子联系</p>
+        </div>
+    </div>
+</div>

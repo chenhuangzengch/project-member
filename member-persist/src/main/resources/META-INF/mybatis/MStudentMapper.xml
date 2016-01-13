@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.xuele.member.persist.MStudentMapper">
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MStudent">
+    <id column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="class_id" jdbcType="VARCHAR" property="classId" />
+    <result column="class_name" jdbcType="VARCHAR" property="className" />
+    <result column="class_alias_name" jdbcType="VARCHAR" property="classAliasName" />
+    <result column="student_number" jdbcType="VARCHAR" property="studentNumber" />
+    <result column="family_name" jdbcType="VARCHAR" property="familyName" />
+    <result column="family_cover" jdbcType="VARCHAR" property="familyCover" />
+    <result column="school_id" jdbcType="VARCHAR" property="schoolId" />
+    <result column="school_name" jdbcType="VARCHAR" property="schoolName" />
+    <result column="join_class" jdbcType="TIMESTAMP" property="joinClass" />
+  </resultMap>
+
+    <resultMap id="StudentResultMap" type="net.xuele.member.domain.MStudentManager">
+        <id column="user_id" jdbcType="VARCHAR" property="userId" />
+        <id column="real_name" jdbcType="VARCHAR" property="realName" />
+        <result column="class_id" jdbcType="VARCHAR" property="classId" />
+        <result column="class_name" jdbcType="VARCHAR" property="classAliasName" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="years" jdbcType="VARCHAR" property="years" />
+        <result column="last_LoginDate" jdbcType="TIMESTAMP" property="lastLoginDate" />
+        <result column="school_id" jdbcType="VARCHAR" property="schoolId" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+    </resultMap>
+
+    <resultMap id="StudentClassResultMap" type="net.xuele.member.domain.MClassInfo">
+        <id column="class_id" jdbcType="VARCHAR" property="classId" />
+        <result column="name" jdbcType="VARCHAR" property="className" />
+        <result column="alias_name" jdbcType="VARCHAR" property="aliasName" />
+        <result column="years" jdbcType="INTEGER" property="year" />
+        <result column="student_count" jdbcType="INTEGER" property="studentCount" />
+        <result column="school_id" jdbcType="VARCHAR" property="schoolId" />
+        <result column="school_name" jdbcType="VARCHAR" property="schoolName" />
+        <result column="charge_id" property="chargeId" jdbcType="VARCHAR" />
+        <result column="charge_name" property="chargeName" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="StudentInfoResultMap" type="net.xuele.member.domain.MStudentInfo">
+        <id column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="real_name" jdbcType="VARCHAR" property="realName" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="signature" jdbcType="VARCHAR" property="signature" />
+        <result column="school_id" jdbcType="VARCHAR" property="schoolId" />
+        <result column="school_name" jdbcType="VARCHAR" property="schoolName" />
+        <result column="class_id" jdbcType="VARCHAR" property="classId" />
+        <result column="class_name" jdbcType="VARCHAR" property="className" />
+        <result column="years" jdbcType="INTEGER" property="year" />
+    </resultMap>
+    <resultMap id="StudentContactsMap" type="net.xuele.member.domain.MStudentContacts">
+        <id column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="real_name" jdbcType="VARCHAR" property="realName" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="member_name" jdbcType="VARCHAR" property="memberName" />
+        <result column="target_user_id" jdbcType="VARCHAR" property="targetUserId" />
+        <result column="class_id" jdbcType="VARCHAR" property="classId" />
+    </resultMap>
+    <insert id="insert" parameterType="net.xuele.member.domain.MStudent">
+      insert into m_student (user_id, class_id, class_name,
+        class_alias_name, student_number, family_name,
+        family_cover, school_id, school_name,join_class
+        )
+      values (#{userId,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR}, #{className,jdbcType=VARCHAR},
+        #{classAliasName,jdbcType=VARCHAR}, #{studentNumber,jdbcType=VARCHAR}, #{familyName,jdbcType=VARCHAR},
+        #{familyCover,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR}, #{schoolName,jdbcType=VARCHAR}, #{joinClass,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="net.xuele.member.domain.MStudent">
+      update m_student
+      set
+      <if test="classId != null">class_id = #{classId,jdbcType=VARCHAR},</if>
+      <if test="className != null">class_name = #{className,jdbcType=VARCHAR},</if>
+      <if test="classAliasName != null">class_alias_name = #{classAliasName,jdbcType=VARCHAR},</if>
+      <if test="studentNumber != null">student_number = #{studentNumber,jdbcType=VARCHAR},</if>
+      <if test="familyName != null">family_name = #{familyName,jdbcType=VARCHAR},</if>
+      <if test="familyCover != null">family_cover = #{familyCover,jdbcType=VARCHAR},</if>
+      <!--<if test="schoolId != null">school_id = #{schoolId,jdbcType=VARCHAR},</if>-->
+      <!--<if test="schoolName != null">school_name = #{schoolName,jdbcType=VARCHAR},</if>-->
+      user_id = user_id
+      where user_id = #{userId,jdbcType=VARCHAR}
+      AND school_id = #{schoolId,jdbcType=VARCHAR}
+    </update>
+
+  <!--APP接口：根据学生ID获取学生信息-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    SELECT user_id, class_id, class_name, class_alias_name, student_number, family_name,
+           family_cover, school_id, school_name, join_class
+      FROM m_student
+      WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+      AND user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateStudents" >
+    update m_student
+       set class_id=#{mClass.classId,jdbcType=VARCHAR},
+           class_name=#{mClass.name,jdbcType=VARCHAR},
+           class_alias_name=#{mClass.aliasName,jdbcType=VARCHAR}
+     where school_id = #{mClass.schoolId,jdbcType=VARCHAR}
+       and user_id in
+           <foreach collection="userIdList" item="resId" open="(" separator="," close=")">
+              #{resId}
+           </foreach>
+  </update>
+
+  <!--APP接口、WEB平台：根据学生名称查询学生信息-->
+  <select id="selectStudentByRealName" resultMap="StudentResultMap">
+    select u.user_id, u.real_name, u.icon,  s.class_id, s.class_name, s.school_id,  s.school_name
+      from m_users u
+      join m_student s on u.user_id=s.user_id
+     where u.status!=0
+       and s.school_id=#{schoolId,jdbcType=VARCHAR}
+       and u.real_name LIKE concat('%',#{realName,jdbcType=VARCHAR},'%')
+  </select>
+
+    <select id="selectCount" resultType="java.lang.Long">
+        SELECT count(u.user_id)
+        FROM m_student s
+        JOIN  M_USERS u ON u.user_id=s.user_id
+        LEFT  JOIN m_class c ON s.class_id = c.class_id and c.status=1
+        LEFT JOIN m_login_statistics l ON  s.user_id = l.user_id
+        WHERE s.school_id =  #{schoolId,jdbcType=VARCHAR}
+        <if test="status ==0"> AND u.status =0 and u.update_time >= date_sub(now(),interval 30 day)</if>
+        <if test="status !=0"> AND u.status >0</if>
+        <if test="years !=null and years !=''"> AND c.years = #{years,jdbcType=INTEGER} </if>
+        <if test="classId !=null and classId !=''"> AND c.class_id = #{classId,jdbcType=VARCHAR} </if>
+        <if test="realName !=null and realName !=''"> AND u.real_name LIKE concat('%',#{realName,jdbcType=VARCHAR},'%') </if>
+
+    </select>
+    <select id="selectMStudentManagerPage"  resultMap="StudentResultMap">
+        SELECT u.user_id,u.real_name,s.class_id,s.class_name,c.years,u.icon,
+        <if test="mStudentManager.status ==0"> u.update_time last_LoginDate</if>
+        <if test="mStudentManager.status !=0"> l.last_login_time last_LoginDate</if>
+         FROM m_student s
+         JOIN  M_USERS u ON u.user_id=s.user_id
+    LEFT JOIN m_class c ON s.class_id = c.class_id and c.status=1
+        LEFT JOIN m_login_statistics l ON  s.user_id = l.user_id
+        WHERE  s.school_id= #{mStudentManager.schoolId,jdbcType=VARCHAR}
+        <if test="mStudentManager.status ==0"> AND u.status =0 and u.update_time >= date_sub(now(),interval 30 day)</if>
+        <if test="mStudentManager.status !=0"> AND u.status >0</if>
+        <if test="mStudentManager.years !=null and mStudentManager.years !=''"> AND c.years = #{mStudentManager.years,jdbcType=INTEGER} </if>
+        <if test="mStudentManager.classId !=null and mStudentManager.classId !=''"> AND c.class_id = #{mStudentManager.classId,jdbcType=VARCHAR} </if>
+        <if test="mStudentManager.realName !=null and mStudentManager.realName !=''"> AND u.real_name LIKE concat('%',#{mStudentManager.realName,jdbcType=VARCHAR},'%') </if>
+        <if test="mStudentManager.status ==0">  order by u.update_time desc</if>
+        <if test="mStudentManager.status !=0">  order by l.last_login_time,s.class_id DESC</if>
+        limit #{page.start},#{page.pageSize}
+    </select>
+    <select id="selectStudents_export"  resultMap="StudentResultMap">
+        SELECT u.user_id,u.real_name,s.class_id,s.class_name,u.icon,c.years,l.last_login_time last_LoginDate
+        FROM m_student s
+        JOIN  M_USERS u ON u.user_id=s.user_id
+        LEFT JOIN m_class c ON s.class_id = c.class_id and c.status=1
+        LEFT JOIN m_login_statistics l ON  s.user_id = l.user_id
+        WHERE s.school_id= #{mStudentManager.schoolId,jdbcType=VARCHAR}
+        <if test="mStudentManager.status ==0"> AND u.status =0</if>
+        <if test="mStudentManager.status !=0"> AND u.status >0</if>
+        <if test="mStudentManager.years !=null and mStudentManager.years !='' "> AND c.years = #{mStudentManager.years,jdbcType=INTEGER} </if>
+        <if test="mStudentManager.classId !=null and mStudentManager.classId !=''"> AND c.class_id = #{mStudentManager.classId,jdbcType=VARCHAR} </if>
+        <if test="mStudentManager.realName !=null and mStudentManager.realName !=''"> AND u.real_name LIKE concat('%',#{mStudentManager.realName,jdbcType=VARCHAR},'%') </if>
+        order by c.years desc,c.code_sharing
+    </select>
+
+  <select id="selectStudentsWithoutClassId"  resultMap="StudentResultMap">
+    select u.user_id, u.real_name, u.icon,  s.class_id, s.class_name
+      from m_student s
+      join m_users u on u.user_id=s.user_id
+     where u.status!=0
+       and s.school_id=#{schoolId,jdbcType=VARCHAR}
+       and (s.class_id is null or s.class_id="")
+  order by u.user_id
+    </select>
+
+  <!--APP接口、WEB平台：根据班级ID查询该班级所有学生-->
+  <select id="selectClassStudents"  resultMap="StudentResultMap">
+    select s.user_id, u.real_name, u.icon,  s.class_id, s.class_name
+      from m_student s
+      join m_users u on u.user_id=s.user_id
+     where s.school_id = #{schoolId,jdbcType=VARCHAR}
+       and u.status!=0
+       and s.class_id=#{classId,jdbcType=VARCHAR}
+  order by s.user_id
+  </select>
+
+  <update id="updateStudentMessage">
+    update m_student
+       set class_id=#{mClass.classId,jdbcType=VARCHAR},
+           class_name=#{mClass.name,jdbcType=VARCHAR},
+           class_alias_name=#{mClass.aliasName,jdbcType=VARCHAR}
+     where user_id=#{userId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectStudentByUserId" resultMap="StudentResultMap">
+    select u.user_id, u.real_name, u.icon,  s.class_id, s.class_name, c.years
+      from m_student s
+      join m_users u on u.user_id=s.user_id
+      join m_class c on s.class_id=c.class_id
+     where s.school_id = #{schoolId,jdbcType=VARCHAR}
+       and u.status!=0
+       and s.user_id=#{userId,jdbcType=VARCHAR}
+  </select>
+
+  <!--APP接口：根据学生ID获取该学生所在的班级信息-->
+  <select id="getStudentClass" resultMap="StudentClassResultMap">
+    select c.class_id,  c.name, c.alias_name, c.years,  count(s.user_id) as student_count, s.school_id, s.school_name, c.charge_id, c.charge_name
+      from m_student s
+ left join m_class c on s.class_id=c.class_id
+     where s.school_id = #{schoolId,jdbcType=VARCHAR}
+      AND c.class_id=(select class_id from m_student where user_id=#{userId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR})
+       and c.status=1
+  group by s.class_id
+    </select>
+
+  <!--根据学生ID获取学生信息-->
+  <select id="getStudentInfo"  resultMap="StudentInfoResultMap">
+    select u.user_id, u.real_name,  u.icon, u.signature, u.school_id,
+           sc.name as school_name, c.years,c.name as class_name,c.class_id
+      from m_student s
+      join m_users u on u.user_id=s.user_id
+      join m_school sc on s.school_id=sc.id
+      left join m_class c on s.class_id=c.class_id
+      where s.school_id = #{schoolId,jdbcType=VARCHAR}
+      AND s.user_id=#{userId,jdbcType=VARCHAR}
+      AND u.status!=0
+  </select>
+
+  <select id="selectStudentCount" resultType="int">
+    select count(1)
+      from m_student s
+      join m_users u on s.user_id=u.user_id and u.status!=0
+     where s.class_id=#{classId,jdbcType=VARCHAR}
+       and s.school_id=#{schoolId,jdbcType=VARCHAR}
+  </select>
+
+    <!-- App 接口，修改学校名称-->
+    <update id="updateSchoolNameBySchoolId" >
+        UPDATE m_student set school_name = #{schoolName,jdbcType=VARCHAR}
+                WHERE school_id = #{schoolId,jdbcType=VARCHAR}
+    </update>
+
+  <update id="updateByClassList" >
+    update m_student
+       set class_id=null,
+           class_name=null,
+           class_alias_name=null
+     where school_id = #{schoolId,jdbcType=VARCHAR}
+       and class_id in
+           <foreach collection="classIdList" item="resId" open="(" separator="," close=")">
+            #{resId}
+           </foreach>
+  </update>
+
+    <!-- 通讯录 老师 分页查询班级学生信息-->
+    <select id="queryStudentInfoByClassPage"  resultMap="StudentContactsMap">
+        select s.user_id, u.real_name, u.icon
+        from m_student s
+        join m_users u on u.user_id=s.user_id
+        where s.school_id = #{schoolId,jdbcType=VARCHAR}
+        and u.status!=0
+        and s.class_id=#{classId,jdbcType=VARCHAR}
+        order by s.user_id
+        <if test="limit == 0">limit #{page.start},#{page.pageSize}</if>
+
+    </select>
+    <!-- 通讯录 学生 分页查询班级同学-->
+    <select id="queryStudentInfoByClassmatePage"  resultMap="StudentContactsMap">
+        select s.user_id, u.real_name, u.icon
+        from m_student s
+        join m_users u on u.user_id=s.user_id
+        where s.school_id = #{schoolId,jdbcType=VARCHAR}
+        and u.status!=0
+        and s.class_id=#{classId,jdbcType=VARCHAR} and u.user_id !=#{userId,jdbcType=VARCHAR}
+        order by s.user_id
+        <if test="limit == 0">limit #{page.start},#{page.pageSize}</if>
+    </select>
+    <!-- 通讯录 查询班级学生的学生家长信息-->
+    <select id="queryStudentLeafInfo"  resultMap="StudentContactsMap">
+        SELECT u.user_id, u.real_name, u.icon
+        FROM  m_users u
+        WHERE   u.status!=0 AND
+        <if test="userIds.size() > 0"> user_id IN </if>
+        <foreach collection="userIds" item="resId" open="(" separator="," close=")">
+            #{resId}
+        </foreach>
+        <if test="userIds.size() == 0"> user_id is null </if>
+    </select>
+    <!-- 通讯录 家长 查询出学生对应的班级及头像信息-->
+    <select id="queryStudentInfoByParent"  resultMap="StudentContactsMap">
+        SELECT mf.target_user_id as user_id, m.real_name, s.class_id, m.icon
+        FROM ( SELECT DISTINCT target_user_id
+                 FROM m_family_relation
+                WHERE STATUS = 1
+                  AND user_id = #{userId,jdbcType=VARCHAR}) mf
+        JOIN m_student s ON user_id = mf.target_user_id
+        JOIN m_users m ON m.user_id = mf.target_user_id
+        <if test="limit == 0">limit #{page.start},#{page.pageSize}</if>
+    </select>
+    <!--通讯录接口：根据学生ID获取该学生所在的班级信息-->
+    <select id="getStudentClassByContacts" resultMap="StudentClassResultMap">
+        select c.class_id,  c.name, c.alias_name, c.years,  count(s.user_id) as student_count, s.school_id, s.school_name, c.charge_id, c.charge_name
+        from m_student s
+        join m_users u on u.user_id=s.user_id
+        left join m_class c on s.class_id=c.class_id
+        where s.school_id = #{schoolId,jdbcType=VARCHAR}
+        AND c.class_id=(select class_id from m_student where user_id=#{userId,jdbcType=VARCHAR} and school_id = #{schoolId,jdbcType=VARCHAR})
+        and c.status=1 and u.status!=0 and u.user_id!=#{userId,jdbcType=VARCHAR}
+        group by s.class_id
+    </select>
+</mapper>

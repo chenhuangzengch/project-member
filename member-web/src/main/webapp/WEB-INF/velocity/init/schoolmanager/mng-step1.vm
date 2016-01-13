@@ -1,0 +1,32 @@
+#set($layout="layout/init.vm")
+#set($page_title="STEP1-管理员数据初始化")
+#set($user=${request.session.getAttribute("SPRING_SECURITY_CONTEXT").authentication.principal})
+<div class="header header-init">
+		<div class="inner">
+			<div class="logo">
+				<h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+			</div>
+			<div class="ctls">
+				<a href="${ctx}/schoolManagerInit/startSet" class="begin">开始</a>
+			</div>
+		</div>
+</div>
+<div class="container">
+		<div class="inner page-init">
+			<div class="page-init-box">
+				<h2 class="title">$!{user.schoolName} 感谢选择我们</h2>
+				<h3 class="title-sub">请进行简单的初始化设置，以便帮助我们为您准备适合您学校的教学资源和教学工具</h3>
+				<ul class="begin-list">
+					<li>
+						<img src="http://asset.xueleyun.com/imgs/member/info-tch-1.jpg" alt="" />
+					</li>
+					<li>
+						<img src="http://asset.xueleyun.com/imgs/member/info-tch-2.jpg" alt="" />
+					</li>
+					<li>
+						<img src="http://asset.xueleyun.com/imgs/member/info-tch-3.jpg" alt="" />
+					</li>
+				</ul>
+			</div>
+		</div>
+</div>

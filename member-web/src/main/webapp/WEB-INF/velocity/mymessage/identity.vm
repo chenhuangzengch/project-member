@@ -1,0 +1,85 @@
+#set($page_title="身份管理-我的信息")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/profile.css?version=${version}" />
+#end
+<div class="container">
+    <div class="inner page-full">
+        <div class="profile-wrap">
+            <div class="roles-list">
+                #foreach($relative in $relativeList)
+                    #if($relative.identityId==$teacher)
+                        <div class="roles-item">
+                            <div class="bd">
+                                #if($userId==$relative.userId)
+                                    <p class="status"><b class="current"></b></p>
+                                #else
+                                    <p class="status"><a class="change"
+                                                         href="${request.getContextPath()}/myMessage/switchUser?userId=$!{relative.userId}">切换身份</a>
+                                    </p>
+                                #end
+                                <img src="$!{normalSrc}$!{relative.icon}.jpg" alt="" />
+
+                                <p class="role">$!{relative.orgName}</p>
+
+                                <p class="title">$!{relative.positionName}</p>
+                            </div>
+                            <div class="ft">
+                                <ul>
+                                    #foreach($className in $relative.classList)
+                                        <li>
+                                            <p class="p1">$!{className}</p>
+                                        </li>
+                                    #end
+                                </ul>
+                            </div>
+                        </div>
+                    #elseif($relative.identityId==$parent)
+                        <div class="roles-item">
+                            <div class="bd">
+                                #if($userId==$relative.userId)
+                                    <p class="status"><b class="current"></b></p>
+                                #else
+                                    <p class="status"><a class="change"
+                                                         href="${request.getContextPath()}/myMessage/switchUser?userId=$!{relative.userId}">切换身份</a>
+                                    </p>
+                                #end
+                                <img src="$!{normalSrc}$!{relative.icon}.jpg" alt="" />
+
+                                <p class="role">$!{relative.orgName}</p>
+
+                                <p class="title">$!{relative.positionName}</p>
+                            </div>
+                            <div class="ft">
+                                <ul>
+                                    #foreach($kid in ${relative.kidList.keySet()})
+                                        <li>
+                                            <p class="p1">$!{kid}</p>
+                                            <p class="p2">$!{relative.kidList.get($kid)}</p>
+                                        </li>
+                                    #end
+                                </ul>
+                            </div>
+                        </div>
+                    #else
+                        <div class="roles-item">
+                            <div class="bd">
+                                #if($userId==$relative.userId)
+                                    <p class="status"><b class="current"></b></p>
+                                #else
+                                    <p class="status"><a class="change"
+                                                         href="${request.getContextPath()}/myMessage/switchUser?userId=$!{relative.userId}">切换身份</a>
+                                    </p>
+                                #end
+                                <img src="$!{normalSrc}$!{relative.icon}.jpg" alt="" />
+
+                                <p class="role">$!{relative.orgName}</p>
+
+                                <p class="title">$!{relative.positionName}</p>
+                            </div>
+                        </div>
+                    #end
+                #end
+            </div>
+        </div>
+    </div>
+</div>

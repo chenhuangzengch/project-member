@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/jdbc
+       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+       http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd"
+       xmlns:context="http://www.springframework.org/schema/context">
+
+    <import resource="classpath*:applicationContext-cxf-client.xml"/>
+    <import resource="classpath*:applicationContext-redis.xml"/>
+    <context:annotation-config/>
+    <context:component-scan base-package="net.xuele.member" use-default-filters="false">
+        <!-- 扫描符合 @Repository 的类 -->
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Repository"/>
+        <context:include-filter type="annotation"
+                                expression="com.alibaba.dubbo.config.annotation.Service"/>
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Service"/>
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Component"/>
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <bean id="txManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:WebMagic;DB_CLOSE_DELAY=-1"/>
+    </bean>
+    <!--Refer to https://github.com/springside/springside4/wiki/H2-Database -->
+    <jdbc:initialize-database data-source="dataSource" ignore-failures="ALL">
+        <jdbc:script location="classpath:h2/member.sql" encoding="UTF-8" execution="INIT"/>
+        <!--<jdbc:script location="classpath:h2/import-data.sql" encoding="UTF-8" execution="INIT" />-->
+    </jdbc:initialize-database>
+
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="net.xuele.member.persist"/>
+        <!--<property name="markerInterface" value="net.xuele.member.persist.SqlMapper"
+            /> -->
+    </bean>
+
+</beans>

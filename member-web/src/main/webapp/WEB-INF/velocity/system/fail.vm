@@ -1,0 +1,21 @@
+#set($layout="layout/layout.vm")
+#set($page_title="错误页面")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/g/css/global.min.css?version=${version}"/>
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/spec.css?version=${version}"/>
+#end
+<div class="success-fail">
+    <img src="http://asset.xueleyun.com/imgs/cloudteach/failed.png" alt="" class="status-icon"/>
+
+    <h2 class="status-result">操作失败</h2>##操作时遇到一个小问题，请返回重新发送
+    <p class="status-notes">$!{errorInfo}</p>
+
+    <div class="actions">
+        #if(${failToLocation})
+            <a href="${failToLocation}" class="confirm">返回</a>
+        #else
+            <a href="javascript:history.go(-1);" class="confirm">返回</a>
+        #end
+
+    </div>
+</div>

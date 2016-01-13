@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.MSchoolBookMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.MSchoolBook" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="school_id" property="schoolId" jdbcType="VARCHAR" />
+    <result column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+      <result column="extra_book_id" property="extraBookId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="BookResultMap" type="net.xuele.member.domain.DBooks" >
+    <id column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+    <result column="grade_num" property="gradeNum" jdbcType="INTEGER" />
+    <result column="semester" property="semester" jdbcType="INTEGER" />
+    <result column="subject_id" property="subjectId" jdbcType="INTEGER" />
+    <result column="edition_id" property="editionId" jdbcType="INTEGER" />
+    <result column="is_default" property="isDefault" jdbcType="INTEGER" />
+  </resultMap>
+
+<resultMap id="CtBookResultMap" type="net.xuele.member.domain.CtBook" >
+    <id column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+    <result column="subject_id" property="subjectId" jdbcType="VARCHAR" />
+    <result column="subject_name" property="subjectName" jdbcType="VARCHAR" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="semester" property="semester" jdbcType="INTEGER" />
+    <result column="semester_describe" property="semesterDescribe" jdbcType="VARCHAR" />
+    <result column="edition_id" property="editionId" jdbcType="VARCHAR" />
+</resultMap>
+
+  <delete id="deleteByPrimaryKey" >
+    delete from m_school_book
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+      and book_id = #{bookId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="net.xuele.member.domain.MSchoolBook" >
+    insert into m_school_book (school_id, book_id, update_time, id)
+    values (#{schoolId,jdbcType=VARCHAR}, #{bookId,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},#{id,jdbcType=BIGINT})
+  </insert>
+  <update id="updateBook" >
+    update m_school_book
+    set book_id = #{newBookId,jdbcType=TIMESTAMP}
+    where school_id = #{schoolId,jdbcType=VARCHAR}
+    and book_id = #{oldBookId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  >
+    select school_id, book_id, update_time, extra_book_id, id
+      from m_school_book
+     where school_id = #{schoolId,jdbcType=VARCHAR}
+       and book_id = #{bookId,jdbcType=VARCHAR} limit 1
+  </select>
+
+  <!--获取同步课堂所有教材-->
+  <select id="queryAllSynBook" resultMap="BookResultMap">
+    select book_id, book_name,  grade_num,  semester, subject_id, edition_id, is_default
+      from d_books
+  </select>
+
+  <!--保存该学校的同步课堂教材-->
+  <insert id="saveSyncBook" parameterType="java.util.List">
+    insert into m_school_sync_class(school_id, book_id, update_time,id)
+    values
+           <foreach collection="schoolBookList" item="resId" separator=",">
+             (#{resId.schoolId},#{resId.bookId},#{resId.updateTime},#{resId.id})
+           </foreach>
+  </insert>
+
+    <!--保存该学校的教材-->
+    <insert id="saveSchoolBook" parameterType="java.util.List">
+        insert into m_school_book(school_id, book_id, update_time,id)
+        values
+        <foreach collection="schoolBookList" item="resId" separator=",">
+            (#{resId.schoolId},#{resId.bookId},#{resId.updateTime},#{resId.id})
+        </foreach>
+    </insert>
+
+  <!--删除该学校的同步课堂教材-->
+  <delete id="delSyncBookBySchoolId"  >
+    delete from m_school_sync_class
+     where school_id = #{schoolId,jdbcType=VARCHAR}
+  </delete>
+
+  <!--根据学校ID获取该学校设置的同步课堂教材-->
+  <select id="querySchoolSynBook"  resultMap="BookResultMap">
+    select b.book_id, b.book_name,  b.grade_num,  b.semester, b.subject_id, b.edition_id
+      from m_school_sync_class sb
+ left join d_books b on sb.book_id=b.book_id
+     where sb.school_id=#{schoolId,jdbcType=VARCHAR}
+  </select>
+
+  <!--APP接口：根据年级和科目id获取某学校的某同步课堂课本,根据当前时间判断上下学期-->
+  <select id="getDBook" resultMap="BookResultMap">
+    select d.book_id,d.book_name,d.grade_num,d.semester,d.subject_id, d.edition_id
+    from d_books d
+    where d.subject_id=#{subjectId,jdbcType=INTEGER} and d.grade_num=#{gradeCode,jdbcType=INTEGER}
+    and d.semester=#{semester,jdbcType=INTEGER} and d.book_id in(
+    select m.book_id
+    from m_school_sync_class m
+    where m.school_id=#{schoolId,jdbcType=VARCHAR})
+  </select>
+
+  <select id="getByGradeNumAndSubjectId" resultMap="BookResultMap">
+    select book_id,book_name,grade_num,semester,subject_id, edition_id
+      from d_books
+     where grade_num=#{gradeCode,jdbcType=INTEGER}
+       and subject_id=#{subjectId,jdbcType=INTEGER}
+       and edition_id=1
+     limit 1
+  </select>
+
+<select id="getByGradeAndSubjectId" resultMap="CtBookResultMap">
+      select c.book_id,c.book_name,c.subject_id, c.subject_name, c.grade,c.semester,
+           c.semester_describe,c.edition_id
+      from ct_book c
+      left join m_school_book b on b.book_id=c.book_id
+      where c.grade=#{gradeCode,jdbcType=INTEGER}
+      and c.subject_id=#{subjectId,jdbcType=VARCHAR}
+      and b.school_id=#{schoolId,jdbcType=VARCHAR}
+      and c.status=1
+</select>
+  <update id="setExtraBookId">
+    update m_school_book
+       set extra_book_id=#{extraBookId,jdbcType=VARCHAR}
+     where book_id=#{bookId,jdbcType=VARCHAR}
+       and school_id=#{schoolId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="queryDBooks" resultMap="BookResultMap">
+    select book_id,book_name,grade_num,semester,subject_id, edition_id
+      from d_books
+     where book_id in
+        <foreach collection="bookIds" item="resId" open="(" separator="," close=")">
+            #{resId}
+        </foreach>
+  </select>
+
+  <select id="queryDBooksByList" resultMap="BookResultMap">
+    select d.book_id,d.book_name,d.grade_num,d.semester,d.subject_id, d.edition_id
+      from d_books d
+      join m_school_sync_class m on d.book_id=m.book_id and m.school_id=#{schoolId,jdbcType=VARCHAR}
+     where d.subject_id in
+           <foreach collection="subjectIdList" item="subject" open="(" separator="," close=")">
+            #{subject}
+           </foreach>
+       and d.grade_num in
+           <foreach collection="gradeCodeList" item="grade" open="(" separator="," close=")">
+            #{grade}
+           </foreach>
+       and d.semester in
+           <foreach collection="semesterList" item="semester" open="(" separator="," close=")">
+            #{semester}
+           </foreach>
+  order by d.subject_id,d.grade_num,d.semester
+    </select>
+
+    <select id="queryDefaultDBooks" resultMap="BookResultMap">
+        select book_id,book_name,grade_num,semester,subject_id, edition_id
+        from d_books
+        where is_default = 1
+    </select>
+
+    <select id="queryDefaultBookList"  resultMap="BookResultMap">
+      select book_id,book_name,grade_num,semester,subject_id, edition_id,is_default
+        from d_books
+       where is_default=1
+         and subject_id in
+            <foreach collection="subjectIdList" item="subject" open="(" separator="," close=")">
+                #{subject}
+            </foreach>
+        and grade_num in
+            <foreach collection="gradeCodeList" item="grade" open="(" separator="," close=")">
+                #{grade}
+            </foreach>
+        and semester in
+            <foreach collection="semesterList" item="semester" open="(" separator="," close=")">
+                #{semester}
+            </foreach>
+        order by subject_id,grade_num,semester
+    </select>
+</mapper>

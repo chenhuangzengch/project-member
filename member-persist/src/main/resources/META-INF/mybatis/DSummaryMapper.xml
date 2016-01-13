@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xuele.member.persist.DSummaryMapper" >
+  <resultMap id="BaseResultMap" type="net.xuele.member.domain.DSummary" >
+    <id column="summary_code" property="summaryCode" jdbcType="VARCHAR" />
+    <result column="summary_name" property="summaryName" jdbcType="VARCHAR" />
+    <result column="summary_mark" property="summaryMark" jdbcType="VARCHAR" />
+  </resultMap>
+  <!--APP接口、WEB平台：查询所有科目列表，不根据学校区分-->
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select summary_code, summary_name, summary_mark
+    from d_summary
+  </select>
+  <!--WEB平台：查询年级所有科目列表-->
+  <select id="selectGradeSubject" resultMap="BaseResultMap" >
+    select summary_code, summary_name, summary_mark
+    FROM d_summary s  JOIN ct_book b ON s.summary_code = b.subject_id WHERE grade = #{grade,jdbcType=VARCHAR} GROUP BY summary_code
+  </select>
+  <!--根据学校ID查询该学校的科目列表-->
+  <select id="querySchoolSubject" resultMap="BaseResultMap" >
+    select distinct b.subject_id as summary_code, b.subject_name as summary_name
+      from m_teacher t
+      join m_users u on t.user_id=u.user_id
+      join ct_book b on t.book_id=b.book_id
+     where t.school_id=#{schoolId,jdbcType=VARCHAR}
+       and u.status!=0
+       and b.status=1
+  </select>
+  <!--根据老师ID查询老师对应的科目列表-->
+  <select id="queryTeacherSubject" resultMap="BaseResultMap" >
+    SELECT b.subject_name  as summary_name,b.subject_id as summary_code FROM m_teacher_book t
+    LEFT JOIN ct_book b ON b.book_id=t.book_id AND b.status=1
+    WHERE t.school_id=#{schoolId,jdbcType=VARCHAR} AND t.user_id =#{userId,jdbcType=VARCHAR} GROUP BY b.subject_id
+  </select>
+</mapper>

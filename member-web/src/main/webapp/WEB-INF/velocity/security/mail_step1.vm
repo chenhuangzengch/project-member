@@ -1,0 +1,22 @@
+#set($layout="layout/security.vm")
+#set($page_title = "邮件找回流程-Step1-输入邮箱地址")
+<div class="head">
+    <div class="inner">
+        <div class="logo"></div>
+        <div class="return"><a href="${ctx}/j_spring_cas_security_logout">返回登录</a></div>
+    </div>
+</div>
+<div class="main">
+    <div class="main_bg">
+        <div class="content_tl">邮箱重置密码</div>
+        <form name="emailform" action="./getCheckCodeForResetPasswordByEmail" method="post">
+            <input type="text" class="tell_number" name="email" placeholder="输入邮箱地址" value="$!{email}" />
+            <div class="ver">
+                <input type="text" class="ver_number" name="picCode" maxlength="6" placeholder="输入验证码" />
+                <img class="verimg" src="getCaptcha" alt="" /><a class="reload" href="javascript:;">换一张</a>
+            </div>
+            <div class="errormsg">$!{errorMsg}</div>
+            <button type="submit" class="button_three">下一步</button>
+        </form>
+    </div>
+</div>

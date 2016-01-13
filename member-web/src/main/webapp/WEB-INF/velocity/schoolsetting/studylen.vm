@@ -1,0 +1,89 @@
+#set($page_title="显示－学段与学制")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/init.css?version=${version}" />
+<script>
+    var educational = [
+        #set($isnull=0)
+        #foreach($each in $schoolPeriodDTOList)
+            #if($each.section==0)
+                #set($isnull=$each.length)
+            #end
+        #end
+        $isnull,
+        #set($isnull=0)
+        #foreach($each in $schoolPeriodDTOList)
+            #if($each.section==1)
+                #set($isnull=$each.length)
+            #end
+        #end
+        $isnull,
+        #set($isnull=0)
+        #foreach($each in $schoolPeriodDTOList)
+            #if($each.section==2)
+                #set($isnull=$each.length)
+            #end
+        #end
+        $isnull
+    ];
+</script>
+<script>seajs.use('page/member/pmnginit');</script>
+#end
+<div class="container">
+    <div class="inner page-init">
+
+        <div class="page-init-box">
+
+            <div class="educational-edit">
+                <a class="edit" href="${ctx}/schoolSet/studylevelEdit">学制学段设置</a>
+            </div>
+            <form name="form-educational" action="./mng-step3.html" method="post">
+                <ul class="educational">
+                    #foreach($each in $schoolPeriodDTOList)
+                        #if($each.section==0)
+                            <li>
+                                <div class="item on">
+                                    <p class="nm">小学</p>
+                                    <p class="other">
+                                        #if($each.length==5)
+                                            <label for="primary5">5年制</label>
+                                        #else<label for="primary6">6年制</label>
+                                        #end
+                                    </p>
+                                </div>
+                            </li>
+                        #end
+                    #end
+                        #foreach($each in $schoolPeriodDTOList)
+                            #if($each.section==1)
+                                <li>
+                                    <div class="item on">
+                                        <p class="nm">初中</p>
+                                        <p class="other">
+                                            #if($each.length==3)
+                                                <label for="junior3">3年制</label>
+                                            #else <label for="junior4">4年制</label>
+                                            #end
+                                        </p>
+                                    </div>
+                                </li>
+                            #end
+                        #end
+                    #foreach($each in $schoolPeriodDTOList)
+                        #if($each.section==2)
+                            <li>
+                                <div class="item on">
+                                    <p class="nm">高中</p>
+                                    <p class="other">
+                                        <label for="senior3">3年制</label>
+
+                                    </p>
+                                </div>
+                            </li>
+                        #end
+                    #end
+                </ul>
+            </form>
+        </div>
+
+    </div>
+</div>

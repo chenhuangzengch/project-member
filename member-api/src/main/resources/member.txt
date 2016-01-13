@@ -1,0 +1,209 @@
+#ClassConstants
+#班级名字格式
+classConstants.namePattern = (%d)班
+#班级正常状态
+classConstants.statusOk = 1
+#学界分隔
+classConstants.yearSeparator = 0801
+
+classConstants.aliasNamePattern = %d班
+
+classConstants.gradeName = %s年级
+classConstants.gradeLevel = %d届
+
+#IdentityIdConstants
+#教师身份
+identityIdConstants.teacher = TEACHER
+#学生身份
+identityIdConstants.student = STUDENT
+#学校管理人员身份
+identityIdConstants.schoolManager = SCHOOL_MANAGER
+#学校管理层老师
+identityIdConstants.schoolTeacherManager = SCHOOL_TEACHER_MANAGER
+#家长身份
+identityIdConstants.parent = PARENT
+#教育机构管理员身份
+identityIdConstants.educationManager = EDUCATION_MANAGER
+#教育机构人员身份
+identityIdConstants.educationStaff = EDUCATION_STAFF
+#教师身份说明
+identityIdConstants.teacherName = 教师
+#学生身份说明
+identityIdConstants.studentName = 学生
+
+#PositionConstants
+positionConstants.newJobType = 1
+positionConstants.description = 自定义职务
+#班主任职务id
+positionConstants.headmaster = HEADMASTER
+#校长职务id
+positionConstants.principal = PRINCIPAL
+#默认普通老师职务id
+positionConstants.teacher = TEACHER
+#普通老师职务名称
+positionConstants.teacherName = 教师
+
+#RoleIdConstants
+#教师
+roleIdConstants.teacher = TEACHER
+#学生
+roleIdConstants.student = STUDENT
+#学校管理人员
+roleIdConstants.schoolManager = SCHOOL_MANAGER
+#学校管理层,没有身份,老师身份可以设置为管理层
+roleIdConstants.schoolTeacherManager = SCHOOL_TEACHER_MANAGER
+#家长
+roleIdConstants.parent = PARENT
+#教育机构管理员
+roleIdConstants.educationManager = EDUCATION_MANAGER
+#教育机构人员
+roleIdConstants.educationStaff = EDUCATION_STAFF
+
+#SearchConstants
+#搜索老师
+searchConstants.teacher = teacher
+#搜索学生
+searchConstants.student = student
+#搜索学校
+searchConstants.school = school
+#是老师的主授科目
+searchConstants.isMain = 1
+#不是老师的主授科目
+searchConstants.isNotMail = 0
+#全校ID
+searchConstants.schoolId = 1
+#全校名称
+searchConstants.schoolName = 全校
+#所有班级ID
+searchConstants.classId = 3
+#所有班级名称
+searchConstants.className = 所有班级
+#管理层ID
+searchConstants.managerId = 2
+#管理层名称
+searchConstants.managerName = 管理层
+
+#SectionConstants
+#小学
+sectionConstants.primarySchool = 小学
+#初中
+sectionConstants.juniorMiddleSchool = 初中
+#高中
+sectionConstants.seniorHighSchool = 高中
+#小学
+sectionConstants.primarySchoolNum = 0
+#初中
+sectionConstants.juniorMiddleScoolNum = 1
+#高中
+sectionConstants.seniorHighSchoolNum = 2
+#学制学段设置规则:学校id-学制-学段
+sectionConstants.schoolPeriodId = %s-%d-%d
+
+#SecurityConstants
+#安全模块中邮件验证码使用的学乐中国网站的url域名
+securityConstants.memberSecurityUrl = http://www.xueleyun.com/member/
+securityConstants.emailKey = 57d99d89-caab-482a-a0e9-a0a803eed3ba
+securityConstants.phoneKey = 09f140d5-af72-44ba-a763-c861304b46f8
+securityConstants.redisPrefix = member_security_
+securityConstants.casUrl = http://cas.xueleyun.com/cas/
+
+securityConstants.bindMobileMessage = 验证码：{0}（绑定手机）30分钟有效 如非本人操作请忽略。手机APP（http://t.cn/RywcBJV）
+securityConstants.findPasswordMessage = 验证码：{0}（密码重置）30分钟有效 如非本人操作请忽略。手机APP（http://t.cn/RywcBJV）
+securityConstants.inviteUserMessage = 请将家长验证码{1}告诉{0}，30分钟有效。手机App(http://t.cn/RywcBJV)
+securityConstants.redisEmailKey = global:member:{0}:{1}
+securityConstants.redisPhoneKey = global:member:{0}:{1}
+
+
+
+#VerifyTimeConstants
+#短信验证过期时间 单位毫秒 30分钟
+verifyTimeConstants.messageExpiredTime = 1800000
+#邮件激活过期时间 单位毫秒 24小时
+verifyTimeConstants.emailExpiredTime = 86400000
+
+#UserConstants
+#有效
+userConstants.statusNormal = 1
+#未初始化
+userConstants.statusInit = 2
+#离校
+userConstants.statusLeave = 0
+#重置密码，加密后
+userConstants.resetPassword = 2478C601CC820821E04453B1AB886038
+#重置密码，加密前
+userConstants.passwordReset = 123456
+#登录类型（1：学乐号：2：手机；3：手机号）
+userConstants.member = 1
+#登录类型为2代表手机号码
+userConstants.phone = 2
+#登录类型为3代表邮箱账号
+userConstants.email = 3
+#图标默认ID
+userConstants.iconDefault = 00000000000000000000000000000000
+#图标地址
+userConstants.iconUrl = http://avatar.xueleyun.com/images/
+#excel导入最大数据量
+userConstants.excelDataNumber = 10000
+#男标识
+userConstants.sexMan = 0
+#女标识
+userConstants.sexWoman = 1
+#家庭关系状态：成功
+userConstants.familyRelationSuccess = 1
+#家庭关系状态：已拒绝
+userConstants.familyRelationReject =2
+#家庭关系状态：正在邀请
+userConstants.familyRelationInvite = 3
+#schoolId是否仅从数据库区
+userConstants.getSchoolIdOnlyFromDB = false
+#教育机构管理员默认的云教学课本Id
+userConstants.defaultBookId = 010001001001001
+
+
+
+#MemberEncryptUtil
+#aes加密解密密钥，上线后定死
+memberEncryptUtil.passwordKey = xuelezhongguodev
+
+#导入老师或学生excel模板
+#第一单元格
+excelConstants.firstCell = 用户姓名
+#第二单元格
+excelConstants.secondCell = 用户类别
+#第三单元格
+excelConstants.thirdCell = 年级
+#第四单元格
+excelConstants.fourthCell = 班级
+#第五单元格
+excelConstants.fifthCell = 联系电话
+#第六单元格
+excelConstants.sixthCell = 性别
+#第七单元格
+excelConstants.seventhCell = 错误说明
+
+downloadUrlConstants.iosAppUrl=itms-services://?action=download-manifest&url=https://m.xueleyun.com/download/ios
+downloadUrlConstants.androidAppUrl=http://m.xueleyun.com/download/android
+
+#应用商城类型
+payConstants.appStoreTypeT = T
+payConstants.appStoreTypeE = E
+payConstants.appStoreTypeC = C
+payConstants.appStoreTypeM = M
+payConstants.appStoreTypeQ = Q
+payConstants.appStoreTypeTName = 提分宝
+payConstants.appStoreTypeEName = 英语口语评测
+payConstants.appStoreTypeCName = 同步课堂
+payConstants.appStoreTypeMName = 名校课堂
+payConstants.appStoreTypeQName = 其他
+
+#购买类型
+#包年
+payConstants.payTypeYear = 2
+#包月
+payConstants.payTypeMonth = 1
+#包年月数
+payConstants.payTypeMonthNum = 12
+#学生类型标识
+payConstants.payStudentType = 1
+#家长类型标识
+payConstants.payParentType = 2

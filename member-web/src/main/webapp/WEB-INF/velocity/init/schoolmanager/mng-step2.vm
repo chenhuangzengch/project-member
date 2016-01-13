@@ -1,0 +1,31 @@
+#set($layout="layout/init.vm")
+#set($page_title="STEP2-管理员数据初始化")
+#set($user=${request.session.getAttribute("SPRING_SECURITY_CONTEXT").authentication.principal})
+#define($script)
+<script>seajs.use('page/member/pmnginit');
+</script>
+#end
+<div class="header header-init">
+		<div class="inner">
+			<div class="logo">
+				<h1><img src="http://asset.xueleyun.com/imgs/member/logo.jpg" alt="" /></h1>
+			</div>
+			<div class="ctls">
+				<a href="javascript:;" class="next disabled">下一步</a>
+			</div>
+		</div>
+</div>
+<div class="container">
+		<div class="inner page-init">
+			<div class="page-init-box">
+				<h2 class="title">因为您是第一次登录，所以请先设定新的管理员密码</h2>
+				<form name="form-userpwd" action="setPassword" method="post">
+				<ul class="user-pwd">
+					<li><input placeholder="6-20位新密码" type="password" name="pwd" id="" class="ipt" maxlength="20" /></li>
+					<li><input placeholder="确认密码" type="password" name="repwd" id="" class="ipt" maxlength="20" /></li>
+				</ul>
+				<input type="submit" value="提交" style="display:none;" />
+				</form>
+			</div>
+		</div>
+</div>

@@ -1,0 +1,46 @@
+#set($page_title="班级设置")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/init.css?version=${version}" />
+<script>seajs.use('page/member/ptchinit');</script>
+</script>
+#end
+</div>	<div class="container">
+    <div class="inner page-init">
+
+        <div class="page-full-ctls">
+            <a class="add" href="javascript:;"><i class="icon-add"></i>添加任课班级</a>
+        </div>
+        <div class="page-full-box">
+            <div class="klasstch">
+                <div class="klasstch-sider">
+                    <ul>
+						#foreach($gradeList in $gradeList)
+                            <li  #if($gradeList.id ==$grade) class="on" #end ><a href="setClass?grade=$gradeList.id"> $gradeList.levelName</a></li>
+						#end
+                    </ul>
+                </div>
+                <div class="klasstch-cnt">
+					#if($classInfoDTOList.size() ==0)
+                        <div class="empty">
+                            <p class="empty-msg">暂无任课班级信息</p>
+                            <p class="empty-who">您需要添加任课班级</p>
+                        </div>
+					#end
+                    <ul>
+						#foreach($teacherClass in $classInfoDTOList)
+                        <li class="klasstch-grade-${teacherClass.gradeNum}" data-c="$!{teacherClass.chargeId}" data-id="${teacherClass.classId}">
+                                <div class="item">
+                                    <div class="ct">
+                                        <p class="nm">${teacherClass.className}</p>
+                                        <p class="nums">${teacherClass.studentCount}名学生</p>
+                                    </div>
+                                </div>
+                            </li>
+						#end
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

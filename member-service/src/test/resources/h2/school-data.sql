@@ -1,0 +1,4 @@
+insert into m_school (id, name, english_name, s_type,length_of_school, address, tel,  motto, web, badge,  cover, manager_name, manager, school_time, add_time, area, area_name, about,status)
+    values ('2','浙江大学','zhejiangdaxue',1,2,'2','2','2','www.zhejiang.com','2','2','admin','admin','2014-09-09 09:09:09','2014-09-09 09:09:09','2','2','2',0);
+insert into m_school (id, name, english_name, s_type,length_of_school, address, tel,  motto, web, badge,  cover, manager_name, manager, school_time, add_time, area, area_name, about,status)
+    values ('3','浙江大学','zhejiangdaxue',1,3,'3','3','3','www.zhejiang.com','3','3','admin','admin','2014-09-09 09:09:09','2014-09-09 09:09:09','3','3','3',0);

@@ -1,0 +1,23 @@
+#set($layout="layout/layout.vm")
+#set($page_title="操作成功")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/g/css/global.min.css?version=${version}"/>
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/spec.css?version=${version}"/>
+#end
+<div class="success-fail">
+    <img src="http://asset.xueleyun.com/imgs/cloudteach/success.png" alt="" class="status-icon"/>
+
+    <h2 class="status-result">操作成功</h2>
+
+    <p class="status-notes">设置已经成功</p>
+
+    <div class="actions">
+        #if(${backUrl})
+            <a href="${backUrl}" class="backto">返回重设</a>
+        #else
+            <a href="javascript:history.go(-1);" class="backto">返回重设</a>
+    #end
+
+        <a href="${ctx}" class="goto">下一步</a>
+    </div>
+</div>

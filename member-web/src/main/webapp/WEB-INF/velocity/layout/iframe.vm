@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    #set($ctx=${ctx})
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>$!page_title</title>
+    <link rel="stylesheet" href="http://asset.xueleyun.com/g/css/global.min.css?version=${version}" />
+    <link rel="stylesheet" href="http://asset.xueleyun.com/css/member/iframe.css?version=${version}" />
+    <script src="http://asset.xueleyun.com/g/js/global.min.js?version=${version}"></script>
+    <script src="http://asset.xueleyun.com/cjs/config.js?version=${version}"></script>
+    $!script
+</head>
+<body>
+$screen_content
+</body>
+</html>

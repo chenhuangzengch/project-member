@@ -1,0 +1,39 @@
+#set($layout="layout/iframe.vm")
+#set($page_title="学生换班")
+#define($script)
+<script>seajs.use('page/member/pichangeschool');</script>
+#end
+<div class="iframe-wrap">
+	<div class="iframe-wrap-bd">
+		<div class="iframe-chgcls">
+			<div class="popup-content">
+				<div class="popup-side">
+					<ul class="grade-list">
+						#foreach($grade in $gradeDTOs)
+							#set($total=$total+${grade.classNumber})
+                            <li #if($grade.id == $selectedGrade.id)
+                                    class="on"
+							#end >
+                                <a href="changeClass?grade=${grade.id}&ids=${ids}">$grade.levelName（<span>$grade.classNumber</span>）</i></a>
+                            </li>
+						#end
+					</ul>
+				</div>
+				<div class="popup-clslist">
+					<ul class="class-list">
+#foreach($each in $classes)
+						<li data-id="${each.classId}"><div><i class="change-icon"></i><span>$each.aliasName$each.name</span></div></li>
+#end
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="iframe-wrap-ft">
+		<p class="ctls">
+			<input type="hidden" name="classid" value="" />
+			<input type="hidden" name="memberid" value="${ids}" /><!--读入URL传入的ids-->
+			<a class="cancel" href="javascript:;">取消</a><a class="btn" href="javascript:;">添加</a>
+		</p>
+	</div>
+</div>

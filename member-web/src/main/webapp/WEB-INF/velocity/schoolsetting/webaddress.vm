@@ -1,0 +1,37 @@
+#set($page_title="官网设置-学校设置")
+#define($script)
+<link rel="stylesheet" href="http://asset.xueleyun.com/css/member/init.css?version=${version}" />
+<script>seajs.use('page/member/psetweb');</script>
+#end
+<div class="container">
+    <div class="inner page-init">
+        <div class="setweb">
+            <ul>
+                #if(${schoolWeb})
+                    <li class="origin">初始网址： <span><a target="_blank" href="${httpWeb}">${schoolWeb}</a></span>
+                        #if($!{school.customWeb}=="")
+                            <i class="icon-def"></i>
+                        #end
+                    </li>
+                #end
+                #if($school.customWeb && $school.customWeb!="")
+                    <li class="modify" style="display:none;">自定义网址： <input class="ipt" type="text" name="url" placeholder="输入正确的网址，以http://或者https://开始" value="$!{school.customWeb}" /><button class="btn-save">保存</button></li>
+                    <li class="detail" >自定义网址： <span id="J_SetWeb"><a target="_blank" href="$!{school.customWeb}">$!{school.customWeb}</a></span><a class="edit" href="javascript:;">编辑</a><a class="del" href="javascript:;">删除</a><i class="icon-def"></i></li>
+                #else
+                    <li class="modify">自定义网址： <input class="ipt" type="text" name="url" placeholder="输入正确的网址，以http://或者https://开始" value="$!{school.customWeb}" /><button class="btn-save">保存</button></li>
+                    <li class="detail" style="display:none;">自定义网址： <span id="J_SetWeb"><a target="_blank" href="http://www.xueleyun.com/">http://www.baidu.com/</a></span><a class="edit" href="javascript:;">编辑</a><a class="del" href="javascript:;">删除</a><i class="icon-def"></i></li>
+                #end
+            </ul>
+            <div class="info">
+                <h3>如何设置官网</h3>
+                <p>
+                    1、默认为云教学平台提供的官网<br />
+                    2、如需自定义官网，请输入可以访问的正确地址（如：http://www.xueleyun.com，包含http://或者https://），否则可能导致不能访问<br />
+                    3、如需恢复默认云教学平台提供的官网，只需点击删除并确认即可<br />
+                    4、如需变更官网地址，点击编辑后保存即可
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>

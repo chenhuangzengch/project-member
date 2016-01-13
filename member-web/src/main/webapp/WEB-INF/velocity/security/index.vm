@@ -1,0 +1,12 @@
+#set($layout="layout/security.vm")
+#set($page_title = "学乐云教学")
+<div class="wrapper" style="width: 400px; margin: 100px auto 0;text-align:left;">
+    <form action="./login" method="post">
+        <p>用户名：　<input type="text" name="username" style="height:16px;padding:6px 5px;width:250px;" value="$!{username}"/></p>
+        <p style="padding:20px 0 0;">密　码：　<input type="password" name="password" style="height:16px;padding:6px 5px;width:250px;" /></p>
+        <p style="padding:20px 0 0 60px;"><button style="width:50px;height:30px;cursor:pointer" type="submit">登录</button>
+            $!{error}
+        </p>
+        <p><a href="./forgetPassword">忘记密码</a></p>
+    </form>
+</div>

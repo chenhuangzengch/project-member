@@ -1,0 +1,177 @@
+#set($page_title="学生管理")
+#define($script)
+
+<meta charset="UTF-8" />
+<script>
+    var pageinfo = {};
+    pageinfo.schoolid = 10001;
+    pageinfo.grade = 2014;
+    pageinfo.classid = 1234;
+</script>
+<script>
+    var ctlmenu = [
+//        {cls: 'action-home', icon: 'icon-home', name: '学生空间'},
+        {cls: 'action-resetpass', icon: 'icon-lock', name: '重置密码'},
+        {cls: 'action-changeset', icon: 'icon-edit', name: '资料变更'},
+        {cls: 'action-leave', icon: 'icon-remove', name: '学生离校'}
+    ];
+    var schoolGrades = [${gradeDTOs}];
+</script>
+<script>seajs.use('page/member/pstudent');</script>
+#end
+<div class="container">
+    <div class="inner page-full">
+        <div class="member-wrap">
+            <div class="inner-search">
+                #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                    <i class="sel-chk-no sel-all"></i>
+                #end
+                <div class="sel-all-novalue">
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        <label for="sel-all">全选</label>
+                    #end
+                    <div class="wrap">
+                        <form action="${ctx}/student/index" method="post">
+                            <input type="text" name="realName" id="realName" placeholder="输入学生名称搜索" value="$!realName"/>
+                            <button><i clss="search"></i>搜索</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="sel-all-hasvalue" style="display:none;">
+                    <label for="sel-all">已选择 <em class="sel-num">0</em> 名学生</label>
+                    <ul class="ul-op">
+                        <li class="change-class"><i></i><span>学生换班</span></li>
+                        <li class="off-school"><i></i><span>学生离校</span></li>
+                        <li class="change-pwd"><i></i><span>重置密码</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="sub-nav">
+                <div class="g-sel J_GradeClass">
+                    <div class="gc grade" data-def="2014">
+                        <div class="g-wrap">
+                            #if (!$years)
+                                #set($years="")
+                            #end
+                            #if ($years && $years !='')
+                                #foreach($grades in $gradeList)
+                                    #if($grades.id ==$years)
+                                        $grades.getName()
+                                    #end
+                                #end
+                            #else
+                                <span>所有年级</span>
+                            #end
+                            <i class="icon-down"></i>
+                        </div>
+                        <div class="ul-g">
+                            <ul>
+                                #foreach($grades in $gradeList)
+                                    <li><a href="index?years=$grades.id">$grades.getName()</a></li>
+                                #end
+                                #if($years!="")
+                                    <li><a href="index">所有年级</a></li>
+                                #end
+                            </ul>
+                        </div>
+                    </div>
+                    #if (!$classId)
+                        #set($classId="")
+                    #end
+                    #if($years != "")
+                    <div class="gc class" data-def="2014999901">
+                        <div class="g-wrap">
+                            #if ($classId && $classId !='')
+                                #foreach($class in $classList)
+                                    #if($class.classId ==$classId)
+                                        $class.name
+                                    #end
+                                #end
+                            #else
+                                <span>所有班级</span>
+                            #end
+                            <i class="icon-down"></i>
+                        </div>
+                        <div class="ul-c">
+                            <ul>
+                                #foreach($class in $classList)
+                                    <li><a href="index?years=$class.year&classId=$class.classId">$class.name</a></li>
+                                #end
+                                #if($classId != "")
+                                    <li><a href="index?years=$years">所有班级</a></li>
+                                #end
+                            </ul>
+                        </div>
+                    </div>
+                    #end
+                </div>
+                #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                    <ul class="navs">
+                        <li class="nav-off"><i></i><a href="${ctx}/student/leave">回收站</a></li>
+                        <li class="nav-download"><i></i><a href="${ctx}/student/download?years=$years&classId=$classId&realName=$!realName">下载查询数据</a></li>
+                        <li class="nav-import"><i></i><a href="${ctx}/schoolManagerInit/anotherImport?type=$!{type}">批量导入学生</a></li>
+                        <li class="nav-add"><i></i><a href="javascript:;">新增学生</a></li>
+                    </ul>
+                #end
+            </div>
+            <h2 class="summary">所有学生（<span>$pageResponse.records</span>）</h2>
+            #if($pageResponse.getRows().size()==0)
+                #if($!realName)
+                    <div class="empty"><p class="empty-msg">暂无数据</p></div>
+                #else
+                    <div class="empty"><p class="empty-msg">没有任何学生</p>
+                        #if(!${sec.anyGranted("SCHOOL_MANAGER")})
+                            <p class="empty-who">需要学校管理员创建学生</p>
+                        #end
+                        #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                            <p class="empty-ctls"><a class="J_stuadd" href="javascript:;"><i
+                                    class="icon-add"></i>添加学生</a></p>
+                        #end
+                    </div>
+                #end
+            #else
+            <table class="tb-userlist">
+                <thead>
+                <tr>
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        <th class="sel-all"></th>
+                    #end
+                    <th>学生姓名</th>
+                    <th>所在班级</th>
+                    <th>登录账号</th>
+                    <th>上线情况</th>
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        <th>操作</th>
+                    #end
+                    <th></th>
+                </tr>
+                </thead>
+            #end
+            <tbody>
+                #foreach($students in $pageResponse.getRows())
+                <tr class="list-item list-item-$students.userId" data-id="$students.userId">
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        <td class="no-border"><i class="sel sel-chk-no"></i></td>
+                    #end
+                    <td><img class="av-class" src="${normalSrc}${students.icon}.jpg" alt="$students.realName"><span>$students.realName</span></td>
+                    <td>$students.classAliasName</td>
+                    <td>$students.userId</td>
+                    <td>$students.lastLoginDate</td>
+                    #if(${sec.anyGranted("SCHOOL_MANAGER")})
+                        <td class="new-password"><a class="J_resetpass" href="javascript:;"><i></i>重置密码</a></td>
+                        <td class="ctl"><img class="ctlmenu" src="http://asset.xueleyun.com/imgs/member/tb-ctls.gif" alt=""></td>
+                    #end
+                </tr>
+                #end
+            </tbody>
+        </table>
+            #if($pageResponse.getRows().size()>0)
+                #set($url="${ctx}/student/index?years=$!years&classId=$!classId&realName=$!realName")
+                <div class="pagination">
+                    #parse("common/page.vm")
+                </div>
+            #end
+        </div>
+
+    </div>
+</div>
